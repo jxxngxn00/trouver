@@ -1,0 +1,39 @@
+body {
+    background-color: #CAE8DB;
+    text-align: center;
+  }
+
+video {
+    width: 100%;
+    opacity: 70%;
+}
+
+.start {
+    position: absolute;
+    max-width: 1024px;
+    top:0;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+
+h3 {
+    /* margin: 20px; */
+    font-family: "Paytone One";
+    color: #202020;
+    letter-spacing: -2px;
+}
+
+img {
+    position: inherit;
+    top: 25%;
+    width: 45%;
+}
+
+button {
+    bottom: 13%;
+    position: inherit!important;
+}

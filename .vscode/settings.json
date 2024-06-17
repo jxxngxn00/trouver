@@ -3,5 +3,18 @@
         "appjs",
         "mbti",
         "trouver"
-    ]
+    ],
+    "cSpell.words": [
+        "contentsid",
+        "descseo",
+        "imgpath",
+        "iterrows",
+        "phoneno",
+        "pymysql",
+        "regioncd",
+        "roadaddress",
+        "thumbnailpath",
+        "visitjeju"
+    ],
+    "cSpell.language": "en,lorem"
 }
