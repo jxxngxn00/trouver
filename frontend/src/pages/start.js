@@ -17,13 +17,12 @@ const StartPage = () => {
   };
 
   return (
-    <div className='start'>
+    <div className='bgDiv'>
       <video autoPlay muted loop ref={videoRef} onCanPlay={() => setPlayBackRate()}>
         <source src={bgVideo} type="video/mp4" />
       </video>
-
-      <img src={logo} alt="Trouver logo"/>
-      <button className="btn btn-4 btn-4a icon-arrow-right" onClick={() => navigate('/itinerary')}>Continue</button>
+      <img className='logoImg' src={logo} alt="Trouver logo"/>
+      <button className="btn btn-4 btn-4a icon-arrow-right continue" onClick={() => navigate('/itinerary')}>여행 시작하기</button>
     </div>
   );
 };
