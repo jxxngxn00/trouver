@@ -68,6 +68,8 @@ if __name__ == "__main__":
     activation = args.activation
     patience = args.patience
     test_size = args.test_size
+    print(">>>> args.path :: ",args.path)
+    print(">>>> args.dataset :: ",args.dataset)
     loader = dataloader(args.path + args.dataset)
 
     num_field = loader.get_num_fields()
