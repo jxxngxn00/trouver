@@ -1,0 +1,97 @@
+@font-face {
+    font-family: 'EF_jejudoldam';
+    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2210-EF@1.0/EF_jejudoldam.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+}
+
+*{
+    font-family: 'EF_jejudoldam';
+}
+
+.homeBgDiv {
+    background-color: white!important;
+    position:absolute;
+    isolation: isolate;
+
+    min-height: calc(var(--vh, 1vh)*100+12vh);
+    /* height: 100vh; */
+    width: 100vw;
+
+    top:0px;
+    left: 0px;
+    
+    z-index: -1;
+}
+
+.div-100, .div-50{
+    border-radius: 30px;
+    box-shadow: 0px 16px 40px -15px #7090b079;
+}
+
+.div-100 {
+    /* display: block; */
+    background-color: #ecfff7;
+    width: 90%;
+    min-height: 100px;
+    margin: 5% auto;
+}
+
+.div-50 {
+    margin: 1% 1.5%;
+    background-color: #CAE8DB;
+    width: 50%;
+    height: 100px;  
+}
+
+/* welcome div */
+
+.welcomeDiv{
+    box-shadow: none!important;
+    background: none!important;
+    height: fit-content;
+}
+
+.welcomeDiv .textDiv {
+    flex:1;
+    height: auto;
+    box-shadow: none!important;
+    background: none!important;
+    text-align: left;
+    padding-left: 3%;
+
+    
+    display:flex;
+    flex-direction: column;
+    justify-content: flex-end;
+}
+.welcomeDiv p{
+    margin-top:0.5%;
+    margin-bottom:0.5%;
+}
+.welcomeDiv .userNameP {
+    color:#45866B;
+    font-size: 2.25vh;
+    font-weight: bold;
+}
+
+.welcomeDiv .imgDiv{
+    flex:1;
+    box-shadow: none!important;
+    background: none!important;
+    height: fit-content;
+}
+
+.imgDiv .logoImg{
+    width: 80%;
+    display: block;
+    margin: auto;
+}
+
+.welcomeDiv, .savedDiv{
+    display:flex;
+    justify-content: center;
+    box-shadow: none!important;
+    background: none!important;
+    width: 92%;
+}
