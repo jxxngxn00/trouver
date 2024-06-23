@@ -1,0 +1,73 @@
+@font-face {
+    font-family: 'EF_jejudoldam';
+    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2210-EF@1.0/EF_jejudoldam.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+}
+
+*{
+    font-family: 'EF_jejudoldam';
+}
+
+body {
+    text-align: center;
+    /* position: absolute; */
+  }
+
+video {
+    width: 100%;
+    height: 100%;
+    opacity: 70%;
+    overflow: cover;
+    object-fit: cover;
+}
+
+.bgDiv {
+    position: absolute;
+    min-height: calc(var(--vh, 1vh)*100);
+    top:0;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: -1;
+}
+
+
+h3 {
+    /* margin: 20px; */
+    font-family: "Paytone One";
+    color: #202020;
+    letter-spacing: -2px;
+}
+
+.logoImg {
+    position: inherit;
+    top: 25%;
+    width: 45%;
+}
+
+button {
+    bottom: 13%;
+    position: inherit!important;
+}
+
+.loginBtnDiv {
+    position: inherit!important;
+    margin: auto;
+    bottom: 13%;
+}
+
+.loginBtn {
+    display: block;
+    margin: 5% auto;
+}
+
+.naver { width: 183px; }
+.google { width: 183px; }
+
+.descDiv p { 
+    color: white;
+    font-size: 0.7vw;
+}

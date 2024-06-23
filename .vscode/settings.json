@@ -1,7 +1,30 @@
 {
     "cSpell.ignoreWords": [
+        "activaiton",
         "appjs",
+        "jejudoldam",
+        "matplotlib",
         "mbti",
+        "relu",
+        "tqdm",
         "trouver"
-    ]
+    ],
+    "cSpell.words": [
+        "astype",
+        "contentsid",
+        "descseo",
+        "embbeding",
+        "imgpath",
+        "iterrows",
+        "kakao",
+        "naver",
+        "phoneno",
+        "pymysql",
+        "regioncd",
+        "roadaddress",
+        "thumbnailpath",
+        "uszipcode",
+        "visitjeju"
+    ],
+    "cSpell.language": "en,lorem"
 }
