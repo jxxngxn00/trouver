@@ -1,16 +1,20 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
-/* import page */
+/* import page & components */
 import StartPage from './pages/StartPage'
+
 import Home from './pages/Home';
-// import TravelPlans from './pages/TravelPlans';
+import Plan from './pages/components/home/Plan'
+
+import MakePlan from './pages/plan/MakePlan';
+import ViewPlan from './pages/plan/ViewPlan';
 // import Search from './pages/Search';
 // import Profile from './pages/Profile';
 // import Settings from './pages/Settings';
 
 /* component files */
-import LoginForm from './components/LoginForm';
+// import LoginForm from './components/LoginForm';
 // import SignupForm from './components/SignupForm';
 
 /* CSS files + images */
@@ -36,13 +40,6 @@ function App() {
 
   // const navigate = useNavigate();
 
-
-  /* 비디오 속도 조절 */
-  // const videoRef = React.useRef();
-  // const setPlayBackRate = () => {
-  //   videoRef.current.playbackRate = 0.5;
-  // };
-
   /* 모바일 화면 크기 최적화 훅 */
   useEffect(() => {
     let vh = 0;
@@ -61,9 +58,14 @@ function App() {
         
           <Routes>
             <Route path="/" element={<StartPage />} />
-            <Route path="/LoginForm" element={<LoginForm />} />
             <Route path="/home" Component={Home}/>
-            {/* <Route path="/login" component={LoginForm} /> */}
+              <Route path="/plan" Component={Plan}/>
+              {/* <Route path="/home" Component={Home}/>
+              <Route path="/home" Component={Home}/>
+              <Route path="/home" Component={Home}/> */}
+
+            <Route path="/MakePlan" component={MakePlan} />
+            <Route path="/ViewPlan" component={ViewPlan} />
             {/* <Route path="/signup" component={SignupForm} />
             <Route path="/home" component={Home} />
             <Route path="/travel-plans" component={TravelPlans} />

@@ -4,9 +4,15 @@
     font-weight: normal;
     font-style: normal;
 }
+@font-face {
+    font-family: 'Pretendard-Regular';
+    src: url('https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
+    font-weight: 800;
+    font-style: normal;
+}
 
 *{
-    font-family: 'EF_jejudoldam';
+    font-family: 'Pretendard-Regular';
 }
 
 .homeBgDiv {
@@ -27,6 +33,7 @@
 .div-100, .div-50{
     border-radius: 30px;
     box-shadow: 0px 16px 40px -15px #7090b079;
+    transition-duration: 0.3s;
 }
 
 .div-100 {
@@ -35,7 +42,13 @@
     width: 90%;
     min-height: 100px;
     margin: 5% auto;
+    
 }
+
+.div-100:active, .div-50:active{
+    box-shadow: none;
+}
+
 
 .div-50 {
     margin: 1% 1.5%;
@@ -55,17 +68,17 @@
 .welcomeDiv .textDiv {
     flex:1;
     height: auto;
-    box-shadow: none!important;
-    background: none!important;
     text-align: left;
     padding-left: 3%;
-
-    
     display:flex;
     flex-direction: column;
     justify-content: flex-end;
+    
+    box-shadow: none!important;
+    background: none!important;
 }
 .welcomeDiv p{
+    font-family: 'EF_jejudoldam'!important;
     margin-top:0.5%;
     margin-bottom:0.5%;
 }
@@ -94,4 +107,41 @@
     box-shadow: none!important;
     background: none!important;
     width: 92%;
+    z-index: -1;
+}
+
+/* 추천여행 */
+.planDiv {
+    height: calc(var(--vh, 1vh)*100+12vh);;
+}
+
+.desc {
+    margin-top: 35vh;
+    font-size: 5vw;
+}
+
+.planDiv .buttonWrapper {
+    margin: auto;
+    margin-top: 10vh;
+    width: 70%;
+}
+
+.buttonWrapper button {
+    color:white;
+    background-color: black;
+    border: none;
+    /* margin-top: 5vh; */
+    margin: 3vh 3vw;
+    padding: 2vh 5vw;
+}
+
+.buttonWrapper button:hover {
+    box-shadow: 1px 4px 0 rgb(0,0,0,0.5);
+    cursor: pointer;
+}
+
+.buttonWrapper button:active {
+    box-shadow: 1px 4px 0 rgb(0,0,0,0.5);
+    position:relative;
+    top:2px;
 }

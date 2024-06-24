@@ -1,0 +1,49 @@
+/* Home.js -- planStart */
+.planStart {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.planStart .labelDiv{
+    font-family: 'EF_jejudoldam'!important;
+    font-size: 1.5rem;
+    color: white;
+    width: 100vw;
+}
+
+.planStart .planStartBtnWrapper{
+    width: 100%;
+}
+
+.planStartBtnWrapper button {
+    width: 80%;
+    color: white;
+    height: 50%;
+    background-color: black;
+    font-size: 1.2rem;
+}
+
+.planStartBtnWrapper button:hover {
+    box-shadow: 0px 4px 20px 0px rgba(0, 0, 0, 0.5);
+}
+
+.homeBgDiv {
+    background-color: white!important;
+    position:absolute;
+    isolation: isolate;
+
+    min-height: calc(var(--vh, 1vh)*100+12vh);
+    /* height: 100vh; */
+    width: 100vw;
+
+    top:0px;
+    left: 0px;
+    
+    z-index: -1;
+}
+
+.ViewPlanBgDiv div {
+    height: 200px;
+}

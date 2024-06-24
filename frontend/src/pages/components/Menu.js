@@ -1,22 +1,24 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
-import '../css/customComponent.css'
+import '../../css/customComponent.css'
 
 /* 이미지 import */
-import home from '../images/icons/home.png'
-import plan from '../images/icons/passport.png'
-import prod from '../images/icons/discount.png'
-import hotspot from '../images/icons/hot-deal.png'
-import mypage from '../images/icons/user.png'
+import home from '../../images/icons/home.png'
+import plan from '../../images/icons/passport.png'
+import prod from '../../images/icons/discount.png'
+import hotspot from '../../images/icons/hot-deal.png'
+import mypage from '../../images/icons/user.png'
 
 const Menu = () => {
+    const navigate = useNavigate();
     return (
-        <div className='menuBar'>
-            <div className='goToHome'>  
+        <nav className='menuBar'>
+            <div className='goToHome' onClick={() => navigate('/Home') } >  
                 <img className='iconImg' src={home} alt="Home menu"></img><br/>
                 홈
             </div>
-            <div className='goToPlan'>
+            <div className='goToPlan' onClick={() => navigate('/plan') } >
                 <img className='iconImg' src={plan} alt="Home menu"></img><br/>
                 추천여행
             </div>
@@ -32,7 +34,7 @@ const Menu = () => {
                 <img className='iconImg' src={mypage} alt="Home menu"></img><br/>
                 MY
             </div>
-        </div>
+        </nav>
     );
 };
 

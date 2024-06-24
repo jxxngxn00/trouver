@@ -1,14 +1,14 @@
-@font-face {
-    font-family: 'Pretendard-Regular';
-    src: url('https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
-    font-weight: 800;
-    font-style: normal;
-}
+
 
 .menuBar div {
     font-family: 'Pretendard-Regular';
     color: black;
     font-size: 3vw;
+}
+
+
+.menuBar div:hover {
+    cursor: pointer;
 }
 
 .menuBar {
@@ -25,10 +25,6 @@
     justify-content: space-evenly;
     align-items: center;
 }
-
-/* .menuBar div {
-    height: 100%;
-} */
 
 .iconImg {
     max-height: 4vh;
