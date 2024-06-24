@@ -1,13 +1,24 @@
 {
     "cSpell.ignoreWords": [
+        "DATEDIFF",
         "activaiton",
         "appjs",
+        "crossentropy",
+        "dtype",
+        "earlystopping",
+        "elementwise",
+        "fillna",
         "jejudoldam",
+        "lloss",
         "matplotlib",
         "mbti",
+        "mysqlconnector",
         "relu",
+        "rmsprop",
+        "sqlalchemy",
         "tqdm",
-        "trouver"
+        "trouver",
+        "usecols"
     ],
     "cSpell.words": [
         "astype",

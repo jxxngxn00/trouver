@@ -68,8 +68,8 @@ if __name__ == "__main__":
     activation = args.activation
     patience = args.patience
     test_size = args.test_size
-    print(">>>> args.path :: ",args.path)
-    print(">>>> args.dataset :: ",args.dataset)
+    # print(">>>> args.path :: ",args.path)
+    # print(">>>> args.dataset :: ",args.dataset)
     loader = dataloader(args.path + args.dataset)
 
     num_field = loader.get_num_fields()
@@ -78,31 +78,37 @@ if __name__ == "__main__":
                  activation=activation)
 
     if learner.lower() == "adagrad":
-        model.compile(optimizer=keras.optimizers.Adagrad(lr=learning_rate), loss=keras.losses.binary_crossentropy,
+        model.compile(optimizer=keras.optimizers.Adagrad(learning_rate=learning_rate), loss=keras.losses.binary_crossentropy,
                       metrics=[keras.metrics.AUC(), keras.metrics.BinaryAccuracy()])
     elif learner.lower() == "rmsprop":
-        model.compile(optimizer=keras.optimizers.RMSprop(lr=learning_rate), lloss=keras.losses.binary_crossentropy,
+        model.compile(optimizer=keras.optimizers.RMSprop(learning_rate=learning_rate), lloss=keras.losses.binary_crossentropy,
                       metrics=[keras.metrics.AUC(), keras.metrics.BinaryAccuracy()])
     elif learner.lower() == "adam":
-        model.compile(optimizer=keras.optimizers.Adam(lr=learning_rate), loss=keras.losses.binary_crossentropy,
+        model.compile(optimizer=keras.optimizers.Adam(learning_rate=learning_rate), loss=keras.losses.binary_crossentropy,
                       metrics=[keras.metrics.AUC(), keras.metrics.BinaryAccuracy()])
     else:
-        model.compile(optimizer=keras.optimizers.SGD(lr=learning_rate), loss=keras.losses.binary_crossentropy,
+        model.compile(optimizer=keras.optimizers.SGD(learning_rate=learning_rate), loss=keras.losses.binary_crossentropy,
                       metrics=[keras.metrics.AUC(), keras.metrics.BinaryAccuracy()])
 
 
     early_stopping_callback = keras.callbacks.EarlyStopping(patience=patience, restore_best_weights=True)
-    model_out_file = 'deep_FM%s.h5' % (datetime.now().strftime('%Y-%m-%d-%h-%m-%s'))
+    model_out_file = 'deep_FM%s.keras' % (datetime.now().strftime('%Y-%m-%d-%H-%M-%S'))
+    print(model_out_file)
     model_check_cb = keras.callbacks.ModelCheckpoint(model_out_file, save_best_only=True)
     X_train,X_test,y_train,y_test = loader.make_binary_set(test_size= test_size)
 
+    tf.debugging.set_log_device_placement(True)
     if args.out:
+        print(">>> model . fit (args.out)")
         history = model.fit(X_train, y_train, batch_size=batch_size, epochs=epochs,
                             validation_data=(X_test, y_test), callbacks=[early_stopping_callback,
-                                                                                             model_check_cb]
+                                                                                             model_check_cb], verbose=1
                             )
+        pd.DataFrame(history.history).plot()
     else:
+        print(">>> model . fit (else)")
         history = model.fit(X_train, y_train, batch_size=batch_size, epochs=epochs,
-                            validation_data=(X_test, y_test), callbacks=[early_stopping_callback]
+                            validation_data=(X_test, y_test), callbacks=[early_stopping_callback], verbose=1
                             )
-    pd.DataFrame(history.history).plot()
+        
+    print(pd.DataFrame(history.history).plot())

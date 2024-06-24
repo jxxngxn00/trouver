@@ -8,14 +8,16 @@ from sqlalchemy import create_engine
 class dataloader:
     
     def __init__(self,path):
+        #ratings_df
+        COL_NAME = ['user_idx','regioncd_value','pla_r_rate','pla_r_date']
+        ratings_df = pd.read_csv("./dataset/ml-1m/rating.csv",sep=';', header=0, engine='python', names=COL_NAME)
+        ratings_df.drop("pla_r_date", axis=1, inplace=True)
+        # print(ratings_df)
 
-        #rating_df
-        COL_NAME = ['user_id','regioncd_value','pla_r_rate','pla_r_date']
-        ratings_df = pd.read_csv(path+"/rating.csv",sep=';', header=0, engine='python', names=COL_NAME)
-
-        #travel_df
-        COL_NAME = ['contentsid','regioncd_value','title','tag']
+        #travels_df
+        COL_NAME = ['contentsid','contentscd','regioncd_value','title','tag']
         travels_df = pd.read_csv(path+"/travel.csv",sep=';', header=0, engine='python', usecols=COL_NAME)
+        travels_df = travels_df.loc[(travels_df.contentscd=='c1'),COL_NAME]
 
         #users_df
         user='root'
@@ -26,6 +28,7 @@ class dataloader:
         engine = create_engine(f'mysql+mysqlconnector://{user}:{password}@{host}/{database}')
         query = '''
                 SELECT 
+                    row_number () over(order by user_register) as user_idx,
                     BIN_TO_UUID(user_id) as user_id,user_mbti, 
                     user_gender,
                     @age := FLOOR(DATEDIFF(NOW(), user_birth) / 365.25) AS age,
@@ -43,9 +46,9 @@ class dataloader:
         #travels_df -- tags_df
         travels_df["tag"] = travels_df["tag"].fillna("없음")
         tags_df = travels_df.tag.str.get_dummies(sep=",")
-        tags_df.drop(".",axis=1, inplace=True)
         travels_df.drop("tag",axis=1, inplace=True)
         travels_df = pd.concat([travels_df, tags_df], axis=1)
+        # print(tags_df)
 
         #users_df -- genders_df, ages_df
         genders_df = pd.get_dummies(users_df.user_gender, prefix="gender")
@@ -69,7 +72,17 @@ class dataloader:
         #merge dataset
         ratings_df = ratings_df.merge(users_df, how="left")
         ratings_df = ratings_df.merge(travels_df, how="left")
-        # ratings_df = ratings_df.astype("float32")
+        ratings_df.drop("user_id", inplace=True, axis=1)
+        ratings_df.drop("title", inplace=True, axis=1)
+        ratings_df.drop("contentsid", inplace=True, axis=1)
+        ratings_df.drop("contentscd", inplace=True, axis=1)
+        # print(">>>>>>>>>>>>>>>> object_columns")
+        # object_columns = ratings_df.select_dtypes(include=['object']).columns
+        # print(object_columns)
+        # print(">>>>>>>>>>>>>>>> object_columns end")
+
+        ratings_df = ratings_df.astype("float32")
+
         self.target = ratings_df["pla_r_rate"]
         self.binary_target = (self.target >= 4.0).astype("float32")
 
@@ -78,7 +91,7 @@ class dataloader:
 
         #embedding_index for lookup same field
         # continuous_field_name = {"median_household_income": ["median_household_income"]}
-        categorical_field_name = {"userId": ["userId"],
+        categorical_field_name = {"user_idx": ["user_idx"],
                                   "regioncd_value": ["regioncd_value"],
                                   "gender": list(genders_df.columns),
                                   "age": list(ages_df.columns),
@@ -113,5 +126,5 @@ class dataloader:
 
 if __name__ == "__main__":
     loader= dataloader("./dataset/ml-1m")
-    ratings_df = loader.make_train_set()
+    ratings_df = loader.make_binary_set()
     print(ratings_df)

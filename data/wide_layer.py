@@ -3,7 +3,8 @@ from tensorflow import keras
 class wide_part(keras.layers.Layer):
     
     def __init__(self, V, num_fields, embedding_lookup_index, **kwargs):
-        super().__init__(self, **kwargs)
+        # print("Received keyword arguments:", **kwargs)
+        super().__init__(**kwargs)
         self.V = V
         self.num_fields = num_fields
         self.embedding_lookup_index = embedding_lookup_index
