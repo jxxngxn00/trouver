@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from 'react-router-dom';
 import React from 'react';
 
 import DatePickerCustom from "../components/makeplan/DatePickerCustom";
@@ -6,6 +7,7 @@ import TagPicker from "../components/makeplan/TagPicker";
 import SetBudget from "../components/makeplan/SetBudget";
 
 function MakePlan() {
+    const navigate = useNavigate();
     const [state, setState] = useState(0);
     const user_name = '도레미'
 
@@ -32,7 +34,7 @@ function MakePlan() {
             return(
                 <div className='bgDiv makePlanDiv'>
                     <SetBudget/>
-                    <button className="mPlanBtn stage3" onClick={() => {setState(state+1)}}>
+                    <button className="mPlanBtn stage3" onClick={() => {navigate('/viewplandetail')}}>
                         <span className="text">다음</span>
                     </button>
                 </div>

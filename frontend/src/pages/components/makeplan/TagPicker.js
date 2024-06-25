@@ -13,7 +13,7 @@ function TagPicker() {
                     <span className='tagQuest'>누구와 함께 여행을 가나요?</span>
                     <div className='tagCheckBoxWrapper'>
                         <CheckBoxInput type='checkbox' id='company' name='company'/>
-                        <CheckBoxLabel htmlFor='test'>company</CheckBoxLabel>
+                        <CheckBoxLabel htmlFor='company'>company</CheckBoxLabel>
                     </div>
                 </div>
                 <div className='tagPicker'>
@@ -43,9 +43,9 @@ const CheckBoxInput = styled.input`
     white-space:nowrap;
     border: 0;
 
-    &:checked+label{
-    background-color: #45866B;
-    color: white;
+        &:checked+label{
+        background-color: #45866B;
+        color: white;
     }
 `;
 

@@ -11,6 +11,7 @@ import Menu from './pages/components/Menu';
 
 import MakePlan from './pages/plan/MakePlan';
 import ViewPlan from './pages/plan/ViewPlan';
+import ViewPlanDetail from './pages/plan/ViewPlanDetail'
 // import Search from './pages/Search';
 // import Profile from './pages/Profile';
 // import Settings from './pages/Settings';
@@ -65,6 +66,7 @@ function App() {
 
             <Route path="/makeplan" element={<MakePlan/>} />
             <Route path="/viewplan" component={ViewPlan} />
+            <Route path="/viewplandetail" element={<ViewPlanDetail/>}/>
             {/* <Route path="/signup" component={SignupForm} />
             <Route path="/travel-plans" component={TravelPlans} />
             <Route path="/search" component={Search} />
