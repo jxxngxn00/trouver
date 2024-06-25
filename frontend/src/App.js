@@ -1,11 +1,13 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import styled from 'styled-components';
 
 /* import page & components */
 import StartPage from './pages/StartPage'
 
 import Home from './pages/Home';
 import Plan from './pages/components/home/Plan'
+import Menu from './pages/components/Menu';
 
 import MakePlan from './pages/plan/MakePlan';
 import ViewPlan from './pages/plan/ViewPlan';
@@ -55,24 +57,20 @@ function App() {
     // Routes 
     <Router>
       <div className="App">
-        
-          <Routes>
-            <Route path="/" element={<StartPage />} />
+      <Menu/>
+        <Routes>
+            <Route path="/" element={<StartPage/>} />
             <Route path="/home" Component={Home}/>
-              <Route path="/plan" Component={Plan}/>
-              {/* <Route path="/home" Component={Home}/>
-              <Route path="/home" Component={Home}/>
-              <Route path="/home" Component={Home}/> */}
+            <Route path="/plan" Component={Plan}/>
 
-            <Route path="/MakePlan" component={MakePlan} />
-            <Route path="/ViewPlan" component={ViewPlan} />
+            <Route path="/makeplan" element={<MakePlan/>} />
+            <Route path="/viewplan" component={ViewPlan} />
             {/* <Route path="/signup" component={SignupForm} />
-            <Route path="/home" component={Home} />
             <Route path="/travel-plans" component={TravelPlans} />
             <Route path="/search" component={Search} />
             <Route path="/profile" component={Profile} />
             <Route path="/settings" component={Settings} /> */}
-          </Routes>
+        </Routes>
       </div>
     </Router>
   );

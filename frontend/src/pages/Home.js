@@ -5,7 +5,6 @@ import React, { useState } from 'react';
 
 import logo_big from '../images/logo_big.png'
 import '../css/Home.css'
-import Menu from './components/Menu';
 import Plan from './components/home/Plan';
 
 function Home(props) {
@@ -16,15 +15,12 @@ function Home(props) {
         case "Plan" : // Plan 메뉴 버튼 클릭시
             return (
                 <div className='homeBgDiv'>
-                    <Menu menu={menu} setMenu={menu}/>
                     <Plan />
                 </div>
             );
         default : // default : home
             return (
                 <div className='homeBgDiv'>
-                    <Menu menu={menu} setMenu={menu}/>
-                    {/* <img className='logoImg' src={logo} alt="Trouver logo"/> */}
                     <div className='welcomeDiv div-100'>
                         <div className='div-50 textDiv'>
                             <p>어서오세요</p>

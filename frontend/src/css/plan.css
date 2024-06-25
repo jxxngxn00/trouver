@@ -20,10 +20,22 @@
 .planStartBtnWrapper button {
     width: 80%;
     color: white;
-    height: 50%;
-    background-color: black;
-    font-size: 1.2rem;
+    height: 35%;
+    border:none;
 }
+
+.goToMPlanBtn {
+    background-color:#45866B;
+}
+
+.goToVPlanBtn {
+    background-color:white;
+}
+
+.planStartBtnWrapper .goToMPlanBtn span { color: white; 
+    font-size: 1rem;}
+.planStartBtnWrapper .goToVPlanBtn span { color: #45866B;
+    font-size: 1rem;}
 
 .planStartBtnWrapper button:hover {
     box-shadow: 0px 4px 20px 0px rgba(0, 0, 0, 0.5);
@@ -46,4 +58,94 @@
 
 .ViewPlanBgDiv div {
     height: 200px;
+}
+
+/* MakePlan.js -- 시작 */
+
+.makePlanDiv {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.makePlanDiv .labelDiv span{
+    display: block;
+    font-family: 'KCC-Hanbit';
+    color: white;
+    font-size: 1rem;
+    margin-bottom: 5vh;
+}
+
+
+/* 일정 만들기 */
+.mPlanBtn {
+    position: fixed; 
+    width: 80%; 
+    border:none;
+    bottom: 15vh;
+}
+.stage0, .stage1, .stage2, .stage3{
+    background-color: #45866B;
+}
+.stage0 .text, .stage1 .text, .stage2 .text, .stage3 .text{
+    color: white;
+}
+
+/* 일정 설정 */
+.setDateDiv {
+    display:flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+}
+.setDateDiv .labelDiv span { color: #ffffff; font-size:1.5em;}
+.dateDiv {
+    margin-top: 50%;
+    display: flex;
+    flex-direction: column;
+}
+
+.dateDiv label {
+    font-family: 'KCC-Hanbit';
+    color: white;
+    display: inline-block;
+    width: 90%;
+    text-align: left;
+}
+
+.dateDiv input {
+    width: 80%;
+    margin-top: 0.5vh;
+    margin-bottom: 5vh;
+    height: 5vh;
+    padding-left: 3vw;
+    padding-right: 3vw;
+}
+
+/* 태그 설정 */
+.tagDiv{
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+.comPicker, .tagPicker{
+    display: flex;
+    flex-direction: column;
+}
+
+.detail_quest{
+    font-size: 0.75rem!important;
+}
+
+.tagQuest{
+    display: block;
+    color: white;
+}
+
+.tagCheckBoxWrapper{
+    height: auto;
+    min-height: fit-content;
+    overflow: hidden;
+    margin-bottom: 5%;
 }
