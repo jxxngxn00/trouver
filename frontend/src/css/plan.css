@@ -156,15 +156,21 @@
     position: relative;
     display: flex;
     flex-direction: column;
-    gap: 5vh;
+    align-items: center;
+    /* gap: 5vh; */
     width: 100vw;
     padding: 5vh 0vw;
+
+    & .searchContainer {
+        margin: auto 0;
+        width: 100vw;
+    }
 
     & .contents{
         display: flex;
         border-radius: 15px;
         height: 20vh;
-        margin: auto 5vw;
+        margin: 3vh 5vw;
         box-shadow:0px 4px 18px -5px hsla(234, 44%, 26%, 0.411);
         background-color: white;
     }
@@ -179,12 +185,53 @@
     & .descWrapper {
         text-align: left;
         width: 60%;
-        margin: 4.5%;
+        margin: 3.5% 3%;
+        overflow: hidden;
+
+        display: flex;
+        flex-direction: column ;
+        justify-content: space-between;
     }
 
     & .descWrapper .planTitle{
+        width: 40.5vw!important;
+        position: relative;
+        padding-left: 0;
+
         font-family: 'Pretendart-ExtraBold';
         font-size: 1.25rem;
+
+        /* white-space: nowrap; */
+        overflow: hidden;
+        /* text-overflow: ellipsis; */
+
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+    }
+
+    & .descWrapper .detailsWrapper{
+        display: flex;
+        justify-content: space-between;
+
+        position: relative;
+        width:36vw;
+    }
+
+    & .searchContainer {
+        position : relative;
+    }
+
+    & form .input {
+        border-radius: 50px;
+        border: 1px solid #f4f4f4;
+        font-size: 1.35rem;
+        margin-bottom: 3vh;
+        padding: 1.5vh 4.5vw;
+    }
+
+    & .search {
+        display: none;
     }
 }
 
@@ -192,7 +239,7 @@
 
 .viewDetailWrapper {
     width: 100vw;
-    min-height: 230vh;
+    /* min-height: 230vh; */
     padding-top: 2vh;
     background-color: white;
 }

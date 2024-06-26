@@ -31,7 +31,6 @@ function ViewPlanDetail() {
                         id='day1'
                         name='day'
                         value='1'
-                        checked="checked"
                     />
                     <InfoCheckBoxLabel htmlFor='day1'>
                         1일차

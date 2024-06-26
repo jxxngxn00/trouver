@@ -1,27 +1,31 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import '../../css/plan.css'
 import test from '../../images/test.jfif'
 
+import SearchBox from '../components/SearchBox';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBookmark } from '@fortawesome/free-solid-svg-icons'
 function ViewPlan() {
+    const navigate = useNavigate();
+
     return (
         <div className='ViewPlanBgDiv'>
-            <div className='search'>
+
+            <div className='searchContainer'>
                 <form>
-                    <input placeholder='알고 싶은 일정 키워드를 검색하세요.'></input>
-                    <input type='submit'/>
+                    <SearchBox/>
                 </form>
             </div>
-            <div className='contentsWrapper'>
 
-                <div className='contents'>
+            <div className='contentsWrapper'>
+                <div className='contents' onClick={()=>{navigate('/ViewPlanDetail')}}>
                     <div className='imgWrapper'>
                         <img src={test} alt="thumbnail"/>
                     </div>
                     <div className='descWrapper'>
-                        <div className='planTitle'>Lorem ipsum</div>
+                        <div className='planTitle'>Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum</div>
                         <div className='detailsWrapper'>
                             <div className='router'>6 routes</div>
                             <div className='saved'>
@@ -31,6 +35,55 @@ function ViewPlan() {
                         </div>
                     </div>
                 </div>
+
+                <div className='contents' onClick={()=>{navigate('/ViewPlanDetail')}}>
+                    <div className='imgWrapper'>
+                        <img src={test} alt="thumbnail"/>
+                    </div>
+                    <div className='descWrapper'>
+                        <div className='planTitle'>Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum</div>
+                        <div className='detailsWrapper'>
+                            <div className='router'>6 routes</div>
+                            <div className='saved'>
+                                <FontAwesomeIcon className='icon' icon={faBookmark}/>
+                                999+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div className='contents' onClick={()=>{navigate('/ViewPlanDetail')}}>
+                    <div className='imgWrapper'>
+                        <img src={test} alt="thumbnail"/>
+                    </div>
+                    <div className='descWrapper'>
+                        <div className='planTitle'>Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum</div>
+                        <div className='detailsWrapper'>
+                            <div className='router'>6 routes</div>
+                            <div className='saved'>
+                                <FontAwesomeIcon className='icon' icon={faBookmark}/>
+                                999+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div className='contents' onClick={()=>{navigate('/ViewPlanDetail')}}>
+                    <div className='imgWrapper'>
+                        <img src={test} alt="thumbnail"/>
+                    </div>
+                    <div className='descWrapper'>
+                        <div className='planTitle'>Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum</div>
+                        <div className='detailsWrapper'>
+                            <div className='router'>6 routes</div>
+                            <div className='saved'>
+                                <FontAwesomeIcon className='icon' icon={faBookmark}/>
+                                999+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
     );
