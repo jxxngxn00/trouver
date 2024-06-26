@@ -1,6 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import styled from 'styled-components';
+// import styled from 'styled-components';
 
 /* import page & components */
 import StartPage from './pages/StartPage'
@@ -65,7 +65,7 @@ function App() {
             <Route path="/plan" Component={Plan}/>
 
             <Route path="/makeplan" element={<MakePlan/>} />
-            <Route path="/viewplan" component={ViewPlan} />
+            <Route path="/viewplan" element={<ViewPlan/>} />
             <Route path="/viewplandetail" element={<ViewPlanDetail/>}/>
             {/* <Route path="/signup" component={SignupForm} />
             <Route path="/travel-plans" component={TravelPlans} />

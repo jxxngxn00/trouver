@@ -2,9 +2,9 @@ import React from 'react';
 
 function DistantCalc(props) {
     return (
-        <div>
-            DistantCalc
-        </div>
+        <span className='distance'>
+            999km
+        </span>
     );
 }
 

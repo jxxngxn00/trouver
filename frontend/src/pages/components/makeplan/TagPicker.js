@@ -46,7 +46,7 @@ const CheckBoxInput = styled.input`
         &:checked+label{
         background-color: #45866B;
         color: white;
-    }
+        }
 `;
 
 const CheckBoxLabel = styled.label`

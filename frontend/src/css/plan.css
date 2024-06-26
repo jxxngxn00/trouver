@@ -56,9 +56,6 @@
     z-index: -1;
 }
 
-.ViewPlanBgDiv div {
-    height: 200px;
-}
 
 /* MakePlan.js -- 시작 */
 
@@ -67,6 +64,7 @@
     flex-direction: column;
     justify-content: space-around;
     align-items: center;
+    background-image: url('../images/mkPlanBg_img.gif')!important;
 }
 
 .makePlanDiv .labelDiv span{
@@ -151,3 +149,333 @@
 }
 
 /* SetBudget.js -- 예산 설정 */
+
+/* ViewPlan.js -- 일정 목록 보기 */
+
+.ViewPlanBgDiv {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 5vh;
+    width: 100vw;
+    padding: 5vh 0vw;
+
+    & .contents{
+        display: flex;
+        border-radius: 15px;
+        height: 20vh;
+        margin: auto 5vw;
+        box-shadow:0px 4px 18px -5px hsla(234, 44%, 26%, 0.411);
+        background-color: white;
+    }
+    
+    & .imgWrapper img{
+        border-radius: 15px 0px 0px 15px;
+        width: 40vw;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    & .descWrapper {
+        text-align: left;
+        width: 60%;
+        margin: 4.5%;
+    }
+
+    & .descWrapper .planTitle{
+        font-family: 'Pretendart-ExtraBold';
+        font-size: 1.25rem;
+    }
+}
+
+/* ViewPlanDetail.js -- 일정 상세보기 */
+
+.viewDetailWrapper {
+    width: 100vw;
+    min-height: 230vh;
+    padding-top: 2vh;
+    background-color: white;
+}
+
+
+.mapWrapper {
+    width: 100vw;
+}
+
+.mapWrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.planTitle {
+    font-size: 1.5rem;
+    font-family: 'EF_jejudoldam';
+    text-align: left;
+}
+
+.planDate {
+    text-align: left;
+}
+
+.dateRadioBoxWrapper {
+    overflow-x: scroll;
+    display:flex;
+
+    -ms-overflow-style:none;
+    &::-webkit-scrollbar{
+        display: none;
+    }
+}
+
+.planDate, .dateRadioBtn, .routesWrapper {
+    margin-bottom: 2vh;
+}
+
+.planTitle, .planDate, .dateRadioBtn, .routesWrapper, .trouverRecomm, .vPlanDetailBtnWrapper {
+    width: 94vw;
+    padding-left: 3vw;
+    padding-right: 3vw;
+}
+
+.dropDownBtn img{
+    width: 5vw;
+    cursor: pointer;
+    border-radius: 10px;
+    &:active{
+        box-shadow:inset 0px 4px 18px -5px hsla(234, 44%, 26%, 0.411);
+    }
+}
+
+.dropDownBtn li {
+    list-style-type: none;
+    text-align: center;
+    cursor: pointer;
+}
+
+.dropDownWrapper {
+    position: absolute;
+    background-color: white;
+    z-index: 2;
+    right: 5vw;
+    padding: 4% 5%;
+    /* animation: 0.6s ease-in-out leadEffectSlides; */
+    display: flex;
+    flex-direction: column;
+    gap: 2vh;
+    box-shadow: 0px 4px 18px -5px  hsla(234, 44%, 26%, 0.411);
+    
+}
+
+.routesWrapper{
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 2vh;
+}
+
+.wrapper1 {
+    display: flex;
+}
+.wrapper1 span {
+    width: 85%;
+    font-size: 1.5rem;
+    font-family: 'Pretendart-ExtraBold';
+    display: flex;
+    justify-content: left;
+    align-items: center;
+}
+
+.wrapper2 {
+    display: flex;
+    justify-content: space-around;
+}
+
+.wrapper3 {
+    display: flex;
+    flex-direction: column;
+    gap: 2vh;
+    width: 85%;
+}
+
+.routeDiv {
+    border-radius: 10px;
+    box-shadow: 0px 4px 18px -5px  hsla(234, 44%, 26%, 0.411);
+    width: 95%;
+    padding: 0.5% 3.5%;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.spot {
+    position:fixed;
+    left: 6%;
+}
+
+.route {
+    text-align: left;
+    width: 60%;
+    margin: 4.5%;
+}
+
+.route .weather {
+    margin: 2.5%;
+}
+
+.route .placeName {
+    font-family: 'Pretendart-ExtraBold';
+    font-size: 1.25rem;
+}
+
+.detailsWrapper{
+    display: flex;
+    gap: 2vw;
+    justify-content: space-between;
+    align-items: flex-end;
+    & span {font-size: 0.8rem;}
+}
+.weather {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.weather img {
+    width: 10vw;
+}
+
+.imgSlider {
+    /* margin-top: -4%; */
+    overflow-x: auto;
+    -ms-overflow-style:none;
+    &::-webkit-scrollbar{
+        display: none;
+    }
+    padding: 0.5rem 0rem;
+    display: flex;
+    gap: 2vw;
+    flex-shrink: 0;
+}
+
+.imgSlider img {
+    border-radius: 15px;
+    width: 100%;
+    height: 15vh;
+    object-fit: cover;
+}
+
+.trouverRecomm{
+    display: flex;
+    flex-direction: column;
+    gap:1.5vh;
+}
+
+.trouverRecomm .imgSlider {
+    /* width: 100vw; */
+    height: 25vh;
+    padding-bottom: 1rem;
+
+}
+
+.trouverRecommDetail{
+    width: 60vw;
+    border-radius: 15px;
+    height: 25vh;
+    object-fit: cover;
+    box-shadow: 0px 4px 18px -5px  hsla(234, 44%, 26%, 0.411);
+    flex-shrink: 0;
+}
+
+.placeName {
+    font-family: 'Pretendart-ExtraBold';
+    font-size: 1.1rem;
+}
+.imgSlider .trouverRecommDetail img {
+    border-radius: 15px 15px 0px 0px!important;
+    width: 100%;
+    height: 18vh;
+    object-fit: cover;
+}
+
+.trouverRecommDetail span {
+    margin: 0 6%;
+    display: flex;
+}
+
+/* .trouverRecommDetail .detailsWrapper {
+    height: 20%;
+} */
+
+.moveInfoWrapper {
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-end;
+    gap:4vw;
+}
+
+.moveInfoWrapper .moveInfo img{
+    height: 3vh;
+    margin-right: 1vw;
+}
+.moveInfoWrapper .distance{
+    background-color: #7d7d7d;
+    border-radius: 5px;
+    padding: 0.2rem 0.5rem;
+    color: white;
+}
+
+.distance{
+    font-family: 'Pretendart-ExtraBold';
+    color:#45866B
+}
+
+.vPlanDetailBtnWrapper {
+    display: flex;
+    margin-top: 2vh;
+}
+.vPlanDetailBtn{
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+
+    & .icon{
+        width: 30vw;
+        margin-bottom: 2vh;
+    }
+}
+
+/* keyframes */
+@keyframes loadEffectSlides {
+    0%{
+        opacity: 0;
+        transform: translateX(-30px);
+    }
+    50%{
+        opacity: 0.5;
+        transform: translateX(30px);
+    }
+    100%{
+        opacity: 1;
+        transform: translateX(0px);
+    }
+  
+}
+
+@keyframes unloadEffect {
+    0%{
+        transform: translateX(0px);
+        opacity: 1;
+    }
+    100%{
+        transform: translateX(-30px);
+        opacity: 0;
+    }   
+}
+
+/* font-family */
+@font-face {
+    font-family: 'Pretendart-ExtraBold';
+    src: url('https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-ExtraBold.woff') format('woff');
+    font-weight: 800;
+    font-style: normal;
+}

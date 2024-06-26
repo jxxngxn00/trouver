@@ -5,9 +5,9 @@ function SetBudget() {
         dual slider tutorial
         참고 velog : https://velog.io/@forest_xox/%EB%A6%AC%EC%95%A1%ED%8A%B8-%EC%96%91%EB%B0%A9%ED%96%A5-Range-%EB%A7%8C%EB%93%A4%EA%B8%B0
     */
-    const fixedMaxPrice = 10000;
+    const fixedMaxPrice = 1;
     const fixedMinPrice = 5000000;
-    const priceGap = 1000;
+    const priceGap = 5000;
 
 
     const [rangeMinValue, setRangeMinValue] = useState(fixedMinPrice); 
@@ -41,8 +41,6 @@ function SetBudget() {
                 <FilterPriceSlideInner
                     rangeMinPercent = {rangeMinPercent}
                     rangeMaxPercent = {rangeMaxPercent}
-                    // rangeMinPercent = {0}
-                    // rangeMaxPercent = {100}
                 />
             </FilterPriceSlide>
 
