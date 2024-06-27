@@ -9,7 +9,7 @@ import Plan from './components/home/Plan';
 
 function Home(props) {
     const userName = '테스트유저';
-    const [menu, setMenu] = useState("Home");
+    const [menu] = useState("Home");
     
     switch(menu){
         case "Plan" : // Plan 메뉴 버튼 클릭시

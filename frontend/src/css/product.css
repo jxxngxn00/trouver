@@ -1,5 +1,7 @@
+/* Product.js */
 .bgProd {
-    height : calc(var(--vh, 1vh)*102);
+    min-height : calc(var(--vh, 1vh)*100);
+    height: max-content;
     & .title {
         font-family: 'Pretendart-ExtraBold';
         font-size: 1.25rem;
@@ -106,3 +108,51 @@
         }
     }
 }
+/* Product.js -- end */
+/* ViewProductDetail.js */
+.bgProd .prodImgSlider {
+    position: relative;
+    width: 100vw;
+    height: 30vh;
+    overflow-x: auto;
+    -ms-overflow-style:none;
+    &::-webkit-scrollbar{
+        display: none;
+    }
+    padding: 0.5rem 0rem;
+    display: flex;
+    gap: 2vw;
+    flex-shrink: 0;
+}
+
+.prodImgSlider img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+
+}
+
+.prodImgSlider .carouselImg {
+    position: absolute;
+    object-fit: contain;
+    width: 100vw;
+    height: auto;
+}
+
+.imgCarousel {
+    position:absolute;
+    top:0;
+    width: 100vw;
+
+    & .slide {
+        position: relative;
+        width: 100vw;
+    }
+
+    & .slider-wrapper {
+        height: 30vh!important;
+    }
+}
+
+/* ViewProductDetail.js */
