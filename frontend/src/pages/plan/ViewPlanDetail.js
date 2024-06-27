@@ -17,7 +17,7 @@ function ViewPlanDetail() {
     const [view, setView] = useState(false);
 
     return (
-        <div className='viewDetailWrapper'>
+        <div className='homeBgDiv viewDetailWrapper'>
             <div className='planTitle'>
                 혼자 떠나는 제주여행
             </div>
@@ -201,6 +201,7 @@ function ViewPlanDetail() {
                     </div>
                 </div>
             </div>
+            
             <div className='vPlanDetailBtnWrapper'>
                 <div className='vPlanDetailBtn'>
                     <FontAwesomeIcon className='icon' size='2xl' icon={faBookmark} style={{color: "#c9c9c9"}} />

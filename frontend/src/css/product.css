@@ -1,0 +1,108 @@
+.bgProd {
+    height : calc(var(--vh, 1vh)*102);
+    & .title {
+        font-family: 'Pretendart-ExtraBold';
+        font-size: 1.25rem;
+        padding-left: 5vw;
+        margin-bottom: 1.75vh;
+        white-space: nowrap;
+
+        & .titleIcon {
+            margin-right: 3%;
+        }
+    }
+
+    & .recommProduct {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        margin: 3vh auto;
+
+        & .imgSlider {
+            padding: 0vw 5vw 4vw;
+            width: 90vw;
+        }
+
+        & .moreBtn {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            background-color: #CAE8DB;
+            background: rgb(69,134,107);
+            background: linear-gradient(47deg, rgba(69,134,107,1) 7%, rgba(129,193,167,1) 35%, rgba(202,232,219,1) 85%, rgba(255,227,110,1) 100%);
+
+            & .moreIcon {
+                height: 50%;
+            }
+        }
+    }
+}
+
+.cateMenu {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin: 3vh auto;
+
+    & .btnWrapper {
+        width: 100vw;
+        display: grid;
+        grid-template-columns: repeat(4, 20%);
+        justify-content: center;
+        justify-items: center;
+        align-items: end;
+        row-gap: 1.5vh;
+        column-gap: 3vw;
+    }
+
+    & .btnSpan {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin: 0 3vw;
+
+        & span {
+            font-family: 'Pretendart-ExtraBold';
+            margin-top: 0.9vh;
+            font-size: 0.7rem;
+        }
+    }
+
+    & .clicked {
+        & .btnDiv {
+            box-shadow:0px 4px 18px -5px hsla(234, 44%, 26%, 0.411);
+            background-color: white;
+            & .icon { color : #81C1A7}
+        };
+
+        & span {
+            font-family: 'Pretendart-ExtraBold';
+            color: #45866B;
+            margin-top: 0.9vh;
+        }
+    }
+
+    & .btnDiv {
+        width: 7vw;
+        height: 7vw;
+
+        background-color: #ffffff;
+        border-radius: 100%;
+        padding: 5vw;
+
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        & .icon { 
+            color : #45866B ;
+        }
+
+        &:active{
+            box-shadow:inset 0px 4px 18px -5px hsla(234, 44%, 26%, 0.411);
+
+            .btnDiv .icon { color : #81C1A7}
+        }
+    }
+}

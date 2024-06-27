@@ -42,12 +42,16 @@
 }
 
 .homeBgDiv {
-    background-color: white!important;
+    background: rgb(255,255,255);
+    background: linear-gradient(180deg, rgba(249,255,252,1) 3%, rgba(255,255,255,1) 85%, rgba(202,232,219,1) 98%);
     position:absolute;
     isolation: isolate;
 
-    min-height: calc(var(--vh, 1vh)*100+12vh);
-    /* height: 100vh; */
+    min-height: calc(var(--vh, 1vh)*100);
+
+    /* height: calc(var(--vh, 1vh)*112); */
+    height: max-content;
+    padding-bottom: 12vh;
     width: 100vw;
 
     top:0px;
@@ -141,11 +145,16 @@
     color: white;
 }
 
-.tagCheckBoxWrapper{
+.tagCheckBox{
     height: auto;
-    min-height: fit-content;
-    overflow: hidden;
-    margin-bottom: 5%;
+    margin: 3% 0%;
+}
+
+.tagCheckBoxWrapper {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1.2vw;
 }
 
 /* SetBudget.js -- 예산 설정 */
@@ -159,11 +168,11 @@
     align-items: center;
     /* gap: 5vh; */
     width: 100vw;
-    padding: 5vh 0vw;
 
     & .searchContainer {
         margin: auto 0;
         width: 100vw;
+        position : relative;
     }
 
     & .contents{
@@ -216,22 +225,6 @@
 
         position: relative;
         width:36vw;
-    }
-
-    & .searchContainer {
-        position : relative;
-    }
-
-    & form .input {
-        border-radius: 50px;
-        border: 1px solid #f4f4f4;
-        font-size: 1.35rem;
-        margin-bottom: 3vh;
-        padding: 1.5vh 4.5vw;
-    }
-
-    & .search {
-        display: none;
     }
 }
 
@@ -429,6 +422,7 @@
     border-radius: 15px;
     height: 25vh;
     object-fit: cover;
+    background-color: white;
     box-shadow: 0px 4px 18px -5px  hsla(234, 44%, 26%, 0.411);
     flex-shrink: 0;
 }

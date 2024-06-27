@@ -2,6 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import '../../css/plan.css'
+import '../../css/customComponent.css'
 import test from '../../images/test.jfif'
 
 import SearchBox from '../components/SearchBox';
@@ -11,7 +12,7 @@ function ViewPlan() {
     const navigate = useNavigate();
 
     return (
-        <div className='ViewPlanBgDiv'>
+        <div className='homeBgDiv ViewPlanBgDiv'>
 
             <div className='searchContainer'>
                 <form>

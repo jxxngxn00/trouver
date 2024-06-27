@@ -3,7 +3,7 @@ import React, {useState} from 'react';
 function SearchBox() {
     const [inputText, setInputText] = useState("");
     const activeButton = () => {
-        alert(inputText);
+        alert(inputText); // 테스트
     };
 
     const activeEnter = (e) => {

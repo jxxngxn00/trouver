@@ -22,7 +22,7 @@
 }
 
 .homeBgDiv {
-    background-color: white!important;
+    /* background-color: white!important; */
     position:absolute;
     isolation: isolate;
 
@@ -44,7 +44,7 @@
 
 .div-100 {
     /* display: block; */
-    background-color: #ecfff7;
+    background-color: #ffffff;
     width: 90%;
     min-height: 100px;
     margin: 5% auto;
@@ -58,7 +58,7 @@
 
 .div-50 {
     margin: 1% 1.5%;
-    background-color: #CAE8DB;
+    background: rgb(169, 199, 179);
     width: 50%;
     height: 100px;  
 }
@@ -117,9 +117,6 @@
 }
 
 /* 추천여행 */
-.planDiv {
-    height: calc(var(--vh, 1vh)*100+12vh);;
-}
 
 .desc {
     margin-top: 35vh;

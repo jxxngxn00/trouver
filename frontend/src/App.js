@@ -12,13 +12,12 @@ import Menu from './pages/components/Menu';
 import MakePlan from './pages/plan/MakePlan';
 import ViewPlan from './pages/plan/ViewPlan';
 import ViewPlanDetail from './pages/plan/ViewPlanDetail'
+
+import Product from './pages/Product';
+import ViewProductDetail from './pages/product/ViewProductDetail';
 // import Search from './pages/Search';
 // import Profile from './pages/Profile';
 // import Settings from './pages/Settings';
-
-/* component files */
-// import LoginForm from './components/LoginForm';
-// import SignupForm from './components/SignupForm';
 
 /* CSS files + images */
 import './App.css';
@@ -67,9 +66,10 @@ function App() {
             <Route path="/makeplan" element={<MakePlan/>} />
             <Route path="/viewplan" element={<ViewPlan/>} />
             <Route path="/viewplandetail" element={<ViewPlanDetail/>}/>
+
+            <Route path='/product' Component={Product}/>
+            <Route path='/viewprodDetail' element={<ViewProductDetail/>}/>
             {/* <Route path="/signup" component={SignupForm} />
-            <Route path="/travel-plans" component={TravelPlans} />
-            <Route path="/search" component={Search} />
             <Route path="/profile" component={Profile} />
             <Route path="/settings" component={Settings} /> */}
         </Routes>

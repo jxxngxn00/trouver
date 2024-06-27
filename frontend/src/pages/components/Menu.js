@@ -22,9 +22,9 @@ const Menu = () => {
                 <img className='iconImg' src={plan} alt="Home menu"></img><br/>
                 추천여행
             </div>
-            <div className='goToProduct'>
+            <div className='goToProduct' onClick={() => navigate('/product')}>
                 <img className='iconImg' src={prod} alt="Home menu"></img><br/>
-                추천상품
+                코스여행
             </div>
             <div className='goToHotSpot'>
                 <img className='iconImg' src={hotspot} alt="Home menu"></img><br/>
