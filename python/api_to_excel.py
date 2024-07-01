@@ -5,7 +5,6 @@ import pandas as pd
 records = []
 
 # API URL 및 헤더
-# https://api.visitjeju.net/vsjApi/contents/searchList?apiKey=5be5478c4f4447d48ee3a43ad9816086&locale=kr
 api_url = "https://api.visitjeju.net/vsjApi/contents/searchList"
 headers = {
     "Content-Type": "application/json"
@@ -15,7 +14,7 @@ headers = {
 for i in range(1,55):
 
     params = {
-        "apiKey": "5be5478c4f4447d48ee3a43ad9816086",  # API 키
+        "apiKey": "",  # API 키
         "locale": "kr",
         "page": i
         # 추가 필요한 파라미터들을 여기에 추가하세요.
