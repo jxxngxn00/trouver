@@ -25,7 +25,7 @@ function SearchBox() {
                 name="input"
                 className='input'
                 id='search-input'
-                placeholder='보고싶은 일정을 입력하세요'
+                placeholder='검색어를 입력하세요'
                 value={inputText || ''}
                 onChange={(e) => handleChange(e)}
                 onKeyDown={(e) => activeEnter(e)}

@@ -2,14 +2,14 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faLayerGroup, faStar, faAnglesRight } from '@fortawesome/free-solid-svg-icons'
+import { faPaperPlane, faStar, faAnglesRight } from '@fortawesome/free-solid-svg-icons'
 
 import test from '../../../images/test.jfif'
 function RecommProduct({cate}) {
     const navigate = useNavigate();
     return (
         <div className='recommProduct'>
-                <div className='title'><FontAwesomeIcon  className='titleIcon' icon={faLayerGroup} />트루버 추천 {cate}</div>
+                <div className='title'><FontAwesomeIcon  className='titleIcon' icon={faPaperPlane} />트루버 추천 {cate}</div>
 
                 <div className='imgSlider'>
                     <div className='trouverRecommDetail' onClick={() => navigate('/viewproddetail')}>

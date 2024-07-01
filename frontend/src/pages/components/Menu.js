@@ -26,11 +26,11 @@ const Menu = () => {
                 <img className='iconImg' src={prod} alt="Home menu"></img><br/>
                 코스여행
             </div>
-            <div className='goToHotSpot'>
+            <div className='goToHotSpot' onClick={() => navigate('/hotspot')}>
                 <img className='iconImg' src={hotspot} alt="Home menu"></img><br/>
                 핫스팟
             </div>
-            <div className='goToMyPage'>
+            <div className='goToMyPage' onClick={() => navigate('/settings')}>
                 <img className='iconImg' src={mypage} alt="Home menu"></img><br/>
                 MY
             </div>

@@ -34,7 +34,7 @@ try:
     with connection.cursor() as cursor:
         for index, row in df.iterrows():
             print('insert :::',index+1,row['title'])
-            if row['label'] == "테마여행":
+            if row['label'] != "테마여행":
                 continue
 
             

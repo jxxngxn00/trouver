@@ -15,9 +15,10 @@ import ViewPlanDetail from './pages/plan/ViewPlanDetail'
 
 import Product from './pages/Product';
 import ViewProductDetail from './pages/product/ViewProductDetail';
-// import Search from './pages/Search';
-// import Profile from './pages/Profile';
-// import Settings from './pages/Settings';
+
+import HotSpot from './pages/HotSpot';
+
+import Settings from './pages/Settings';
 
 /* CSS files + images */
 import './App.css';
@@ -69,9 +70,11 @@ function App() {
 
             <Route path='/product' Component={Product}/>
             <Route path='/viewprodDetail' element={<ViewProductDetail/>}/>
+            
+            <Route path='/hotspot' Component={HotSpot}/>
             {/* <Route path="/signup" component={SignupForm} />
-            <Route path="/profile" component={Profile} />
-            <Route path="/settings" component={Settings} /> */}
+            <Route path="/profile" component={Profile} />*/}
+            <Route path="/settings" Component={Settings} />
         </Routes>
       </div>
     </Router>
