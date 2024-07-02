@@ -31,9 +31,10 @@ function MakePlan() {
                 </div>
             );
         case 3:
+            // console.log(SetBudget);
             return(
                 <div className='bgDiv makePlanDiv'>
-                    <SetBudget/>
+                    <SetBudget />
                     <button className="mPlanBtn stage3" onClick={() => {navigate('/viewplandetail')}}>
                         <span className="text">다음</span>
                     </button>
