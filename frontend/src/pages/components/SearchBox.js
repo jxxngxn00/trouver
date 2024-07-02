@@ -1,4 +1,5 @@
 import React, {useState} from 'react';
+import styled from 'styled-components';
 
 function SearchBox() {
     const [inputText, setInputText] = useState("");
@@ -20,7 +21,8 @@ function SearchBox() {
 
     return (
         <>
-            < input
+            <SearchInput
+
                 type="search"
                 name="input"
                 className='input'
@@ -34,5 +36,9 @@ function SearchBox() {
         </>
     );
 }
+
+const SearchInput = styled.input`
+    z-index: 100000;
+`;
 
 export default SearchBox;
