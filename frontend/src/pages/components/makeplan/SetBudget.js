@@ -1,5 +1,5 @@
 import React from 'react';
-import Slider from 'rc-slider';
+// import Slider from 'rc-slider';
 import 'rc-slider/assets/index.css';
 
 function SetBudget() {
@@ -9,9 +9,9 @@ function SetBudget() {
     */
     // const { Range } = Slider;
     // console.log(Range);
-    function log(value) {
-        console.log(value); //eslint-disable-line
-    }
+    // function log(value) {
+    //     console.log(value); //eslint-disable-line
+    // }
 
     return (
         <div>
@@ -19,7 +19,7 @@ function SetBudget() {
                 <span className='quest'>예산은 얼마로 생각하세요?</span>
             </div>
 
-            <Slider range allowCross={false} defaultValue={[0, 20]} onChange={log} />
+            {/* <Slider range allowCross={false} defaultValue={[0, 20]} onChange={log} /> */}
         </div>
     );
 }

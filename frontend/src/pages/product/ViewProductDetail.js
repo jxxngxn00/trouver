@@ -8,8 +8,8 @@ import test from '../../images/test.jfif'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faLocationDot } from '@fortawesome/free-solid-svg-icons'
 
-import { BorderBottomOutlined } from '@ant-design/icons';
-import { Button, notification } from 'antd';
+// import { BorderBottomOutlined } from '@ant-design/icons';
+// import { Button, notification } from 'antd';
 
 function ViewProductDetail(props) {
     /* 이미지 슬라이드 */
@@ -83,16 +83,16 @@ function ViewProductDetail(props) {
     };
     
     /* bottom popup notification */
-    const [api, contextHolder] = notification.useNotification();
+    // const [api, contextHolder] = notification.useNotification();
 
-    const openNotification = (placement) => {
-        api.info({
-        message: `Notification ${placement}`,
-        description:
-            'This is the content of the notification. This is the content of the notification. This is the content of the notification.',
-        placement,
-        });
-    };
+    // const openNotification = (placement) => {
+    //     api.info({
+    //     message: `Notification ${placement}`,
+    //     description:
+    //         'This is the content of the notification. This is the content of the notification. This is the content of the notification.',
+    //     placement,
+    //     });
+    // };
     return (
         <div className='bgProd homeBgDiv'>
             {/* 뒤로가기 버튼, 검색 버튼, 지도 버튼 */}
@@ -118,12 +118,12 @@ function ViewProductDetail(props) {
                 <span className='title'>제주 신화테마파크</span>
                 <span className='addr'><FontAwesomeIcon icon={faLocationDot} />제주 제주시 노연로 80</span>
                 <span className='price'>178,000원 ~</span>
-                {contextHolder}
+                {/* {contextHolder}
                 <Button
                     type="primary"
                     onClick={() => openNotification('bottom')}
                     icon={<BorderBottomOutlined />}
-                    >bottom</Button>
+                    >bottom</Button> */}
                 <div className='line'></div>
             </TitleDiv>
             {/* 탭팬 : 업체정보, 상품정보, 상세설명, 리뷰 */}

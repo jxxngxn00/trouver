@@ -12,6 +12,7 @@ import Menu from './pages/components/Menu';
 import MakePlan from './pages/plan/MakePlan';
 import ViewPlan from './pages/plan/ViewPlan';
 import ViewPlanDetail from './pages/plan/ViewPlanDetail'
+import PlanUpdate from './pages/plan/PlanUpdate';
 
 import Product from './pages/Product';
 import ViewProductDetail from './pages/product/ViewProductDetail';
@@ -24,8 +25,11 @@ import Settings from './pages/Settings';
 import './App.css';
 // import logo from './images/trouver_logo.png'
 
+import Test from './pages/Test';
+
 /* Hook */
 import { useEffect } from "react";
+import { Button } from 'antd';
 // import { useNavigate } from 'react-router-dom'
 // import axios from "axios";
 
@@ -59,6 +63,7 @@ function App() {
     <Router>
       <div className="App">
       <Menu/>
+      <Button/>
         <Routes>
             <Route path="/" element={<StartPage/>} />
             <Route path="/home" Component={Home}/>
@@ -67,6 +72,7 @@ function App() {
             <Route path="/makeplan" element={<MakePlan/>} />
             <Route path="/viewplan" element={<ViewPlan/>} />
             <Route path="/viewplandetail" element={<ViewPlanDetail/>}/>
+            <Route path='/planupdate' element={<PlanUpdate/>}/>
 
             <Route path='/product' Component={Product}/>
             <Route path='/viewprodDetail' element={<ViewProductDetail/>}/>
@@ -75,6 +81,8 @@ function App() {
             {/* <Route path="/signup" component={SignupForm} />
             <Route path="/profile" component={Profile} />*/}
             <Route path="/settings" Component={Settings} />
+
+            <Route path='/test' element={<Test/>}/>
         </Routes>
       </div>
     </Router>

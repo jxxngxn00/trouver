@@ -57,7 +57,7 @@ const Profile = styled.div`
     justify-content: center;
     align-items: center;
 
-    padding: 3vh 0vw;
+    padding: 7vh 0vw 3vh;
     gap: 4vw;
     & .userImg{ width : 15%; }
     & .textInfo {

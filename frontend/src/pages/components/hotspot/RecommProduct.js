@@ -1,11 +1,11 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faStar, faAnglesRight, faFaceGrinHearts} from '@fortawesome/free-solid-svg-icons'
 
 import test from '../../../images/test.jfif'
-import styled from 'styled-components';
+// import styled from 'styled-components';
 import CateMenu from './CateMenu';
 
 function RecommProduct() {

@@ -256,6 +256,10 @@
 
 .planDate {
     text-align: left;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    margin-top: 1.5vh;
 }
 
 .dateRadioBoxWrapper {

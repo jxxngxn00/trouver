@@ -13,6 +13,8 @@ import car from '../../images/icons/car.png'
 import bus from '../../images/icons/bus.png'
 import sun from '../../images/icons/sun.gif'
 
+
+
 function ViewPlanDetail() {
     const [view, setView] = useState(false);
 
