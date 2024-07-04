@@ -2,3 +2,5 @@ data/~$visitjeju_data.xlsx
 frontend/src/images/start_bg.mp4
 python/api_to_excel.py
 node_modules
+frontend/node_modules
+node_modules/*
