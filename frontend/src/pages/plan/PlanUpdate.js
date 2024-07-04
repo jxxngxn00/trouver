@@ -1,14 +1,14 @@
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import styled from 'styled-components';
+import TouchDnd from '../components/TouchDnd';
+import DndList from '../components/TouchDnd copy';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faStar, faGripLines, faFloppyDisk, faMapPin, faTrash, faCalendar } from '@fortawesome/free-solid-svg-icons'
+import { faFloppyDisk, faMapPin, faTrash, faCalendar } from '@fortawesome/free-solid-svg-icons'
 
 import mapPicture from '../../images/map.png'
 
-
-
 function PlanUpdate() {
-    // const [view, setView] = useState(false);
+
     const placeArray = [{
         id: 0,
         placeName: '제주 국제공항',
@@ -21,6 +21,14 @@ function PlanUpdate() {
         placeRate: 4.2,
     }];
 
+    const [list, setList] = useState(placeArray);
+    const [list2, setList2] = useState([]);
+    
+    useEffect(()=> {
+        const arr = new Array(15).fill().map((x,i) => i);
+        setList2(arr);
+        setList(placeArray);
+    }, []);
     return (
         <div className='homeBgDiv viewDetailWrapper'>
             <div className='planTitle'>
@@ -31,6 +39,7 @@ function PlanUpdate() {
                 <DateBtn className='ç'><FontAwesomeIcon icon={faCalendar}/></DateBtn>
             </div>
 
+            {/* N일차 라디오 버튼 */}
             <div className='dateRadioBtn'>
                 <div className='dateRadioBoxWrapper'>
                     <InfoRadioBoxInput
@@ -104,40 +113,39 @@ function PlanUpdate() {
                     </InfoCheckBoxLabel>
                 </div>
             </div>
+
             <div className='mapWrapper'>
                 <img src={mapPicture} alt='지도 예시'/>
             </div>
+
+
             <div className='routesWrapper'>
                 <div className='wrapper1'>
                     <span className='date'>9월 7일 목요일</span>
                 </div>
-            
+
+                {/* 여행 장소 경유지 설정 */}
                 <div className='wrapper2'>
                     <div className='line'/>
                     <div className='wrapper3'>
-
-                        {placeArray.map(item => (
-                            <RouteDiv key={item.id}>
-                                {/* <FontAwesomeIcon className="spot" icon={faCircle} style={{color: "#7d7d7d",}} /> */}
-                                <div className='route'>
-                                    <span className='placeName'>{item.placeName}</span>
-                                    <div className='detailsWrapper'>
-                                        <span className='placeCate'>{item.placeCate}</span>
-                                        { item.placeRate ? (
-                                            <span className='placeRate'>
-                                            <FontAwesomeIcon icon={faStar} style={{color: "#FFD43B",}}/>
-                                            {item.placeRate}</span>
-                                        ) : null}
-                                    </div>
-                                </div>
-                                <FontAwesomeIcon className='gripLines' icon={faGripLines}/>
-                            </RouteDiv>
-                        ))}
-
+                        <TouchDnd List={list} setList={setList} />
                     </div>
                 </div>
 
                 
+            </div>
+
+            <div className="testtesttesttest">
+                <div
+                    style={{
+                    width: "100%",
+                    margin: "50px 0",
+                    padding: "0 1rem",
+                    boxSizing: "border-box"
+                    }}
+                >
+                    <DndList List={list2} setList={setList2} />
+                </div>
             </div>
 
             
@@ -193,24 +201,6 @@ const InfoCheckBoxLabel = styled.label`
     justify-content: center;
     align-items: center;
     margin-left:2vw;
-`;
-
-const RouteDiv = styled.div`
-    border-radius: 10px;
-    box-shadow: 0px 4px 18px -5px  hsla(234, 44%, 26%, 0.411);
-    width: 95%;
-    padding: 0.5% 3.5%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-        & .detailsWrapper {
-            gap: 0vw!important;
-            justify-content: flex-start;
-        }
-
-        & .gripLines {
-            margin-right: 4.5%;
-        }
 `;
 
 const VPlanDetailBtnWrapper = styled.div`

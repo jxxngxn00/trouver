@@ -25,11 +25,9 @@ import Settings from './pages/Settings';
 import './App.css';
 // import logo from './images/trouver_logo.png'
 
-import Test from './pages/Test';
 
 /* Hook */
 import { useEffect } from "react";
-import { Button } from 'antd';
 // import { useNavigate } from 'react-router-dom'
 // import axios from "axios";
 
@@ -39,6 +37,7 @@ function App() {
   /* BE 연결 테스트 코드 : console에 server에서 전송한 데이터 받아옴 */
   // const getApi = async () => {
   //   axios.get("/api").then((res)=> console.log(res.data));
+  //   axios.get("/recommand").then((res)=> console.log(res.data));
   // };
 
   // useEffect(() => {
@@ -63,7 +62,6 @@ function App() {
     <Router>
       <div className="App">
       <Menu/>
-      <Button/>
         <Routes>
             <Route path="/" element={<StartPage/>} />
             <Route path="/home" Component={Home}/>
@@ -82,7 +80,6 @@ function App() {
             <Route path="/profile" component={Profile} />*/}
             <Route path="/settings" Component={Settings} />
 
-            <Route path='/test' element={<Test/>}/>
         </Routes>
       </div>
     </Router>

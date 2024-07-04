@@ -4,3 +4,4 @@ python/api_to_excel.py
 node_modules
 frontend/node_modules
 node_modules/*
+*.zip
