@@ -93,7 +93,6 @@ export const Review = () => {
 
 export const MyReview = () => {
     const [visible, setVisible] = useState(false);
-    const go = useNavigate();
     return (
         <ReviewWrapper>
                 <div className='reviewWrapper'>

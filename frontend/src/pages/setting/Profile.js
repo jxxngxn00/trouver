@@ -1,9 +1,9 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import Menu from '../components/Menu';
 import TopBtnBar from '../components/TopBtnBar';
 
 import styled from 'styled-components';
-import { Divider, SideBar, Swiper, Tabs } from 'antd-mobile';
+import { Divider, Swiper, Tabs } from 'antd-mobile';
 
 import profile from '../../images/default_profile.png';
 
@@ -54,7 +54,7 @@ const Profile = () => {
                 <ContentDiv className='contentDiv'>
                     <Tabs className='tabs' activeKey={tabs[activeIndex].key} onChange={key => {
                         var _a;
-                        const index = tabs.findIndex(item => item.key == key);
+                        const index = tabs.findIndex(item => item.key === key);
                         setActiveIndex(index);
                         (_a = swiperRef.current) === null || _a === void 0 ? void 0 : _a.swipeTo(index);
                     }}>

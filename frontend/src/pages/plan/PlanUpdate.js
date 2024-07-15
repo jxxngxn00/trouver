@@ -1,7 +1,12 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+/* components */
+import TouchDnd from '../components/updateplan/TouchDnd';
+import CalendarPicker from '../components/updateplan/CalendarPicker';
+import TopBtnBar from '../components/TopBtnBar';
+
+/* library */
 import styled from 'styled-components';
-import TouchDnd from '../components/TouchDnd';
-import DndList from '../components/TouchDnd copy';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faFloppyDisk, faMapPin, faTrash, faCalendar } from '@fortawesome/free-solid-svg-icons'
 import { Modal, Popup } from 'antd-mobile';
@@ -163,9 +168,6 @@ function PlanUpdate() {
 
 
             <div className='routesWrapper'>
-                <div className='wrapper1'>
-                    <span className='date'>9월 7일 목요일</span>
-                </div>
 
                 {/* 여행 장소 경유지 설정 */}
                 <div className='wrapper2'>
@@ -175,19 +177,6 @@ function PlanUpdate() {
                 </div>
 
                 
-            </div>
-
-            <div className="testtesttesttest">
-                <div
-                    style={{
-                    width: "100%",
-                    margin: "50px 0",
-                    padding: "0 1rem",
-                    boxSizing: "border-box"
-                    }}
-                >
-                    <DndList List={list2} setList={setList2} />
-                </div>
             </div>
 
             

@@ -121,6 +121,7 @@ export default function TouchDnd({ List, setList }) {
   // tochmove drag handler (element move)
   const dragHandler = useCallback(
     (e) => {
+      // eslint-disable-next-line
       drag(e);
     },
     [scrollOff, dragMode, List]

@@ -1,5 +1,6 @@
 import express from "express";
 import db from "./database/db.js"
+import axios from "axios";
 const router = express.Router();
 
 router.get("/", (req, res) => {

@@ -1,5 +1,4 @@
 import React from 'react';
-import styled from 'styled-components';
 import { CheckBoxInput, CheckBoxLabel } from '../../../css/Tag';
 
 function TagPicker() {

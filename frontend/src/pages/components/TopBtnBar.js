@@ -1,7 +1,6 @@
 import { DoubleLeftOutlined, SearchOutlined, CalendarOutlined } from '@ant-design/icons';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import styled from 'styled-components';
 import { TopBarDiv } from '../../css/topBtnBarCss';
 
 const TopBtnBar = () => {
@@ -10,7 +9,7 @@ const TopBtnBar = () => {
         go(-1);
     };
 
-    let currentUrl = window.location.pathname;
+    // let currentUrl = window.location.pathname;
     const [scrollPosition, setScrollPosition] = useState(0);
     // Scroll 위치를 감지
     const updateScroll = () => {

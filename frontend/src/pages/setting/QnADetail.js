@@ -77,6 +77,7 @@ const QnADetail = () => {
             <TopBtnBar/>
             <TopBtnWrapper className='topBtnWrapper'>
                 <span className='date'>{data?.date}</span>
+                {/* // eslint-disable-next-line */}
                 <span className={getItemClass(data?.state)+' '+'state'}>{stateStr[data?.state]}</span>
                 <span className='dropDownTrigger' onClick={() => isWaited(data?.state)}><FontAwesomeIcon icon={faEllipsisVertical} /></span>
             </TopBtnWrapper>

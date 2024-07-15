@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import SearchBox from './components/SearchBox';
 import History from './components/SearchHistory';
 import { CheckBoxInput, CheckBoxLabel } from '../css/Tag';
-import { Collapse, Divider } from 'antd-mobile';
+import { Collapse } from 'antd-mobile';
 import SearchTrend from './SearchTrend';
 
 const SearchPage = () => {

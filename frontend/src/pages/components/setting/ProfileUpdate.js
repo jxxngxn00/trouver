@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { Dialog, Form, Input, Button, Checkbox, Space, DatePicker, Picker } from 'antd-mobile';
-import dayjs from 'dayjs';
+import { Dialog, Form, Input, Button, Picker } from 'antd-mobile';
 import { CloseCircleFilled } from '@ant-design/icons';
 
 const ProfileUpdate = () => {

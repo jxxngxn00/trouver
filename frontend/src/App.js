@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { BrowserRouter as Router, Route, Routes, useLocation, useNavigationType } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
 /* import page & components */
 import StartPage from './pages/StartPage';
@@ -37,9 +37,7 @@ import './App.css';
 
 
 /* Hook */
-import { useEffect } from "react";
-// import { useNavigate } from 'react-router-dom'
-// import axios from "axios";
+import axios from "axios";
 
 /* function -- app */
 function App() {
@@ -53,7 +51,6 @@ function App() {
     getApi();  
   }, []);
 
-  const navigate = useNavigate();
   /* 모바일 화면 크기 최적화 훅 */
   useEffect(() => {
     let vh = 0;

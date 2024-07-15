@@ -3,7 +3,7 @@ import TopBtnBar from '../components/TopBtnBar';
 import { CheckBoxInput, CheckBoxLabel } from '../../css/Tag';
 import styled from 'styled-components';
 import profile from '../../images/default_profile.png';
-import { Button, Form, ImageUploader, Rate, TextArea } from 'antd-mobile';
+import { ImageUploader, Rate, TextArea } from 'antd-mobile';
 
 const WritingReview = () => {
     const userName = '도레미';
