@@ -33,6 +33,13 @@ import ScrollToTop from './ScrollToTop';
 
 /* CSS files + images */
 import './App.css';
+// import logo from './images/trouver_logo.png'
+
+
+/* Hook */
+import { useEffect } from "react";
+// import { useNavigate } from 'react-router-dom'
+// import axios from "axios";
 
 /* function -- app */
 function App() {
