@@ -16,28 +16,43 @@ function MakePlan() {
             return(
                 <div className='bgDiv makePlanDiv'>
                     <DatePickerCustom/>
-                    <button className="mPlanBtn stage1" onClick={() => {setState(state+1)}}>
-                        <span className="text">다음</span>
-                    </button>
+                    <div className="btnWrapper">
+                        <button className="mPlanBtn stage1" onClick={() => {setState(state-1)}}>
+                            <span className="text">이전</span>
+                        </button>
+                        <button className="mPlanBtn stage1" onClick={() => {setState(state+1)}}>
+                            <span className="text">다음</span>
+                        </button>
+                    </div>
                 </div>
             );
         case 2:
             return(
                 <div className='bgDiv makePlanDiv'>
                     <TagPicker/>
-                    <button className="mPlanBtn stage2" onClick={() => {setState(state+1)}}>
-                        <span className="text">다음</span>
-                    </button>
+                    <div className="btnWrapper">
+                        <button className="mPlanBtn stage2" onClick={() => {setState(state-1)}}>
+                                <span className="text">이전</span>
+                            </button>
+                        <button className="mPlanBtn stage2" onClick={() => {setState(state+1)}}>
+                            <span className="text">다음</span>
+                        </button>
+                    </div>
                 </div>
             );
         case 3:
             // console.log(SetBudget);
             return(
                 <div className='bgDiv makePlanDiv'>
-                    <SetBudget />
-                    <button className="mPlanBtn stage3" onClick={() => {navigate('/viewplandetail')}}>
-                        <span className="text">다음</span>
-                    </button>
+                    <SetBudget min={10000} max={1000000}/>
+                    <div className="btnWrapper">
+                        <button className="mPlanBtn stage3" onClick={() => {setState(state-1)}}>
+                            <span className="text">이전</span>
+                        </button>
+                        <button className="mPlanBtn stage3" onClick={() => {navigate('/planUpdate')}}>
+                            <span className="text">다음</span>
+                        </button>
+                    </div>
                 </div>
             );
             

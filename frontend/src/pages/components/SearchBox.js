@@ -1,9 +1,11 @@
+import { ArrowLeftOutlined } from '@ant-design/icons';
 import React, {useState} from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
 function SearchBox() {
     const [inputText, setInputText] = useState("");
-
+    const go = useNavigate();
     const activeButton = () => {
         alert(inputText); // 테스트
     };
@@ -21,8 +23,8 @@ function SearchBox() {
 
     return (
         <>
+            <ArrowLeftOutlined onClick={() => go(-1)}/>
             <SearchInput
-
                 type="search"
                 name="input"
                 className='input'

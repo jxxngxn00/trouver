@@ -43,8 +43,8 @@
 
 .homeBgDiv {
     background: rgb(255,255,255);
-    background: linear-gradient(180deg, rgba(249,255,252,1) 3%, rgba(255,255,255,1) 85%, rgba(202,232,219,1) 98%);
-    position:absolute;
+    /* background: linear-gradient(180deg, rgba(249,255,252,1) 3%, rgba(255,255,255,1) 85%, rgba(202,232,219,1) 98%); */
+    /* position:absolute; */
     isolation: isolate;
 
     min-height: calc(var(--vh, 1vh)*100);
@@ -69,23 +69,38 @@
     justify-content: space-around;
     align-items: center;
     background-image: url('../images/mkPlanBg_img.gif')!important;
+
+    & .setBudgetWrapper {
+        margin-bottom: 20vh;
+    }
+
+    & .btnWrapper {
+        position: fixed;
+        bottom: 15vh;
+        display: flex;
+        justify-content: space-around;
+        width: 80%;
+        gap: 10%;
+    }
+    & .btnWrapper .mPlanBtn {
+        position: relative;
+    }
 }
 
 .makePlanDiv .labelDiv span{
     display: block;
     font-family: 'KCC-Hanbit';
     color: white;
-    font-size: 1rem;
+    font-size: 1.5rem;
     margin-bottom: 5vh;
 }
 
 
 /* 일정 만들기 */
 .mPlanBtn {
-    position: fixed; 
     width: 80%; 
     border:none;
-    bottom: 15vh;
+    margin-top: 0!important;
 }
 .stage0, .stage1, .stage2, .stage3{
     background-color: #45866B;
@@ -162,7 +177,7 @@
 /* ViewPlan.js -- 일정 목록 보기 */
 
 .ViewPlanBgDiv {
-    position: relative;
+    /* position: relative; */
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -255,11 +270,22 @@
 }
 
 .planDate {
+    width: 60vw!important;
     text-align: left;
     display: flex;
-    justify-content: space-around;
+    justify-content: flex-start;
     align-items: center;
     margin-top: 1.5vh;
+    margin-left: 1vw;
+}
+
+.writerDiv {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 3.5vw;
+    margin-right: 3.7vw;
 }
 
 .dateRadioBoxWrapper {
@@ -272,11 +298,11 @@
     }
 }
 
-.planDate, .dateRadioBtn, .routesWrapper {
+.planDate, .dateRadioBtn, .routesWrapper .writerDiv {
     margin-bottom: 2vh;
 }
 
-.planTitle, .planDate, .dateRadioBtn, .routesWrapper, .trouverRecomm, .vPlanDetailBtnWrapper {
+.planTitle, .planDate, .dateRadioBtn, .routesWrapper, .trouverRecomm, .vPlanDetailBtnWrapper .writerDiv{
     width: 94vw;
     padding-left: 3vw;
     padding-right: 3vw;
@@ -321,7 +347,7 @@
 .wrapper1 {
     display: flex;
 }
-.wrapper1 span {
+.wrapper1 span, .date {
     width: 85%;
     font-size: 1.5rem;
     font-family: 'Pretendart-ExtraBold';
@@ -339,7 +365,8 @@
     display: flex;
     flex-direction: column;
     gap: 2vh;
-    width: 85%;
+    width: 95%;
+    margin-top: 2vh;
 }
 
 .routeDiv {
@@ -352,6 +379,23 @@
     align-items: center;
 }
 
+.commentDiv {
+    /* flex-direction: column; */
+    justify-content: flex-start;
+    padding: 2.5% 3.5%;
+    gap: 0.8vw;
+    & span {
+        font-family: 'Pretendart-ExtraBold';
+        text-align: left;
+        color: #81C1A7;
+    }
+
+    & .content { 
+        color: #7d7d7d;
+        font-family: 'Pretendard-Regular';
+    }
+}
+
 .spot {
     position:fixed;
     left: 6%;
@@ -361,6 +405,10 @@
     text-align: left;
     width: 60%;
     margin: 4.5%;
+}
+
+.deleteMode {
+    text-align: right!important;
 }
 
 .route .weather {
@@ -476,16 +524,35 @@
 
 .vPlanDetailBtnWrapper {
     display: flex;
+    justify-content: center;
+    gap: 3.5vw;
     margin-top: 2vh;
 }
 .vPlanDetailBtn{
     cursor: pointer;
     display: flex;
     flex-direction: column;
+    align-items: center;
+
+    padding: 2vh 3vw;
+    width: 20vw;
+    background-color: white;
+    box-shadow: 
+        3px 3px 3px rgb(165, 161, 180),
+        inset 5px 5px 5px rgba(225, 225, 225, 0.5)
+    ;
+    border-radius: 10%;
+    transition-duration: 0.3s;
+
 
     & .icon{
         width: 30vw;
         margin-bottom: 2vh;
+    }
+
+    &:active {
+        background-color: #e9e9e9;
+        box-shadow: none;
     }
 }
 

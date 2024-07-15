@@ -1,52 +1,74 @@
 import React from 'react';
+import Menu from './components/Menu';
 
 import styled from 'styled-components';
-import profile from '../images/profil.png'
+import profile from '../images/default_profile.png'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPercent, faPenNib, faBookmark } from '@fortawesome/free-solid-svg-icons'
+import { Toast } from 'antd-mobile';
+import { ClockCircleOutlined } from '@ant-design/icons';
+import { useNavigate } from 'react-router-dom';
 
 function Settings(props) {
     const user_name = "도레미";
+    const go = useNavigate();
+    
+    const handleClick = (idx) => {
+        const propsToPass = { message: idx};
+        go('/reserve', { state: propsToPass });
+    }
+
+    const toastShow = () => {
+        Toast.show({
+            icon: (<ClockCircleOutlined/>),
+            content: '아직 준비중인 기능이에요 🤔'
+        })
+    }
     return (
-        <div className='homeBgDiv'>
-            <Profile>
+        <>
+        <Menu /><div className='homeBgDiv'>
+            <Profile onClick={() => go('/profile')}>
                 {/* 프로필 */}
-                <img className='userImg' src={profile} alt='기본 프로필'/>
+                <div className='imgWrapper'>
+                    <img className='userImg' src={profile} alt='기본 프로필' />
+                </div>
                 <div className='textInfo'>
                     <span id='name'>{user_name}</span>
                     <span id='mbti'>ENFP</span>
                 </div>
-
             </Profile>
             {/* 버튼 */}
             <BtnWrapper>
-                <div className='profileBtn'><FontAwesomeIcon className='icon' icon={faPercent} style={{color: "#ffffff",}} />쿠폰</div>
-                <div className='profileBtn'><FontAwesomeIcon className='icon' icon={faPenNib} style={{color: "#ffffff",}} />리뷰</div>
-                <div className='profileBtn'><FontAwesomeIcon className='icon' icon={faBookmark} style={{color: "#ffffff",}} />My</div>
+                <div className='profileBtn' onClick={() => toastShow()}>
+                    <FontAwesomeIcon className='icon' icon={faPercent} style={{ color: "#ffffff", }} />
+                    쿠폰
+                </div>
+                <div className='profileBtn'><FontAwesomeIcon className='icon' icon={faPenNib} style={{ color: "#ffffff", }} />내 일정</div>
+                <div className='profileBtn'><FontAwesomeIcon className='icon' icon={faBookmark} style={{ color: "#ffffff", }} />책갈피</div>
             </BtnWrapper>
-            <Line/>
+            <Line />
             {/* 예약/취소 내역 */}
             <ReserveLog>
                 예약 / 취소 내역
-                <div className='menu'>숙소</div>
-                <div className='menu'>레저 티켓</div>
-                <div className='menu'>맛집</div>
-                <div className='menu'>항공</div>
+                <div className='menu' onClick={() => handleClick(1) }>숙소</div>
+                <div className='menu' onClick={() => handleClick(2) }>레저 티켓</div>
+                <div className='menu' onClick={() => handleClick(3) }>맛집</div>
             </ReserveLog>
-            <Line/>
+            <Line />
             {/* 고객센터 */}
             <Service>
                 고객센터
-                <div className='menu'>자주 묻는 질문</div>
-                <div className='menu'>1:1 문의</div>
+                <div className='menu' onClick={() => go('/faq')}>자주 묻는 질문</div>
+                <div className='menu' onClick={() => go('/qna')}>1:1 문의</div>
             </Service>
-            <Line/>
+            <Line />
             {/* 공지사항 + 앱 설정 */}
             <Etc>
                 <div className='menu'>공지사항</div>
                 <div className='menu'>앱 설정</div>
             </Etc>
         </div>
+        </>
     );
 }
 
@@ -59,7 +81,21 @@ const Profile = styled.div`
 
     padding: 7vh 0vw 3vh;
     gap: 4vw;
-    & .userImg{ width : 15%; }
+
+    & .imgWrapper{ 
+        position: relative;
+        width : 25vw; 
+        height: 25vw;
+        border-radius: 30px;
+        overflow: hidden;
+        & img { 
+            height: 100%;
+            position : absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+    }
     & .textInfo {
         display: flex;
         flex-direction: column;

@@ -111,7 +111,7 @@
 /* Product.js -- end */
 /* ViewProductDetail.js */
 .bgProd .prodImgSlider {
-    position: relative;
+    /* position: relative; */
     width: 100vw;
     height: 30vh;
     overflow-x: auto;

@@ -1,12 +1,13 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import Menu from '../Menu';
 
 // import Menu from '../Menu';
 function Plan(props) {
     const navigate = useNavigate();
     return (
         <div className='bgDiv planStart'>
-            
+            <Menu/>
             <div className='labelDiv'>
                 취향저격 장소가 담긴<br/>
                 여행계획 시작해볼까요?

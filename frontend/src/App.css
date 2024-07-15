@@ -67,3 +67,43 @@ button {
   padding: 10px;
   border: 1px solid #ccc;
 }
+
+/* 화면 전환 효과 :: react transition  */
+.page {
+  position: absolute;
+}
+
+.page-transition-enter {
+  z-index: 1;
+  transform: translateX(100%);
+}
+
+.page-transition-enter-active {
+  transform: translateX(0);
+  transition: transform 300ms;
+}
+
+.page-transition-exit {
+  z-index: 0;
+  transform: translateX(0);
+}
+
+.page-transition-exit-active {
+  transform: translateX(-100%);
+  transition: transform 300ms;
+}
+.page-transition--pop-enter {
+  z-index: 1;
+  transform: translateX(-100%);
+}
+.page-transition--pop-enter-active {
+  transform: translateX(0);
+  transition: transform 300ms;
+}
+.page-transition--pop-exit {
+  transform: translateX(0);
+}
+.page-transition--pop-exit-active {
+  transform: translateX(100%);
+  transition: transform 300ms;
+}
