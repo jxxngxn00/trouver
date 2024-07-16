@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 // import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import '../css/product.css'
 
 import CateMenu from './components/product/CateMenu';
@@ -10,7 +11,21 @@ import Menu from './components/Menu';
 
 function Product(props) {
     const [cate, setCate] = useState('');
-    // const navigate = useNavigate();
+    const [places,  setPlaces] = useState([]);
+
+    const getProduct = async () => {
+        try {
+            const res = await axios.get("/product");
+            setPlaces(res.data);
+            console.log(res.data);
+        } catch (error) {
+            console.error("Error fetching products", error);
+        }
+    };
+
+    useEffect(() => {
+        getProduct();
+    }, []);
 
     return (
         <>
