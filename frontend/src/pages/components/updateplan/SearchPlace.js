@@ -1,27 +1,53 @@
 import { Popover, Radio, SearchBar } from 'antd-mobile';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faStar } from '@fortawesome/free-solid-svg-icons'
 
-import test from '../../../images/test.jfif';
+import axios from 'axios';
 import { CheckCircleFilled, CheckCircleOutlined, InfoCircleOutlined } from '@ant-design/icons';
 
 
-const SearchPlace = () => {
-    // 트루버 추천 여행지 리스트
-    const placeList = [
-        { id:'pl1', title: '오설록 티 뮤지엄', cate: '카페', rate:4.5 },
-        { id:'pl2', title: '이니스프리 제주하우스 카페', cate: '카페', rate:4.2 },
-        { id:'pl3', title: '제주 신라호텔', cate: '숙소', rate:4.2 },
-        { id:'pl4', title: '귤당리 카페', cate: '카페', rate:4.2 },
-    ];
+const SearchPlace = ({ route, setRoute }) => {
     const [value, setValue] = useState();
+    const [search, setSearch] = useState('');
+    const [tPlace, setTPlace] = useState();
+
+    const getPlace5 = async () => {
+        try {
+            const res = await axios.get(`/api/place/getPlaceList5`)
+            setTPlace(res.data);
+            // console.log('>>> res.data : ' , res.data);
+        } catch (error) {
+            console.error("Error fetching product detail : ",error);
+        }
+    };
+
+    const getPlaceBySearch = async (searchTerm) => {
+        try {
+            const res = await axios.get(`/api/place/getPlaceListBySearch/${searchTerm}`);
+            setTPlace(res.data);
+            // console.log('>>> res.data : ' , res.data);
+        } catch (error) {
+            console.error("Error fetching product detail : ",error);
+        }
+    };
+
+    
+    useEffect(() => {
+        getPlace5();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    },[]);
 
     return (
         <SearchDiv>
             <SearchBar
                 placeholder='알고 싶은 장소를 검색하세요'
+                onChange={(val) => {
+                    setSearch(val);
+                    getPlaceBySearch(val);
+                }}
+                onSearch={(val) => getPlaceBySearch(val)}
                 clearable
             />
             <div className='placeWrapper'>
@@ -29,64 +55,71 @@ const SearchPlace = () => {
                         value={value}
                         onChange={val => {
                             setValue(val);
+                            setRoute(val);
+                            console.log(val);
                         }}
                 >
-                <PlaceDiv className='placeDiv'>
-                    <span className='divTitle'>트루버 추천 장소 
-                        <Popover content={<>AI 추천으로 <br/> 나와 비슷한 유저들이 좋아하는 장소를 <br/> 추천해드려요.</>} trigger='click' placement='bottom'>
-                            <InfoCircleOutlined className='infoPopupBtn'/>
-                        </Popover>
-                    </span>
-                    {placeList.map((item,index) => (
-                        <PlaceCard key={index} className='placeCard'>
-                            {/* {console.log(index,"::",typeof(item))} */}
-                            <img className='thumb' src={test} alt="장소 썸네일"/>
-                            <InfoDiv className='infoDiv'>
-                                <div className='title'>{item.title}</div>
-                                <div className='details'>
-                                    <div className='cate'>{item.cate}</div>
-                                    <div className='rate'><FontAwesomeIcon icon={faStar} style={{color: "#81C1A7",}} />{item.rate}</div>
-                                </div>
-                            </InfoDiv>
+                { (!search) ?
+                    (<>
+                    {/* default 영역 */}
+                    <PlaceDiv className='placeDiv'>
+                        <span className='divTitle'>트루버 추천 장소
+                            <Popover content={<>AI 추천으로 <br /> 나와 비슷한 유저들이 좋아하는 장소를 <br /> 추천해드려요.</>} trigger='click' placement='bottom'>
+                                <InfoCircleOutlined className='infoPopupBtn' />
+                            </Popover>
+                        </span>
+                        {tPlace?.map((item, index) => (
+                            <PlaceCard key={index} className='placeCard'>
+                                <img className='thumb' src={item.pla_thumb} alt="장소 썸네일" />
+                                <InfoDiv className='infoDiv'>
+                                    <div className='title'>{item.pla_name}</div>
+                                    <div className='details'>
+                                        <div className='cate'>{item.pla_cate}</div>
+                                        <div className='rate'><FontAwesomeIcon icon={faStar} style={{ color: "#81C1A7", }} />{item.pla_rate}</div>
+                                    </div>
+                                </InfoDiv>
 
-                            <Radio
-                                className='checkRadio'
-                                id={item.id}
-                                value={index.toString().concat(item.id)}
-                                icon={checked =>
-                                    checked? ( <CheckCircleFilled style={{ color: '#45866B'}} /> )
-                                    : ( <CheckCircleOutlined style={{ color: 'var(--adm-color-weak)'}} /> )
-                                }
-                            />
-                        </PlaceCard>
-                    ))}
-                </PlaceDiv>
-                <PlaceDiv className='placeDiv'>
-                    <span className='divTitle'>내가 저장한 장소</span>
-                    {placeList.map((item,index) => (
-                        <PlaceCard key={index} className='placeCard'>
-                            {/* {console.log(index,"::",typeof(item))} */}
-                            <img className='thumb' src={test} alt="장소 썸네일"/>
-                            <InfoDiv className='infoDiv'>
-                                <div className='title'>{item.title}</div>
-                                <div className='details'>
-                                    <div className='cate'>{item.cate}</div>
-                                    <div className='rate'><FontAwesomeIcon icon={faStar} style={{color: "#81C1A7",}} />{item.rate}</div>
-                                </div>
-                            </InfoDiv>
+                                <Radio
+                                    className='checkRadio'
+                                    id={item.pla_id}
+                                    value={item.pla_id}
+                                    icon={checked => checked ? (<CheckCircleFilled style={{ color: '#45866B' }} />)
+                                        : (<CheckCircleOutlined style={{ color: 'var(--adm-color-weak)' }} />)} 
+                                />
+                            </PlaceCard>
+                        ))}
+                    </PlaceDiv>
+                    <PlaceDiv className='placeDiv'>
+                        <span className='divTitle'>내가 저장한 장소</span>
+                        
+                    </PlaceDiv>
+                    </>)
+                    : (<> 
+                    {/* 검색 결과 영역 */}
+                    <PlaceDiv className='placeDiv'>
+                            <span className='divTitle'>{search}의 검색결과</span>
+                            {tPlace?.map((item, index) => (
+                                <PlaceCard key={index} className='placeCard'>
+                                    <img className='thumb' src={item.pla_thumb} alt="장소 썸네일" />
+                                    <InfoDiv className='infoDiv'>
+                                        <div className='title'>{item.pla_name}</div>
+                                        <div className='details'>
+                                            <div className='cate'>{item.pla_cate}</div>
+                                            <div className='rate'><FontAwesomeIcon icon={faStar} style={{ color: "#81C1A7", }} />{item.pla_rate}</div>
+                                        </div>
+                                    </InfoDiv>
 
-                            <Radio
-                                className='checkRadio'
-                                id={item.id}
-                                value={index.toString().concat(item.id)}
-                                icon={checked =>
-                                    checked? ( <CheckCircleFilled style={{ color: '#45866B'}} /> )
-                                    : ( <CheckCircleOutlined style={{ color: 'var(--adm-color-weak)'}} /> )
-                                }
-                            />
-                        </PlaceCard>
-                    ))}
-                </PlaceDiv>
+                                    <Radio
+                                        className='checkRadio'
+                                        id={item.pla_id}
+                                        value={item.pla_id}
+                                        icon={checked => checked ? (<CheckCircleFilled style={{ color: '#45866B' }} />)
+                                            : (<CheckCircleOutlined style={{ color: 'var(--adm-color-weak)' }} />)} />
+                                </PlaceCard>
+                            ))}
+                    </PlaceDiv>
+                    </>)
+                }
                 </Radio.Group>
             </div>
         </SearchDiv>

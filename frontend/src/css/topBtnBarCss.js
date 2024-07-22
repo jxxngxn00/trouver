@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 
 export const TopBarDiv = styled.div`
+    & * {font-size: 1rem;}
     & .header {
         position: fixed;
         left: 0;

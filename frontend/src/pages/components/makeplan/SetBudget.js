@@ -7,8 +7,9 @@ import styled from 'styled-components';
 
 // import 'rc-slider/assets/index.css';
 
-function SetBudget(props) {
-    const {min, max} = props;
+function SetBudget({ onBudgetChange }) {
+    const min = 10000;
+    const max = 1000000;
 
     const [selectMin, setSelectMin] = useState(min); // eslint-disable-line no-unused-vars
     const [selectMax, setSelectMax] = useState(max); // eslint-disable-line no-unused-vars
@@ -21,9 +22,10 @@ function SetBudget(props) {
             text = `${value.join(',')}`; // eslint-disable-line no-unused-vars
             setSelectMin(value[0]);
             setSelectMax(value[1]);
+            onBudgetChange([selectMin, selectMax]);
         }
         // Toast.show(`선택됨 : ${selectMin}, ${selectMax}`);
-        console.log(value);
+        // console.log(value);
     }
     return (
         <div className='setBudgetWrapper'>
@@ -38,7 +40,7 @@ function SetBudget(props) {
                     onAfterChange={toastValue} 
                     min={min}
                     max={max}
-                    defaultValue={[250000,750000]}
+                    defaultValue={[0,0]}
                     step={1000}
                     icon={<FontAwesomeIcon icon={faDollarSign} />}
                     popover

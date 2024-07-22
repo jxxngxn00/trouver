@@ -1,18 +1,28 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import { format } from 'date-fns';
+import { ko } from "date-fns/locale";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faStar, faGripLines } from '@fortawesome/free-solid-svg-icons';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { DeleteOutlined } from '@ant-design/icons';
+import { Swiper } from 'antd-mobile';
 
-export default function TouchDnd({ List, setList }) {
+export default function TouchDnd({ list, setList, daily, setDaily, dateRange }) {
+  // 날짜 형식 맞춤
+  let formatDateRange = [];
+  // eslint-disable-next-line
+  dateRange.map(date => {
+    formatDateRange.push(format(date, 'PPPP', {addSufix: true, locale: ko}));
+  });
+
   const [ isDeleteMode, setIsDeleteMode ] = useState(false);
   const [ selectedItems, setSelectedItems ] = useState([]);
 
   const handleOnDragEnd = (result) => {
     if (!result.destination || isDeleteMode) return;
 
-    const items = Array.from(List);
+    const items = Array.from(list);
     const [reorderedItem] = items.splice(result.source.index, 1);
     items.splice(result.destination.index, 0, reorderedItem);
     setList(items);
@@ -32,75 +42,92 @@ export default function TouchDnd({ List, setList }) {
   };
 
   const handleDeleteSelected = () => {
-    setList(List.filter((item) => !selectedItems.includes(item.id)));
+    setList(list.filter((item) => !selectedItems.includes(item.id)));
     setSelectedItems([]);
   };
 
+  const getDaily = (index) => {
+    return formatDateRange[index];
+  }
+
   return (
     <>
-      <DeleteModeWrapper>
-        <span className='date'>9월 7일 목요일</span>
-        <button onClick={() => toggleDeleteMode()}>
-          {isDeleteMode ? '취소' : <DeleteOutlined /> }
-        </button>
-        {isDeleteMode && (
-        <>
-          <button onClick={() => handleDeleteSelected()} disabled={selectedItems.length === 0}>
-            선택된 경유지 삭제 
-          </button>
-        </>
-      )}
-      </DeleteModeWrapper>
-      <DragDropContext onDragEnd={handleOnDragEnd}>
-        <Droppable droppableId="droppable-1" direction="vertical">
-          {(provided) => (
-            <div {...provided.droppableProps} ref={provided.innerRef}>
-              {List.map((item, idx) => (
-                <Draggable key={item.id} draggableId={item.id.toString()} index={idx}>
+      <Swiper indicator={() => null}
+        onIndexChange={(idx)=> setDaily(idx) }
+      >
+        {/* eslint-disable-next-line */}
+        { formatDateRange.map((temp, dateIndex)=> {
+          const dailyList = list[dateIndex] || [];
+          return (
+            <Swiper.Item key={dateIndex}>
+              <DeleteModeWrapper>
+                <span className='date'>{getDaily(dateIndex)}</span>
+                <button onClick={() => toggleDeleteMode()}>
+                  {isDeleteMode ? '취소' : <DeleteOutlined /> }
+                </button>
+                {isDeleteMode && (
+                  <>
+                    <button onClick={() => handleDeleteSelected()} disabled={selectedItems.length === 0}>
+                      선택된 경유지 삭제 
+                    </button>
+                  </>
+                )}
+              </DeleteModeWrapper>
+              <DragDropContext onDragEnd={handleOnDragEnd}>
+                <Droppable droppableId="droppable-1" direction="vertical">
                   {(provided) => (
-                    <RouteDiv
-                      ref={provided.innerRef}
-                      {...provided.draggableProps}
-                      {...provided.dragHandleProps}
-                      className="default"
-                    >
-                      {isDeleteMode && (
-                        <>
-                          <input
-                            type="checkbox"
-                            checked={selectedItems.includes(item.id)}
-                            onChange={() => handleSelectItem(item.id)} />
-                          </>
-                      )}
-                      <div className={isDeleteMode ? 'route deleteMode' : 'route'}>
-                        <span className='placeName'>{item.placeName}</span>
-                        <div className='detailsWrapper'>
-                          <span className='placeCate'>{item.placeCate}</span>
-                          {item.placeRate ? (
-                            <span className='placeRate'>
-                              <FontAwesomeIcon icon={faStar} style={{color: "#FFD43B"}}/>
-                              {item.placeRate}
-                            </span>
-                          ) : null}
-                        </div>
-                        {!isDeleteMode && (
-                          <div className='comment'>
-                            <input type='text' placeholder='테스터님 만의 특별한 팁을 적어주세요!(선택)'/>
-                          </div>
-                        )}
-                      </div>
-                      {!isDeleteMode && (
-                        <FontAwesomeIcon className='gripLines' icon={faGripLines} id="drag" />
-                      )}
-                    </RouteDiv>
+                    <div {...provided.droppableProps} ref={provided.innerRef}>
+                      {dailyList?.map((item, idx) => (
+                        <Draggable key={item.id} draggableId={item.id?.toString()} index={idx}>
+                          {(provided) => (
+                            <RouteDiv
+                              ref={provided.innerRef}
+                              {...provided.draggableProps}
+                              {...provided.dragHandleProps}
+                              className="default"
+                            >
+                              {isDeleteMode && (
+                                <>
+                                  <input
+                                    type="checkbox"
+                                    checked={selectedItems.includes(item.id)}
+                                    onChange={() => handleSelectItem(item.id)} />
+                                  </>
+                              )}
+                              <div className={isDeleteMode ? 'route deleteMode' : 'route'}>
+                                <span className='placeName'>{item.placeName}</span>
+                                <div className='detailsWrapper'>
+                                  <span className='placeCate'>{item.placeCate}</span>
+                                  {item.placeRate ? (
+                                    <span className='placeRate'>
+                                      <FontAwesomeIcon icon={faStar} style={{color: "#FFD43B"}}/>
+                                      {item.placeRate}
+                                    </span>
+                                  ) : null}
+                                </div>
+                                {!isDeleteMode && (
+                                  <div className='comment'>
+                                    <input type='text' placeholder='테스터님 만의 특별한 팁을 적어주세요!(선택)'/>
+                                  </div>
+                                )}
+                              </div>
+                              {!isDeleteMode && (
+                                <FontAwesomeIcon className='gripLines' icon={faGripLines} id="drag" />
+                              )}
+                            </RouteDiv>
+                          )}
+                        </Draggable>
+                      ))}
+                      {provided.placeholder}
+                    </div>
                   )}
-                </Draggable>
-              ))}
-              {provided.placeholder}
-            </div>
-          )}
-        </Droppable>
-      </DragDropContext>
+                </Droppable>
+              </DragDropContext>
+            </Swiper.Item>
+        )})
+
+        }
+      </Swiper>
     </>
   );
 }
@@ -126,13 +153,13 @@ const DeleteModeWrapper = styled.div`
 
 const RouteDiv = styled.div`
   border-radius: 10px;
+  margin: 2vh auto;
   box-shadow: 0px 4px 18px -5px hsla(234, 44%, 26%, 0.411);
-  width: 95%;
+  width: 90%;
   padding: 0.5% 3.5%;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 8px;
 
   & .detailsWrapper {
     gap: 0vw!important;

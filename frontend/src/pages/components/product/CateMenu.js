@@ -18,14 +18,14 @@ function CateMenu({cate, setCate}) {
             <div className='title'><FontAwesomeIcon className='titleIcon' icon={faLayerGroup} />트루버 추천 코스 카테고리</div>
             <div className='btnWrapper'>
                 {[
-                    { icon: faBed, text: '숙소' },
-                    { icon: faBowlFood, text: '맛집' },
-                    { icon: faMugSaucer, text: '카페' },
-                    { icon: faPersonRunning, text: '액티비티' },
-                    { icon: faPalette, text: '박물관/전시회' },
-                    { icon: faClover, text: '자연경관' },
-                    { icon: faChessRook, text: '테마파크' },
-                    { icon: faGem, text: '쿠폰/할인' }
+                    { icon: faBed, text: '숙소', value:'숙박' },
+                    { icon: faBowlFood, text: '맛집', value:'음식점' },
+                    { icon: faMugSaucer, text: '카페', value:'음식점' },
+                    { icon: faPersonRunning, text: '액티비티', value:'축제/행사' },
+                    { icon: faPalette, text: '박물관∙전시회', value:'축제/행사' },
+                    { icon: faClover, text: '자연경관', value:'관광지' },
+                    { icon: faChessRook, text: '테마파크', value:'축제/행사' },
+                    { icon: faGem, text: '쿠폰∙할인', value:'정보' }
                 ].map((item, index) => (
                     <div
                         key={index}

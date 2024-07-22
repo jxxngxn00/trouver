@@ -1,13 +1,22 @@
 // src/server.js
 import express from "express";
-
-const app = express();
+import cors from "cors";
+import db from "./database/db.js";
 
 // Import Router
-import placeRoutes from "./routes/placeRoutes.js";
+import placeRoutes from "./routes/place.js";
+import api from "./api.js";
+
+const app = express();
+app.use(express.json());
+app.use(cors({
+    origin: 'http://localhost:3000',
+    credentials: true,
+}));
 
 // Routes
-app.use("/api/product", placeRoutes);
+app.use("/api", api);
+app.use("/api/place", placeRoutes);
 
 app.use(express.json());
 

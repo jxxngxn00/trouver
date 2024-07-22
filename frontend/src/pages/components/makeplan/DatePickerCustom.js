@@ -3,31 +3,24 @@ import styled from 'styled-components';
 import dayjs from 'dayjs'
 import React, { useState } from 'react';
 
-// const defaultRange = [
-//     dayjs().toDate(),
-//     dayjs().add(2,'day').toDate(),
-// ];
+export const getDateToString = (text, idx) => {
+    const dateStrings = text.split(',');
+    const dates = dateStrings.map(dateString => new Date(dateString));
+    return formatDate(dates[idx]);
+};
 
-function DatePickerCustom() {
-    const [val, setVal] = useState(() => [
-        dayjs().subtract(2,'day').toDate(),
-        dayjs().add(2, 'day').toDate(),
-    ]);
+export const formatDate = (date) => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth()+1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+}
+
+function DatePickerCustom({ onDateChange }) {
+    const [val, setVal] = useState(null);
     const [visible, setVisible] = useState(false);
 
 
-    const getDateToString = (text, idx) => {
-        const dateStrings = text.split(',');
-        const dates = dateStrings.map(dateString => new Date(dateString));
-        return formatDate(dates[idx]);
-    };
-
-    const formatDate = (date) => {
-        const year = date.getFullYear();
-        const month = String(date.getMonth()+1).padStart(2, '0');
-        const day = String(date.getDate()).padStart(2, '0');
-        return `${year}-${month}-${day}`;
-    }
     return (
         <div className='setDateDiv'>
             <div className='labelDiv'>
@@ -44,7 +37,8 @@ function DatePickerCustom() {
                     onClose={() => setVisible(false)}
                     onMaskClick={() => setVisible(false)}
                     onChange={val => {
-                        setVal(val)
+                        setVal(val);
+                        onDateChange([getDateToString(val.toString(), 0), getDateToString(val.toString(), 1)]);
                     }}
                     confirmText='변경하기'
                 />

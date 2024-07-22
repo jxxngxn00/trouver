@@ -1,17 +1,16 @@
-import React, {useState, useRef}  from 'react';
-
+import React, {useState, useRef, useEffect}  from 'react';
+import axios from 'axios';
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { Carousel } from "react-responsive-carousel";
 import styled from 'styled-components';
 
-import test from '../../images/test.jfif'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faLocationDot, faBookmark as filledBookmark } from '@fortawesome/free-solid-svg-icons'
 import { faBookmark } from '@fortawesome/free-regular-svg-icons';
 import TopBtnBar from '../components/TopBtnBar';
 import { CarryOutOutlined, EditOutlined, ShareAltOutlined } from '@ant-design/icons';
 import { Divider, Toast } from 'antd-mobile';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import UseAnimations from 'react-useanimations';
 import bookmark from 'react-useanimations/lib/bookmark';
 import plusToX from 'react-useanimations/lib/plusToX';
@@ -20,30 +19,43 @@ import Menu from '../components/Menu';
 
 function ViewProductDetail(props) {
     const go = useNavigate();
+    const { id } = useParams();
+    const [productDetail, setProductDetail] = useState("");
+    const [curIndex, setCurIndex] = useState(0);
+    function handleChange(index){
+        setCurIndex(index);
+    };
+
+    const getPlace = async () => {
+        try {
+            const res = await axios.get(`/api/place/getPlace/${id}`)
+            setProductDetail(res.data);
+            // console.log('>>> res.data : ' , res.data);
+        } catch (error) {
+            console.error("Error fetching product detail : ",error);
+        }
+    };
+
+    useEffect(() => {
+        getPlace();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    },[]);
 
     /* 이미지 슬라이드 */
     const imageData = [
         {
-            label: "Image 1",
-            alt: "image1",
-            url: test
+            label: "thumb",
+            alt: productDetail[0]?.pla_name,
+            url: productDetail[0]?.pla_thumb
         },
         {
-            label: "Image 2",
-            alt: "image2",
-            url: test
-        },
-        {
-            label: "Image 3",
-            alt: "image3",
-            url: test
-        },
-    
+            label: "image",
+            alt: productDetail[0]?.pla_name,
+            url: productDetail[0]?.pla_image
+        }
     ];
-    const [curIndex, setCurIndex] = useState(0);
-    function handleChange(index){
-        setCurIndex(index);
-    }
+
+
 
     const renderSlides = imageData.map(image => {
         return(
@@ -60,19 +72,19 @@ function ViewProductDetail(props) {
             id: 0,
             title: "업체정보",
             class: 'business',
-            content: '사업자 정보'
+            content: productDetail[0]?.pla_phone,
         },
         { 
             id: 1,
             title: "상품정보",
             class: 'info',
-            content: '상품 정보 이미지'
+            content: productDetail[0]?.pla_image,
         },
         { 
             id: 2,
             title: "상세설명",
             class: 'description',
-            content: '글로 된 설명'
+            content: productDetail[0]?.pla_content,
         },
         { 
             id: 3,
@@ -85,7 +97,6 @@ function ViewProductDetail(props) {
     const [currTab, setCurrTab] = useState(0);
 
     const targetRefs = useRef([]);
-    
 
     const handleTabClick = (index) => {
         setCurrTab(index);
@@ -145,10 +156,10 @@ function ViewProductDetail(props) {
             </div>
             {/* 타이틀 + 버튼 */}
             <TitleDiv>
-                <span className='cate'>테마파크</span>
-                <span className='title'>제주 신화테마파크</span>
-                <span className='addr'><FontAwesomeIcon icon={faLocationDot} />제주 제주시 노연로 80</span>
-                <span className='price'>178,000원 ~</span>
+                <span className='cate'>{productDetail[0]?.pla_cate}</span>
+                <span className='title'>{productDetail[0]?.pla_name}</span>
+                <span className='addr'><FontAwesomeIcon icon={faLocationDot} />{productDetail[0]?.pla_addr1}</span>
+                {/* <span className='price'>178,000원 ~</span> */}
                 <Divider/>
                 <ButtonDiv>
                     <button className='prodBtn' onClick={() => handleSaved()}>
@@ -195,13 +206,13 @@ function ViewProductDetail(props) {
                     {/* 업체정보 */}
                     {item.id ===0 ? (
                         <div>
-                            <h2>{item.content}</h2>
+                            <h2>연락처 : {item.content}</h2>
                         </div>
                     ) : null}
                     {/* 상품정보 */}
                     {item.id ===1 ? (
                         <div>
-                            <h2>{item.content}</h2>
+                            <img className='contImg' src={item.content} alt='상세설명 이미지'/>
                         </div>
                     ) : null}
                     {/* 상세설명 */}
@@ -303,10 +314,12 @@ const TabPane = styled.div`
 
 const TabCont = styled.div`
     width: 100vw;
-    min-height: 20vh;
-    padding-top: 10vh;
+    min-height: 2vh;
+    padding-top: 3vh;
     background: rgb(255,255,255);
-
+    & .contImg {
+        width: 100vw;
+    }
 `;
 
 export default ViewProductDetail;

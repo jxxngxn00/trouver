@@ -8,14 +8,26 @@ import SetBudget from "../components/makeplan/SetBudget";
 
 function MakePlan() {
     const navigate = useNavigate();
+    
     const [state, setState] = useState(0);
+    const [date, setDate] = useState([]);
+    const [budget, setBudget] = useState('');
+    const [tags, setTags] = useState([]);
+    
     const user_name = '도레미'
+
+    const handleSubmit = () => {
+        const formData = {
+            date, budget, tags,
+        };
+        navigate('/planUpdate', { state: formData });
+    }
 
     switch (state) {
         case 1:
             return(
                 <div className='bgDiv makePlanDiv'>
-                    <DatePickerCustom/>
+                    <DatePickerCustom onDateChange={setDate}/>
                     <div className="btnWrapper">
                         <button className="mPlanBtn stage1" onClick={() => {setState(state-1)}}>
                             <span className="text">이전</span>
@@ -29,7 +41,7 @@ function MakePlan() {
         case 2:
             return(
                 <div className='bgDiv makePlanDiv'>
-                    <TagPicker/>
+                    <TagPicker onTagsChange={setTags}/>
                     <div className="btnWrapper">
                         <button className="mPlanBtn stage2" onClick={() => {setState(state-1)}}>
                                 <span className="text">이전</span>
@@ -44,13 +56,13 @@ function MakePlan() {
             // console.log(SetBudget);
             return(
                 <div className='bgDiv makePlanDiv'>
-                    <SetBudget min={10000} max={1000000}/>
+                    <SetBudget onBudgetChange={setBudget}/>
                     <div className="btnWrapper">
                         <button className="mPlanBtn stage3" onClick={() => {setState(state-1)}}>
                             <span className="text">이전</span>
                         </button>
-                        <button className="mPlanBtn stage3" onClick={() => {navigate('/planUpdate')}}>
-                            <span className="text">다음</span>
+                        <button className="mPlanBtn stage3" onClick={() => {handleSubmit()}}>
+                            <span className="text">일정 만들러 가기</span>
                         </button>
                     </div>
                 </div>

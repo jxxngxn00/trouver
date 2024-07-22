@@ -1,4 +1,3 @@
-import dayjs from "dayjs";
 import React, { useState } from "react";
 import { Calendar } from "antd-mobile";
 // import styled from "styled-components";
@@ -6,8 +5,6 @@ import { Calendar } from "antd-mobile";
 function CalendarPicker({ onValChange }) {
     // const today = dayjs();
     const [val, setVal] = useState(() => [
-        dayjs().subtract(2,'day').toDate(),
-        dayjs().add(2, 'day').toDate(),
     ]);
 
     const handleValueChange = (val) => {

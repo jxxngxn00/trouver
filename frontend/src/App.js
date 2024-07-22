@@ -74,7 +74,7 @@ function RouteTransitions() {
         <Route path='/planupdate' element={<PlanUpdate />} />
 
         <Route path='/product' element={<Product />} />
-        <Route path='/viewprodDetail' element={<ViewProductDetail />} />
+        <Route path='/viewprodDetail/:id' element={<ViewProductDetail />} />
         <Route path='/makeReview' element={<WritingReview />} />
 
         <Route path="/settings" element={<Settings />} />
