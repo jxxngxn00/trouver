@@ -51,7 +51,7 @@ export const MgetPlanId = (req, res) => {
         console.error('Error : ', error);
         res.status(500).send('Server error');
     }
-}
+};
 
 // 일정 Insert :: date_plan (일차별 일정 테이블)
 export const MinsertDatePlan = (req, res) => {

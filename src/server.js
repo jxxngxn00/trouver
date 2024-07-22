@@ -6,6 +6,8 @@ import cors from "cors";
 import placeRoutes from "./routes/place.js";
 import planRoutes from "./routes/plan.js";
 import api from "./api.js";
+
+
 import bodyParser from "body-parser";
 
 const app = express();
@@ -25,6 +27,7 @@ app.use(express.json());
 app.use("/api", api);
 app.use("/api/place", placeRoutes);
 app.use("/api/plan", planRoutes);
+app.use("/api/review");
 
 // ML
 // app.post('/recommend', async (req,res) => {
