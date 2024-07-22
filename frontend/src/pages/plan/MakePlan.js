@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import React from 'react';
+import axios from "axios";
 
 import DatePickerCustom from "../components/makeplan/DatePickerCustom";
 import TagPicker from "../components/makeplan/TagPicker";
@@ -14,12 +15,29 @@ function MakePlan() {
     const [budget, setBudget] = useState('');
     const [tags, setTags] = useState([]);
     
-    const user_name = '도레미'
+    const user_name = '도레미';
+    const user_id = 'd3ca4a15-2a0c-11ef-9ffb-7085c2d2eea0';
 
-    const handleSubmit = () => {
-        const formData = {
+    const handleSubmit = async () => {
+        // 각각 component에서 입력한 내용 변수 저장
+        let formData = {
             date, budget, tags,
+            user_login_id : `${user_id}`,
         };
+
+        try {
+            // DB에 formData 저장 
+            axios.post(`/api/plan/insertPlan`, formData, {
+                headers : {
+                    "Context-Type" : "multipart/form-data",
+                },
+            });
+            
+        } catch (error) {
+            console.error("Error fetching plan insert : ",error);
+        }
+
+        // 화면 이동
         navigate('/planUpdate', { state: formData });
     }
 

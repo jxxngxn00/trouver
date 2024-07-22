@@ -30,7 +30,6 @@ function ViewProductDetail(props) {
         try {
             const res = await axios.get(`/api/place/getPlace/${id}`)
             setProductDetail(res.data);
-            // console.log('>>> res.data : ' , res.data);
         } catch (error) {
             console.error("Error fetching product detail : ",error);
         }

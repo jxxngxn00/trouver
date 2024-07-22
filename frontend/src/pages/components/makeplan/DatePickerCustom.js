@@ -1,6 +1,5 @@
 import { CalendarPicker } from 'antd-mobile';
 import styled from 'styled-components';
-import dayjs from 'dayjs'
 import React, { useState } from 'react';
 
 export const getDateToString = (text, idx) => {

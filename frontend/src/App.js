@@ -36,9 +36,6 @@ import './App.css';
 // import logo from './images/trouver_logo.png'
 
 
-/* BackEnd */
-import axios from "axios";
-
 /* function -- app */
 function App() {
 

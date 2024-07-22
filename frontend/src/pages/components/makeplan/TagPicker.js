@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { CheckBoxInput, CheckBoxLabel } from '../../../css/Tag';
 
 function TagPicker({ onTagsChange }) {
+    // eslint-disable-next-line 
     const [tags, setTags] = useState([]);
     const handleChange = () => {
         const checkedLabels = Array.from(document.querySelectorAll('.tagCheckBox input:checked'))

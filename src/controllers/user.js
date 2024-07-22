@@ -1,5 +1,5 @@
 import bcrypt from bcrypt;
-import userDB from '../models/userDB';
+import userDB from '../models/user.js';
 
 const textToHash = async (text) => {
     const saltRounds = 10;
@@ -30,3 +30,15 @@ exports.signup = async (req, res) => {
         res.status(500).json(err);
     }
 };
+
+exports.getUserUUID = async (req, res) => {
+    const { user_login_id } = req.body;
+    try {
+        const user_UUID = await userDB.getUserUUID(user_login_id);
+        res.status(200).json(user_UUID);
+        
+    } catch (err) {
+        console.error(err);
+        res.status(500).json(err);
+    }
+}

@@ -36,11 +36,19 @@ const getDatesInRange = (startDate, endDate) => {
   return dates;
 };
 
+// 장소 추가 및 정보 수정을 위해 임의로 만들어둔 plan_id 저장
+const getPlanId = async (user_login_id) => {
+    const res = await axios.get(`/api/plan/getPlanId/${user_login_id}`);
+    return res.data[0].plan_uuid;
+}
+
 function PlanUpdate() {
     const location = useLocation();
     const go = useNavigate();
+    // eslint-disable-next-line 
+    const { date, budget, tags, user_login_id } = location.state; // 일정 만들기 과정에서 가져온 파라미터를 형식에 맞춰 변환
+    const planId = getPlanId(user_login_id);
 
-    const { date, budget, tags } = location.state; // 일정 만들기 과정에서 가져온 파라미터를 형식에 맞춰 변환
     const dateString = `${getDateToString(date.toString(), 0)} ~ ${getDateToString(date.toString(), 1)}`;
     const budgetString = `₩ ${budget[0]} ~ ₩ ${budget[1]}`;
 
@@ -177,6 +185,7 @@ function PlanUpdate() {
         </div>
         <PlanInfo>
             <div className="planDate">
+            { planId }
             예산 : {budget ? budgetString : "예산 정보가 없습니다."}
             </div>
         </PlanInfo>
