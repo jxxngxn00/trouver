@@ -8,7 +8,7 @@ import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { DeleteOutlined } from '@ant-design/icons';
 import { Swiper } from 'antd-mobile';
 
-export default function TouchDnd({ list, setList, daily, setDaily, dateRange }) {
+export default function TouchDnd({ planDailyRef, planRoutesRef, list, setList, daily, setDaily, dateRange }) {
   // 날짜 형식 맞춤
   let formatDateRange = [];
   // eslint-disable-next-line
@@ -59,21 +59,23 @@ export default function TouchDnd({ list, setList, daily, setDaily, dateRange }) 
         { formatDateRange.map((temp, dateIndex)=> {
           const dailyList = list[dateIndex] || [];
           return (
+            <>
             <Swiper.Item key={dateIndex}>
               <DeleteModeWrapper>
-                <span className='date'>{getDaily(dateIndex)}</span>
-                <button onClick={() => toggleDeleteMode()}>
-                  {isDeleteMode ? '취소' : <DeleteOutlined /> }
-                </button>
-                {isDeleteMode && (
-                  <>
-                    <button onClick={() => handleDeleteSelected()} disabled={selectedItems.length === 0}>
-                      선택된 경유지 삭제 
-                    </button>
-                  </>
-                )}
-              </DeleteModeWrapper>
-              <DragDropContext onDragEnd={handleOnDragEnd}>
+                <span className='date' ref={el => planDailyRef.current[dateIndex] = el}>
+                {getDaily(dateIndex)}
+                </span>
+              <button onClick={() => toggleDeleteMode()}>
+                {isDeleteMode ? '취소' : <DeleteOutlined />}
+              </button>
+              {isDeleteMode && (
+                <>
+                  <button onClick={() => handleDeleteSelected()} disabled={selectedItems.length === 0}>
+                    선택된 경유지 삭제
+                  </button>
+                </>
+              )}
+            </DeleteModeWrapper><DragDropContext onDragEnd={handleOnDragEnd}>
                 <Droppable droppableId="droppable-1" direction="vertical">
                   {(provided) => (
                     <div {...provided.droppableProps} ref={provided.innerRef}>
@@ -92,7 +94,7 @@ export default function TouchDnd({ list, setList, daily, setDaily, dateRange }) 
                                     type="checkbox"
                                     checked={selectedItems.includes(item.id)}
                                     onChange={() => handleSelectItem(item.id)} />
-                                  </>
+                                </>
                               )}
                               <div className={isDeleteMode ? 'route deleteMode' : 'route'}>
                                 <span className='placeName'>{item.placeName}</span>
@@ -100,14 +102,14 @@ export default function TouchDnd({ list, setList, daily, setDaily, dateRange }) 
                                   <span className='placeCate'>{item.placeCate}</span>
                                   {item.placeRate ? (
                                     <span className='placeRate'>
-                                      <FontAwesomeIcon icon={faStar} style={{color: "#FFD43B"}}/>
+                                      <FontAwesomeIcon icon={faStar} style={{ color: "#FFD43B" }} />
                                       {item.placeRate}
                                     </span>
                                   ) : null}
                                 </div>
                                 {!isDeleteMode && (
                                   <div className='comment'>
-                                    <input type='text' placeholder='테스터님 만의 특별한 팁을 적어주세요!(선택)'/>
+                                    <input type='text' placeholder='테스터님 만의 특별한 팁을 적어주세요!(선택)' />
                                   </div>
                                 )}
                               </div>
@@ -124,6 +126,7 @@ export default function TouchDnd({ list, setList, daily, setDaily, dateRange }) 
                 </Droppable>
               </DragDropContext>
             </Swiper.Item>
+            </>
         )})
 
         }

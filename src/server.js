@@ -5,6 +5,7 @@ import cors from "cors";
 // Import Router
 import placeRoutes from "./routes/place.js";
 import planRoutes from "./routes/plan.js";
+import reviewRoutes from "./routes/review.js";
 import api from "./api.js";
 
 
@@ -27,7 +28,7 @@ app.use(express.json());
 app.use("/api", api);
 app.use("/api/place", placeRoutes);
 app.use("/api/plan", planRoutes);
-app.use("/api/review");
+app.use("/api/review", reviewRoutes);
 
 // ML
 // app.post('/recommend', async (req,res) => {

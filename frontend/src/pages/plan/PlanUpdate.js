@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 /* components */
 import TouchDnd from "../components/updateplan/TouchDnd";
@@ -36,47 +36,44 @@ const getDatesInRange = (startDate, endDate) => {
   return dates;
 };
 
-// 장소 추가 및 정보 수정을 위해 임의로 만들어둔 plan_id 저장
-const getPlanId = async (user_login_id) => {
-    const res = await axios.get(`/api/plan/getPlanId/${user_login_id}`);
-    return res.data[0].plan_uuid;
-}
-
 function PlanUpdate() {
     const location = useLocation();
+    const { date, budget, tags, user_login_id } = location.state || {};
     const go = useNavigate();
-    // eslint-disable-next-line 
-    const { date, budget, tags, user_login_id } = location.state; // 일정 만들기 과정에서 가져온 파라미터를 형식에 맞춰 변환
-    const planId = getPlanId(user_login_id);
 
-    const dateString = `${getDateToString(date.toString(), 0)} ~ ${getDateToString(date.toString(), 1)}`;
-    const budgetString = `₩ ${budget[0]} ~ ₩ ${budget[1]}`;
 
+    const dateString = date ? `${getDateToString(date?.toString(), 0)} ~ ${getDateToString(date?.toString(), 1)}` : "";
+    const budgetString = budget ? `₩ ${budget[0]} ~ ₩ ${budget[1]}` : '';
+    
     const [visibleCalendar, setVisibleCalendar] = useState(false); // 달력 보임 state
     const [visibleSearchPlace, setVisibleSearchPlace] = useState(false); // 장소 검색 state
-
+    
     // 장소 추가 관련 변수
     const [route, setRoute] = useState();
     const [placeArray, setPlaceArray] = useState([]);
-
+    
     // 날짜 선택 관련 변수
     const [valFromCal, setValFromCal] = useState( dateString || "" ); // 달력에서 날짜 선택시
     const [daily, setDaily] = useState(0); // N일차 -- N
     const [dateRange, setDateRange] = useState([]);
     
-
+    const dateStrings = dateString?.split(',');
+    const [defaultDate, setDefaultDate] = useState ( () =>
+        dateStrings?.map(dateString => new Date(dateString))
+    );
+    
     // 날짜 변수 변경
     const handleValueChange = (value) => {
+        // console.log(value);
         setValFromCal(value);
-        const [start, end] = value.split("~").map((date) => new Date(date));
+        const [start, end] = value?.split("~").map((date) => new Date(date));
         const dates = getDatesInRange(start, end);
         setDateRange(dates);
     };
-
+    
     // 장소 추가
     const addPlaceRoute = async (daily) => {
         setVisibleSearchPlace(false);
-        // console.log(route);
         try {
             const res = await axios.get(`/api/place/getPlace/${route}`);
             const result = res.data[0];
@@ -86,10 +83,10 @@ function PlanUpdate() {
                 placeCate: result.pla_cate,
                 placeRate: result.pla_rate_avg,
             };
-
+            
             setPlaceArray(prevPlaceArray => {
                 const newPlaceArray = [...prevPlaceArray];
-
+                
                 if (!Array.isArray(newPlaceArray[daily])) {
                     newPlaceArray[daily] = [];
                 }
@@ -98,22 +95,74 @@ function PlanUpdate() {
                 } else {
                     newPlaceArray[daily] = [newRoute];
                 };
-
+                
                 return newPlaceArray;
             });
-            // console.log('>>> placeArray : ' , updatedPlaceArray);
-
+            
         } catch (error) {
             console.error("Error fetching product detail : ",error);
         }
     };
 
-
+    const dateRef = useRef(date);
+    const dateStringRef = useRef(dateString);
     useEffect(() => {
+        dateRef.current = date;
+        dateStringRef.current = dateString;
         getDatesInRange(new Date(date[0]), new Date(date[1]));
-        handleValueChange(dateString);
+        handleValueChange(dateStringRef.current);
         // eslint-disable-next-line
     }, [date]);
+    
+    // 저장될 plan DB (초안)
+    const [planId, setPlanId] = useState();
+    useEffect(() => {
+        // 장소 추가 및 정보 수정을 위해 임의로 만들어둔 plan_id 저장
+        const getPlanId = async (user_login_id) => {
+            if (user_login_id) {
+                try {
+                    const res = await axios.get(`/api/plan/getPlanId/${user_login_id}`);
+                    setPlanId(res.data);
+                } catch (error) {
+                    console.error(error);
+                }
+            }
+        };
+
+        getPlanId(user_login_id);
+        // eslint-disable-next-line
+    },[user_login_id]);
+
+    // form 전달 데이터 ref
+    const planTitleRef = useRef(), 
+        planDateRef = useRef(), 
+        planBudgetRef = useRef(), 
+        planDailyRef = useRef(), 
+        planRoutesRef = useRef(), 
+        planTagRefs = useRef([]);
+
+    function savePlan() {
+        console.log("ref current :: ", planTitleRef.current, " , ",
+             planDateRef.current, " , ", 
+             planBudgetRef.current, " , ", 
+             planDailyRef.current, " , ", 
+             planRoutesRef.current, " , ", 
+             planTagRefs.current.map(ref => ref.innerHTML));
+        go("/viewplan");
+    }
+
+    const checkRef = () => {
+        // console.log("planTitleRef.current.value : ", planTitleRef.current.value);
+        console.log("planDateRef.current : ", planDateRef.current.innerHTML);
+        console.log("planBudgetRef.current : ", planBudgetRef.current.innerHTML);
+
+        console.log("planDailyRef.current : ", planDailyRef.current);
+
+        console.log("planRoutesRef.current : ", planRoutesRef.current);
+        planTagRefs.current.forEach((ref, index) => {
+            console.log(`planTagRefs.current[${index}].innerHTML : `, ref.innerHTML);
+        });     
+    };
 
     // 삭제 전 경고 모달 팝업
     const warning = () => {
@@ -173,150 +222,162 @@ function PlanUpdate() {
         content: "일정이 저장 및 업로드 되었습니다.",
         confirmText: "확인",
         closeOnMaskClick: true,
-        onConfirm: () => go("/viewplan"),
+        onConfirm: () => savePlan(),
         });
     };
 
     return (
         <div className="homeBgDiv viewDetailWrapper">
-        <TopBtnBar />
-        <div className="planTitle">
-            <PlanTitle type="text" placeholder="혼자 떠나는 제주여행" />
-        </div>
-        <PlanInfo>
-            <div className="planDate">
-            { planId }
-            예산 : {budget ? budgetString : "예산 정보가 없습니다."}
-            </div>
-        </PlanInfo>
-        <PlanDate>
-            {valFromCal ? valFromCal : "날짜가 설정되지 않았습니다."}
-            <DateBtn className="dateBtn" onClick={() => setVisibleCalendar(true)}>
-            <FontAwesomeIcon icon={faCalendar} />
-            </DateBtn>
-        </PlanDate>
-
-        {/* 일정 설정 */}
-        <Popup
-            position="right"
-            visible={visibleCalendar}
-            showCloseButton
-            onClose={() => {
-            setVisibleCalendar(false);
-            }}
-        >
-            <CalendarPicker onValChange={handleValueChange} />
-            <ConfirmBtn
-            onClick={() => {
-                setVisibleCalendar(false);
-            }}
-            >
-            확인
-            </ConfirmBtn>
-        </Popup>
-
-        {/* N일차 라디오 버튼 */}
-        <div className="dateRadioBtn">
-            <div className="dateRadioBoxWrapper">
-            {dateRange.map((dateN, index) => (
-                <React.Fragment key={index}>
-                    <InfoRadioBoxInput
-                        type="radio"
-                        id={`day${index + 1}`}
-                        name="day"
-                        value={index}
-                        onChange={(e) => {setDaily(e.target.value);}}
-                        checked = {index === daily}
-                    />
-                    <InfoCheckBoxLabel htmlFor={`day${index + 1}`}>
-                        {index + 1}일차
-                    </InfoCheckBoxLabel>
-                </React.Fragment>
-            ))}
-            </div>
-        </div>
-
-        <div className="mapWrapper">
-            <img src={mapPicture} alt="지도 예시" />
-        </div>
-
-        <div className="routesWrapper">
-            {/* 여행 장소 경유지 설정 */}
-            <div className="wrapper2">
-                <div className="wrapper3">
-                    <TouchDnd 
-                        list={placeArray} setList={setPlaceArray} 
-                        daily={daily}
-                        setDaily = {setDaily}
-                        dateRange={dateRange}
-                    />
+            <TopBtnBar />
+            <button onClick={()=> checkRef()}>저장할때 넘길 변수 확인 버튼</button>
+            <form name="plan-form">
+                <div className="planTitle">
+                    <PlanTitle id="planTitle" ref={planTitleRef} type="text" placeholder="혼자 떠나는 제주여행" />
                 </div>
-            </div>
+                <PlanInfo>
+                    <div className="planDate" ref={planBudgetRef} id="planBudget">
+                    {/* { planId ? planId[0].plan_uuid : "일정 생성 중 오류 발생" } */}
+                    예산 : <span ref={planBudgetRef} >{budget ? budgetString : "예산 정보가 없습니다."}</span>
+                    </div>
+                </PlanInfo>
+                <PlanDate ref={planDateRef} id="planDate">
+                    <span ref={planDateRef}>{valFromCal ? valFromCal : "날짜가 설정되지 않았습니다."}</span>
+                    <DateBtn className="dateBtn" onClick={(e) => {
+                        e.preventDefault();
+                        setVisibleCalendar(true);
+                    }}>
+                    <FontAwesomeIcon icon={faCalendar} />
+                    </DateBtn>
+                </PlanDate>
 
-            {/* 선택된 태그 */}
-            <div className="wrapper2">
-            <div className="wrapper3 tags">
-            {tags && tags.length > 0 ? 
-                tags.map((tag, idx) => {
-                    return (<Tag key={idx} color='#45866B'>{tag}</Tag>)
-                })
-            : "태그가 없습니다."}
-            </div>
-            </div>
-        </div>
+                {/* 일정 설정 */}
+                <Popup
+                    position="right"
+                    visible={visibleCalendar}
+                    showCloseButton
+                    onClose={() => {
+                        setVisibleCalendar(false);
+                    }}
+                >
+                    <CalendarPicker 
+                        defaultValue = {defaultDate}
+                        onValChange={handleValueChange} 
+                    />
+                    <ConfirmBtn
+                        onClick={() => {
+                            setVisibleCalendar(false);
+                        }}
+                    > 확인 </ConfirmBtn>
+                </Popup>
 
-        <VPlanDetailBtnWrapper className="vPlanDetailBtnWrapper">
-            <div
-            className="vPlanDetailBtn"
-            onClick={() => {
-                setVisibleSearchPlace(true);
-            }}
-            >
-            <FontAwesomeIcon
-                className="icon"
-                size="2xl"
-                icon={faMapPin}
-                style={{ color: "#c9c9c9" }}
-            />
-            <span>장소 추가</span>
-            </div>
+                {/* N일차 라디오 버튼 */}
+                <div className="dateRadioBtn">
+                    <div className="dateRadioBoxWrapper">
+                    {dateRange.map((dateN, index) => (
+                        <React.Fragment key={index} >
+                            <InfoRadioBoxInput
+                                type="radio"
+                                id={`day${index + 1}`}
+                                name="day"
+                                value={index}
+                                onChange={(e) => {setDaily(e.target.value);}}
+                                checked = {index === daily}
+                            />
+                            <InfoCheckBoxLabel htmlFor={`day${index + 1}`}>
+                                {index + 1}일차
+                            </InfoCheckBoxLabel>
+                        </React.Fragment>
+                    ))}
+                    </div>
+                </div>
 
-            <Popup
-            visible={visibleSearchPlace}
-            showCloseButton
-            onClose={() => {
-                setVisibleSearchPlace(false);
-            }}
-            >
-            <SearchPlace onValChange={handleValueChange} route={route} setRoute={setRoute}/>
-            <ConfirmBtn
-                onClick={() => {
-                    addPlaceRoute(daily);
-                }}
-            >
-                등록하기
-            </ConfirmBtn>
-            </Popup>
+                <div className="mapWrapper">
+                    <img src={mapPicture} alt="지도 예시" />
+                </div>
 
-            <div className="vPlanDetailBtn" onClick={() => saveConfirm()}>
-            <FontAwesomeIcon
-                className="icon"
-                size="2xl"
-                icon={faFloppyDisk}
-                style={{ color: "#c9c9c9" }}
-            />
-            <span>일정 저장</span>
-            </div>
-            <div className="vPlanDetailBtn" onClick={() => warning()}>
-            <FontAwesomeIcon
-                className="icon"
-                size="2xl"
-                icon={faTrash}
-                style={{ color: "#c9c9c9" }}
-            />
-            <span>일정 삭제</span>
-            </div>
-        </VPlanDetailBtnWrapper>
+                <div className="routesWrapper">
+                    {/* 여행 장소 경유지 설정 */}
+                    <div className="wrapper2">
+                        <div className="wrapper3">
+                            <TouchDnd 
+                                planDailyRef={planDailyRef} planRoutesRef={planRoutesRef}
+                                list={placeArray} setList={setPlaceArray} 
+                                daily={daily}
+                                setDaily = {setDaily}
+                                dateRange={dateRange}
+                            />
+                        </div>
+                    </div>
+
+                    {/* 선택된 태그 */}
+                    <div className="wrapper2">
+                    <div className="wrapper3 tags">
+                    {tags && tags.length > 0 ? 
+                        tags.map((tag, idx) => {
+                            return (<Tag 
+                                    key={idx} 
+                                    ref={el => planTagRefs.current[idx] = el} 
+                                    color='#45866B'>{tag}
+                                </Tag>)
+                        })
+                    : "태그가 없습니다."}
+                    </div>
+                    </div>
+                </div>
+
+                <VPlanDetailBtnWrapper className="vPlanDetailBtnWrapper">
+                    <div
+                    className="vPlanDetailBtn"
+                    onClick={() => {
+                        setVisibleSearchPlace(true);
+                    }}
+                    >
+                    <FontAwesomeIcon
+                        className="icon"
+                        size="2xl"
+                        icon={faMapPin}
+                        style={{ color: "#c9c9c9" }}
+                    />
+                    <span>장소 추가</span>
+                    </div>
+
+                    <Popup
+                    visible={visibleSearchPlace}
+                    showCloseButton
+                    onClose={() => {
+                        setVisibleSearchPlace(false);
+                    }}
+                    >
+                    <SearchPlace onValChange={handleValueChange} route={route} setRoute={setRoute}/>
+                    <ConfirmBtn
+                        onClick={() => {
+                            addPlaceRoute(daily);
+                        }}
+                    >
+                        등록하기
+                    </ConfirmBtn>
+                    </Popup>
+
+                    <div className="vPlanDetailBtn" onClick={() => saveConfirm()}>
+                    <FontAwesomeIcon
+                        className="icon"
+                        size="2xl"
+                        icon={faFloppyDisk}
+                        style={{ color: "#c9c9c9" }}
+                    />
+                    <span>일정 저장</span>
+                    </div>
+                    <div className="vPlanDetailBtn" onClick={() => warning()}>
+                    <FontAwesomeIcon
+                        className="icon"
+                        size="2xl"
+                        icon={faTrash}
+                        style={{ color: "#c9c9c9" }}
+                    />
+                    <span>일정 삭제</span>
+                    </div>
+                </VPlanDetailBtnWrapper>
+            </form>
         </div>
     );
 };

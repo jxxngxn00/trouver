@@ -1,15 +1,15 @@
 import React, { useState } from "react";
-import { Calendar } from "antd-mobile";
+import { CalendarPickerView } from "antd-mobile";
 // import styled from "styled-components";
 
-function CalendarPicker({ onValChange }) {
+function CalendarPicker({ defaultValue, onValChange }) {
     // const today = dayjs();
     const [val, setVal] = useState(() => [
     ]);
 
     const handleValueChange = (val) => {
         onValChange(`${getDateToString(val.toString(), 0)} ~ ${getDateToString(val.toString(), 1)}`);
-        setVal(val)
+        setVal(val);
     }
 
     const getDateToString = (text, idx) => {
@@ -28,7 +28,8 @@ function CalendarPicker({ onValChange }) {
     return (
         <>
             <div style={{height:1, marginTop:36}}></div>
-            <Calendar
+            <CalendarPickerView
+                defaultValue={defaultValue}
                 className="calendar-custom"
                 selectionMode="range"
                 value={val}
