@@ -3,8 +3,9 @@ import styled from 'styled-components';
 import React, { useState } from 'react';
 
 export const getDateToString = (text, idx) => {
-    const dateStrings = text.split(',');
-    const dates = dateStrings.map(dateString => new Date(dateString));
+    // console.log("DatePickerCustom :: ",text);
+    const dateStrings = text?.split(',');
+    const dates = dateStrings?.map(dateString => new Date(dateString));
     return formatDate(dates[idx]);
 };
 

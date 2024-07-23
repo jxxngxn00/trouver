@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import TopBtnBar from '../components/TopBtnBar';
 import { CheckBoxInput, CheckBoxLabel } from '../../css/Tag';
 import styled from 'styled-components';
@@ -7,18 +7,44 @@ import { ImageUploader, Rate, TextArea } from 'antd-mobile';
 
 const WritingReview = () => {
     const userName = '도레미';
+    const [enteredRate, setEnteredRate] = useState();
+    const [enteredFile, setEnteredFile] = useState("");
+    const [enteredTags, setEnteredTags] = useState([]);
+    const [endteredCont, setEnteredConts] = useState("");
+
+    const handleSubmit = (e) => {
+        // 페이지 리로드 방지
+        e.preventDefault();
+        const form = document.forms['reviewForm'];
+        console.log(form.rate); 
+        console.log(form.img);
+        console.log(form.content.innerHTML);  
+            
+        // state 결합 : 제출된 폼의 내용을 모두 담은 객체 생성
+        const reviewData = {
+            r_rate : enteredRate,
+            r_img : enteredFile,
+            r_tag : enteredTags,
+            r_content : endteredCont,
+        };
+        
+        // 양방형 바인딩 : 입력 후 form에 적은 값 화면에서 없애기
+        setEnteredRate(0);
+        setEnteredFile("");
+        setEnteredTags([]);
+        setEnteredConts("");
+    };
     return (
         <div className="homeBgDiv">
             <TopBtnBar />
-
-            <form>
+            <form name="reviewForm" onSubmit={(event)=>handleSubmit(event)}>
                 <StarRateDiv>
                     <div className="imgWrapper">
                         <img src={profile} alt="기본 프로필 사진" />
                     </div>
                     <div className="rateWrapper">
                         <span className="desc">{userName}님 이곳은 어떠셨나요?</span>
-                        <Rate className="rate" defaultValue={3} allowHalf allowClear={false} />
+                        <Rate id="rate" className="rate" defaultValue={3} allowHalf allowClear={false} />
                     </div>
                 </StarRateDiv>
 
@@ -47,19 +73,19 @@ const WritingReview = () => {
 
                 <PhotoDiv className="photoDiv">
                     <span className="label">사진</span>
-                    <ImageUploader
+                    <ImageUploader id="img"
                         className='imageUploader'
-                />
+                    />
                 </PhotoDiv>
                 <ReviewDiv className="reviewDiv">
                     <span className="label">리뷰 작성</span>
-                    <TextArea className='textArea'
+                    <TextArea className='textArea' id='content'
                         placeholder="리뷰를 작성해주세요."
                         showCount
                         autoSize={{ minRows: 3, maxRows: 5 }}
                     />
                 </ReviewDiv>
-                <SubmitBtn className='submitBtn' block type='submit' size='middle'>
+                <SubmitBtn className='submitBtn' block type='submit' size='middle' onClick={() => handleSubmit}>
                     작성 완료
                 </SubmitBtn>
             </form>
