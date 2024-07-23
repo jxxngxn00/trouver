@@ -142,20 +142,17 @@ function PlanUpdate() {
         planTagRefs = useRef([]);
 
     function savePlan() {
-        console.log("ref current :: ", planTitleRef.current, " , ",
-             planDateRef.current, " , ", 
-             planBudgetRef.current, " , ", 
-             planDailyRef.current, " , ", 
-             planRoutesRef.current, " , ", 
-             planTagRefs.current.map(ref => ref.innerHTML));
+        console.log("ref current :: ", 
+            planTitleRef.current, " , ",
+            planDateRef.current, " , ", 
+            planBudgetRef.current.innerHTML, " , ", 
+            planDailyRef.current, " , ", 
+            planRoutesRef.current, " , ", 
+            planTagRefs.current.map(ref => ref.innerHTML));
         go("/viewplan");
     }
 
     const checkRef = () => {
-        // console.log("planTitleRef.current.value : ", planTitleRef.current.value);
-        console.log("planDateRef.current : ", planDateRef.current.innerHTML);
-        console.log("planBudgetRef.current : ", planBudgetRef.current.innerHTML);
-
         console.log("planDailyRef.current : ", planDailyRef.current);
 
         console.log("planRoutesRef.current : ", planRoutesRef.current);
@@ -235,12 +232,12 @@ function PlanUpdate() {
                     <PlanTitle id="planTitle" ref={planTitleRef} type="text" placeholder="혼자 떠나는 제주여행" />
                 </div>
                 <PlanInfo>
-                    <div className="planDate" ref={planBudgetRef} id="planBudget">
+                    <div className="planDate" id="planBudget">
                     {/* { planId ? planId[0].plan_uuid : "일정 생성 중 오류 발생" } */}
                     예산 : <span ref={planBudgetRef} >{budget ? budgetString : "예산 정보가 없습니다."}</span>
                     </div>
                 </PlanInfo>
-                <PlanDate ref={planDateRef} id="planDate">
+                <PlanDate id="planDate">
                     <span ref={planDateRef}>{valFromCal ? valFromCal : "날짜가 설정되지 않았습니다."}</span>
                     <DateBtn className="dateBtn" onClick={(e) => {
                         e.preventDefault();

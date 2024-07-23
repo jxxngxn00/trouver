@@ -34,24 +34,28 @@ try:
     with connection.cursor() as cursor:
         for index, row in df.iterrows():
             print('insert :::',index+1,row['title'])
-            if row['label'] == "테마여행":
-                continue
+            # if row['label'] == "테마여행":
+            #     continue
 
-            
             sql = """
             insert into place (
                 pla_cont_code, pla_name, pla_phone, pla_addr1, pla_addr2, pla_post,
-                pla_content, pla_addr_x, pla_addr_y, pla_image, pla_thumb, pla_keyword, pla_cate,
-                pla_tag, pla_id
+                pla_content, pla_addr_x, pla_addr_y, pla_image, pla_thumb, pla_keyword, 
+                pla_cate, pla_tag, region1_id, region2_cd, region3_cd
             ) values ( 
                 %s, %s, %s, %s, %s, %s,
-                %s, %s, %s, %s, %s, %s, %s, 
-                %s, UUID_TO_BIN(UUID())
+                %s, %s, %s, %s, %s, %s, 
+                %s, %s, %s, %s, %s
             )
             """
-            cursor.execute(sql, (row['contentsid'], row['title'], row['phoneno'], row['address'], row['roadaddress'], row['postcode'],
-                                 row['introduction'], row['longitude'], row['latitude'], row['imgpath'], row['thumbnailpath'], row['descseo'], row['label'],
-                                 row['tag']))
+            # data = [row['contentsid'], row['title'], row['phoneno'], row['address'], row['roadaddress'], row['postcode'], 
+            #         row['introduction'], row['longitude'], row['latitude'], row['imgpath'], row['thumbnailpath'], row['descseo'], 
+            #         row['label'], row['tag'], row['regioncd_value'], row['region1cd_value'], row['region2cd_value']]
+            # print('data',index+1,':: \n', data)
+            
+            cursor.execute(sql, [row['contentsid'], row['title'], row['phoneno'], row['address'], row['roadaddress'], row['postcode'], 
+                    row['introduction'], row['longitude'], row['latitude'], row['imgpath'], row['thumbnailpath'], row['descseo'], 
+                    row['label'], row['tag'], row['regioncd_value'], row['region1cd_value'], row['region2cd_value']])
         connection.commit()
     print('Data inserted successfully.')
 except Exception as e:

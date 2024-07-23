@@ -72,30 +72,6 @@ export const MinsertDatePlan = (req, res) => {
     }
 };
 
-// 방금 insert한 date_plan id 받아옴
-export const MgetDatePlanId = (req, res) => {
-    try {
-        const sql = `
-            SELECT u.user_uuid 
-            from ( 
-                select bin_to_uuid(user_id) as user_uuid, RANK() over(order by user_register desc) as rn from user 
-            ) as u 
-            where rn = 1 AND user_id = ?
-        `;
-        db.query(sql, (err, row) => {
-            if (err) {
-                console.error('Database query error : ', err);
-                res.status(500).send('Database query error');
-                return;
-            };
-            res.send(row);
-        })
-    } catch (error) {
-        console.error('Error : ', error);
-        res.status(500).send('Server error');
-    }
-}
-
 // 일정 Insert :: Route (알차별 여행지 테이블)
 export const MinsertRoute = (req, res) => {
     try {
@@ -114,3 +90,81 @@ export const MinsertRoute = (req, res) => {
         res.status(500).send('Server error');
     }
 };
+
+// 일정 목록 보기 :: 최신순
+export const MgetPlanList = (req, res) => {
+    try {
+        const sql = `
+            SELECT bin_to_uuid(p.plan_id) as plan_uuid, u.user_name , p.plan_title, p.plan_reg,
+                p.plan_start, p.plan_end, p.plan_tag, p.plan_budget, p.plan_saved
+            from plan p
+            LEFT join user u
+            on p.user_id = u.user_id
+            ORDER BY p.plan_reg DESC
+            WHERE !p.plan_is_deleted
+        `;
+        db.query(sql, [req.params.id], (err, rows) => {
+            if (err) {
+                console.error('Database query error : ', err);
+                res.status(500).send('Database query error');
+                return;
+            };
+            // console.log("result :: ",row);
+            res.send(rows);
+        })
+    } catch (error) {
+        console.error('Error : ', error);
+        res.status(500).send('Server error');
+    } 
+}
+// 일정 상세 보기
+export const MgetPlan = (req, res) => {
+    try {
+        const sql = `
+            SELECT bin_to_uuid(p.plan_id) as plan_uuid, u.user_name , p.plan_title, p.plan_reg,
+                p.plan_start, p.plan_end, p.plan_tag, p.plan_budget, p.plan_saved
+            from plan p
+            LEFT join user u
+            on p.user_id = u.user_id
+            WHERE bin_to_uuid(p.plan_id) = %s
+        `;
+        db.query(sql, [req.params.id], (err, rows) => {
+            if (err) {
+                console.error('Database query error : ', err);
+                res.status(500).send('Database query error');
+                return;
+            };
+            // console.log("result :: ",row);
+            res.send(rows);
+        })
+    } catch (error) {
+        console.error('Error : ', error);
+        res.status(500).send('Server error');
+    } 
+}
+
+// 일정 Update :: Plan
+export const MupdatePlan = (req, res) => {
+
+}
+
+// 일정 Delete
+export const MdeletePlan = (req, res) => {
+    try {
+        const sql = `
+            UPDATE plan
+            SET plan_is_delete = CURRENT_TIMESTAMP
+            WHERE plan_id = %s AND user_id = %s
+        `;
+        db.query(sql, /* 파라미터 들어갈 자리 ,*/ (err, row) => {
+            if (err) {
+                console.error('Database query error : ', err);
+                res.status(500).send('Database query error');
+                return;
+            };
+        })
+    } catch (error) {
+        console.error('Error : ', error);
+        res.status(500).send('Server error');
+    }
+}
