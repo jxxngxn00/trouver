@@ -7,3 +7,4 @@ node_modules/*
 python
 python/*
 *.zip
+src/database/db.js
