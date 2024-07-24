@@ -4,22 +4,41 @@ import { CheckBoxInput, CheckBoxLabel } from '../../css/Tag';
 import styled from 'styled-components';
 import profile from '../../images/default_profile.png';
 import { ImageUploader, Rate, TextArea } from 'antd-mobile';
+import { sleep } from "antd-mobile/es/utils/sleep"
+import axios from 'axios';
+
+const mockUpload = async (file) => {
+    await sleep(3000);
+    return {
+        url: URL.createObjectURL(file),
+    };
+}
 
 const WritingReview = () => {
     const userName = '도레미';
     const [enteredRate, setEnteredRate] = useState();
-    const [enteredFile, setEnteredFile] = useState("");
     const [enteredTags, setEnteredTags] = useState([]);
     const [endteredCont, setEnteredConts] = useState("");
+    const [enteredFile, setEnteredFile] = useState([]);
 
+    const handleImageUpload = (val) => {
+        setEnteredFile(val); 
+        // console.log("enteredFile :: ",val);
+    };
+
+    const handleTagChange = () => {
+        const checkedLabels = Array.from(document.querySelectorAll('.tagCheckBox input:checked'))
+            .map(input => input.nextElementSibling.textContent);
+        setEnteredTags(checkedLabels);
+    }
+    
     const handleSubmit = (e) => {
         // 페이지 리로드 방지
         e.preventDefault();
+
         const form = document.forms['reviewForm'];
-        console.log(form.rate); 
-        console.log(form.img);
-        console.log(form.content.innerHTML);  
-            
+        setEnteredConts(form.content.innerHTML);
+
         // state 결합 : 제출된 폼의 내용을 모두 담은 객체 생성
         const reviewData = {
             r_rate : enteredRate,
@@ -28,11 +47,27 @@ const WritingReview = () => {
             r_content : endteredCont,
         };
         
+        try {
+            // DB에 formData 저장 
+            axios.post(`/api/plan/insertPlaceReview`, reviewData, {
+                headers : {
+                    "Context-Type" : "multipart/form-data",
+                },
+            }).then(()=> {
+                // 화면 이동 코드 
+            });
+            
+        } catch (error) {
+            console.error("Error fetching plan insert : ",error);
+        }
+
         // 양방형 바인딩 : 입력 후 form에 적은 값 화면에서 없애기
         setEnteredRate(0);
-        setEnteredFile("");
+        setEnteredFile([]);
         setEnteredTags([]);
-        setEnteredConts("");
+        form.content.innerHTML = "";
+
+
     };
     return (
         <div className="homeBgDiv">
@@ -44,7 +79,9 @@ const WritingReview = () => {
                     </div>
                     <div className="rateWrapper">
                         <span className="desc">{userName}님 이곳은 어떠셨나요?</span>
-                        <Rate id="rate" className="rate" defaultValue={3} allowHalf allowClear={false} />
+                        <Rate id="rate" className="rate" defaultValue={3} allowHalf allowClear={false} 
+                            onChange = {val => setEnteredRate(val) }
+                        />
                     </div>
                 </StarRateDiv>
 
@@ -57,14 +94,9 @@ const WritingReview = () => {
                             { id: 'tag3', label: '영화관람' },
                             { id: 'tag4', label: '감귤따기' },
                             { id: 'tag5', label: '맛집탐험' },
-                            { id: 'tag6', label: '쇼핑' },
-                            { id: 'tag7', label: '스포츠' },
-                            { id: 'tag8', label: '영화관람' },
-                            { id: 'tag9', label: '감귤따기' },
-                            { id: 'tag10', label: '맛집탐험' }
                         ].map(tag => (
                             <div key={tag.id} className="tagCheckBox">
-                                <CheckBoxInput type="checkbox" id={tag.id} name="tag" />
+                                <CheckBoxInput type="checkbox" id={tag.id} name="tag" onChange={()=>handleTagChange()} />
                                 <CheckBoxLabel htmlFor={tag.id}>{tag.label}</CheckBoxLabel>
                             </div>
                         ))}
@@ -75,6 +107,14 @@ const WritingReview = () => {
                     <span className="label">사진</span>
                     <ImageUploader id="img"
                         className='imageUploader'
+                        value={enteredFile}        
+                        onChange={
+                            // setEnteredFile
+                            (val) => {handleImageUpload(val);}
+                        }
+                        upload={mockUpload}
+                        showUpload={enteredFile.length < 4}
+                        maxCount={4}
                     />
                 </PhotoDiv>
                 <ReviewDiv className="reviewDiv">
@@ -85,7 +125,7 @@ const WritingReview = () => {
                         autoSize={{ minRows: 3, maxRows: 5 }}
                     />
                 </ReviewDiv>
-                <SubmitBtn className='submitBtn' block type='submit' size='middle' onClick={() => handleSubmit}>
+                <SubmitBtn className='submitBtn' block size='middle' onClick={() => handleSubmit}>
                     작성 완료
                 </SubmitBtn>
             </form>

@@ -56,7 +56,7 @@ export const MgetPlanId = (req, res) => {
 // 일정 Insert :: date_plan (일차별 일정 테이블)
 export const MinsertDatePlan = (req, res) => {
     try {
-        const sql = `INSERT INTO plan(plan) VALUES(date_plan_date) VALUES (?)`;
+        const sql = `INSERT INTO date_plan(date_plan_date) VALUES (?)`;
         db.query(sql, (err, rows) => {
             if (err) {
                 console.error('Database query error : ', err);

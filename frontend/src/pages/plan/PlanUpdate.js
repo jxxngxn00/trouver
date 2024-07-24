@@ -58,6 +58,7 @@ function PlanUpdate() {
     const [dateRange, setDateRange] = useState([]);
     
     const dateStrings = dateString?.split(',');
+    // eslint-disable-next-line
     const [defaultDate, setDefaultDate] = useState ( () =>
         dateStrings?.map(dateString => new Date(dateString))
     );
@@ -115,6 +116,7 @@ function PlanUpdate() {
     }, [date]);
     
     // 저장될 plan DB (초안)
+    // eslint-disable-next-line
     const [planId, setPlanId] = useState();
     useEffect(() => {
         // 장소 추가 및 정보 수정을 위해 임의로 만들어둔 plan_id 저장
@@ -254,6 +256,7 @@ function PlanUpdate() {
                     showCloseButton
                     onClose={() => {
                         setVisibleCalendar(false);
+                        setPlaceArray([]);
                     }}
                 >
                     <CalendarPicker 

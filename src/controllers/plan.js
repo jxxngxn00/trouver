@@ -1,13 +1,18 @@
 import asyncHandler from 'express-async-handler';
 import { MinsertPlan, MinsertDatePlan, MinsertRoute, 
-    MgetPlanId, MgetPlanList, MgetPlan, 
+    MgetPlanId, MgetPlanList, MgetPlan, MupdatePlan,
     MdeletePlan} from '../models/plan.js';
 
-export const CInsertPlan = asyncHandler(async (req, res) => {
+export const CInsertPlan_temp = asyncHandler(async (req, res) => {
     MinsertPlan(req, res);
+    // MinsertDatePlan(req, res);
+    // MinsertRoute(req,res);
+});
+
+export const CInsertPlan = asyncHandler(async (req, res) => {
+    MupdatePlan(req, res);
     MinsertDatePlan(req, res);
     MinsertRoute(req,res);
-    // res.json({ result : true });
 });
 
 // 방금 임의로 만든 일정의 id를 가져오는 컨트롤러

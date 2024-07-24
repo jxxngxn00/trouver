@@ -16,7 +16,7 @@ function MakePlan() {
     const [tags, setTags] = useState([]);
     
     const user_name = '도레미';
-    const user_id = 'fdb1a386-48f1-11ef-bcc9-af0a24947caf';
+    const user_id = 'd3ca4a15-2a0c-11ef-9ffb-7085c2d2eea0';
 
     const handleSubmit = async () => {
         // 각각 component에서 입력한 내용 변수 저장
@@ -27,7 +27,7 @@ function MakePlan() {
 
         try {
             // DB에 formData 저장 
-            axios.post(`/api/plan/insertPlan`, formData, {
+            axios.post(`/api/plan/insertPlanTemp`, formData, {
                 headers : {
                     "Context-Type" : "multipart/form-data",
                 },

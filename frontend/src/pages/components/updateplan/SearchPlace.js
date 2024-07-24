@@ -56,7 +56,7 @@ const SearchPlace = ({ route, setRoute }) => {
                         onChange={val => {
                             setValue(val);
                             setRoute(val);
-                            console.log(val);
+                            // console.log(val);
                         }}
                 >
                 { (!search) ?
