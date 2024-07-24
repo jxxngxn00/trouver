@@ -8,13 +8,13 @@ import MgetPlaceReview, { MinsertPlaceReview, //여행지 리뷰 모델
 /* 여행지 리뷰 컨트롤러 */
 export const CgetPlaceReview = asyncHandler(async (req, res) => {
     const id = req.params.id;
-    MgetPlaceReview();
+    MgetPlaceReview(req, res);
 });
 
 export const CinsertPlaceReview = asyncHandler(async (req, res) => {
     // 필요 params : user_id, pla_id,pla_img, pla_r_rate, pla_r_tag, pla_r_content
-    const data = [];
-    MinsertPlaceReview();
+    const data = req.body;
+    MinsertPlaceReview(req, res);
 });
 
 export const CupdatePlaceReview = asyncHandler(async (req, res) => {

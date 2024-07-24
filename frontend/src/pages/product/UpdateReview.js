@@ -18,7 +18,7 @@ const mockUpload = async (file) => {
     };
 }
 
-const WritingReview = () => {
+const UpdateReview = () => {
     const userName = '도레미';
     const go = useNavigate();
     const [enteredRate, setEnteredRate] = useState();
@@ -232,4 +232,4 @@ const ReviewDiv = styled(KeywordDiv)`
 
 `;
 
-export default WritingReview;
+export default UpdateReview;

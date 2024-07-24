@@ -9,8 +9,8 @@ import CgetPlaceReview, { CinsertPlaceReview,
 
 router.get("/", (req, res) => { res.send("review CRUD")});
 
-router.get("/getPlaceReview", CgetPlaceReview);
-router.get("/insertPlaceReview", CinsertPlaceReview);
+router.get("/getPlaceReview/:id", CgetPlaceReview);
+router.post("/insertPlaceReview", CinsertPlaceReview);
 router.get("/updatePlaceReview", CupdatePlaceReview);
 router.get("/deletePlaceReview", CdeletePlaceReview);
 

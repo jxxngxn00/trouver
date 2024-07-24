@@ -4,8 +4,10 @@ import styled from 'styled-components';
 import test from '../../images/test.jfif';
 import { Divider, Rate, ImageViewer } from 'antd-mobile';
 import { useNavigate } from 'react-router-dom';
-export const Review = () => {
+
+export const Review = ({ reviews }) => {
   const [visible, setVisible] = useState(false);
+  const user_uuid = "";
   const go = useNavigate();
     return (
         <div>
@@ -28,64 +30,45 @@ export const Review = () => {
             <Divider/>
 
             <TitleSpan className='title'>트루버 리뷰</TitleSpan>
-            <ReviewWrapper>
-                <div className='reviewWrapper'>
-                    <div>이름</div>
-                    <div>태그</div>
-                    <Rate readOnly value={4}/>
-                    <ImgSlider className='reviewImgSlider'>
-                        {[...Array(3)].map((index)=> (
-                            <>
-                            <img className='reviewThumb' key={index} src={test} alt="썸네일" onClick={() => setVisible(true)}/>
-                            <ImageViewer
-                                classNames={{
-                                    mask: 'customize-mask',
-                                    body: 'customize-body',
-                                }}
-                                image={test}
-                                visible={visible}
-                                onClose={() => {
-                                    setVisible(false);
-                                } } />
-                            </>
-                        ))}
-                    </ImgSlider>
-                    <div>
-                        내용 내용 내용 내용 내용 내용 내용 내용 내용 내용 내용 내용 
+            {/* // eslint-disable-next-line */}
+            { reviews.map ((review, idx) => {
+                // console.log(review);
+                return(
+                <ReviewWrapper key={idx}>
+                    <div className='reviewWrapper'>
+                        <div>{review.user_name}</div>
+                        <div>{review.pla_r_tag}</div>
+                        <Rate readOnly value={review.pla_r_rate}/>
+                        <ImgSlider className='reviewImgSlider'>
+                            {[...review.pla_r_img.split('|')].map((item, index)=> (
+                                <>
+                                <img className='reviewThumb' key={index} src={item} alt="썸네일" onClick={() => setVisible(true)}/>
+                                <ImageViewer
+                                    classNames={{
+                                        mask: 'customize-mask',
+                                        body: 'customize-body',
+                                    }}
+                                    image={test}
+                                    visible={visible}
+                                    onClose={() => {
+                                        setVisible(false);
+                                    } } />
+                                </>
+                            ))}
+                        </ImgSlider>
+                        <div>
+                            {review.pla_r_content}
+                        </div>
                     </div>
-                </div>
-            </ReviewWrapper>
-            <ReviewWrapper>
-                <div className='reviewWrapper'>
-                    <div>내가 쓴 리뷰</div>
-                    <div>태그</div>
-                    <Rate readOnly value={4}/>
-                    <ImgSlider className='reviewImgSlider'>
-                        {[...Array(3)].map((index)=> (
-                            <>
-                            <img className='reviewThumb' key={index} src={test} alt="썸네일" onClick={() => setVisible(true)}/>
-                            <ImageViewer
-                                classNames={{
-                                    mask: 'customize-mask',
-                                    body: 'customize-body',
-                                }}
-                                image={test}
-                                visible={visible}
-                                onClose={() => {
-                                    setVisible(false);
-                                } } />
-                            </>
-                        ))}
-                    </ImgSlider>
-                    <div>
-                        내용 내용 내용 내용 내용 내용 내용 내용 내용 내용 내용 내용 
-                    </div>
-                    <EditBtnWrapper className='editBtnWrapper'>
-                        <div className='reviewBtn editBtn'>수정</div>
-                        <div className='reviewBtn deleteBtn'>삭제</div>
-                    </EditBtnWrapper>
-                </div>
-            </ReviewWrapper>
+                    {   
+                        review.user_uuid = user_uuid && (
+                        <EditBtnWrapper className='editBtnWrapper'>
+                            <div className='reviewBtn editBtn'>수정</div>
+                            <div className='reviewBtn deleteBtn'>삭제</div>
+                        </EditBtnWrapper> )
+                    }
+                </ReviewWrapper>)
+            })}
             <ReviewBtn onClick={()=> go('/makeReview')}>리뷰 쓰러 가기</ReviewBtn>
         </div>
     );

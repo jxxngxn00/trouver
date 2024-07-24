@@ -22,21 +22,33 @@ function ViewProductDetail(props) {
     const { id } = useParams();
     const [productDetail, setProductDetail] = useState("");
     const [curIndex, setCurIndex] = useState(0);
+    const [reviews, setReviews] = useState([]);
+
     function handleChange(index){
         setCurIndex(index);
     };
 
     const getPlace = async () => {
         try {
-            const res = await axios.get(`/api/place/getPlace/${id}`)
+            const res = await axios.get(`/api/place/getPlace/${id}`);
             setProductDetail(res.data);
         } catch (error) {
             console.error("Error fetching product detail : ",error);
         }
     };
 
+    const getPlaceReview = async () => {
+        try {
+            const res = await axios.get(`/api/review/getPlaceReview/${id}`);
+            setReviews(res.data);
+        } catch (err) {
+            console.error("Error fetching place review : ",err);
+        }
+    }
+
     useEffect(() => {
         getPlace();
+        getPlaceReview();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     },[]);
 
@@ -89,7 +101,7 @@ function ViewProductDetail(props) {
             id: 3,
             title: "리뷰",
             class: 'review',
-            content: (<Review/>)
+            content: (<Review reviews={reviews}/>)
         }
     ];
 
