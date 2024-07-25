@@ -1,15 +1,14 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import TopBtnBar from '../components/TopBtnBar';
 import { CheckBoxInput, CheckBoxLabel } from '../../css/Tag';
 import styled from 'styled-components';
-import profile from '../../images/default_profile.png';
 import { ImageUploader, Rate, TextArea, Modal } from 'antd-mobile';
 import UseAnimations from 'react-useanimations';
 import radioButton from 'react-useanimations/lib/radioButton';
 
 import { sleep } from "antd-mobile/es/utils/sleep"
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 const mockUpload = async (file) => {
     await sleep(3000);
@@ -21,10 +20,33 @@ const mockUpload = async (file) => {
 const WritingReview = () => {
     const userName = '도레미';
     const go = useNavigate();
-    const [enteredRate, setEnteredRate] = useState();
+    const { plaId } = useParams();
+    const userUuid = '0eb6e69c-47cc-11ef-b3c9-7085c2d2eea0';
+    const [enteredPlaceName, setEnteredPlaceName] = useState("");
+    const [enteredPlaceImg, setEnteredPlaceImg] = useState("");
+    const [enteredPlaceAddr, setEnteredPlaceAddr] = useState("");
+    const [enteredRate, setEnteredRate] = useState(3);
     const [enteredTags, setEnteredTags] = useState([]);
     const [endteredCont, setEnteredConts] = useState("");
     const [enteredFile, setEnteredFile] = useState([]);
+
+    useEffect(() => {
+        const getPlace = async () => {
+            const result = await axios.get(`/api/place/getPlace/${plaId}`);
+            const res = result.data[0];
+            const pla = {
+                plaName : res.pla_name,
+                plaThumb : res.pla_thumb,
+                plaAddr : res.pla_addr1,
+            };
+            setEnteredPlaceName(pla.plaName);
+            setEnteredPlaceImg(pla.plaThumb);
+            setEnteredPlaceAddr(pla.plaAddr);
+        };
+
+        getPlace();
+        // eslint-disable-next-line
+    },[]);
 
     const handleImageUpload = (val) => {
         setEnteredFile(val); 
@@ -36,21 +58,27 @@ const WritingReview = () => {
         setEnteredTags(checkedLabels);
     }
     
+    const resetCheckboxes = () => {
+        document.querySelectorAll('.tagCheckBox input:checked').forEach(input => {
+            input.checked = false;
+        });
+        setEnteredTags([]);
+    };
+
     const handleSubmit = (e) => {
         // 페이지 리로드 방지
         e.preventDefault();
 
-        const form = document.forms['reviewForm'];
-        console.log(endteredCont);
-
         // state 결합 : 제출된 폼의 내용을 모두 담은 객체 생성
         const reviewData = {
+            user_id : userUuid,
+            pla_id : plaId,
             r_rate : enteredRate,
             r_img : enteredFile,
             r_tag : enteredTags,
             r_content : endteredCont,
         };
-        console.log(reviewData);
+
         try {
             // DB에 formData 저장 
             axios.post(`/api/review/insertPlaceReview`, reviewData, {
@@ -68,6 +96,7 @@ const WritingReview = () => {
         setEnteredRate(0);
         setEnteredFile([]);
         setEnteredTags([]);
+        resetCheckboxes();
         setEnteredConts("");
 
     };
@@ -82,7 +111,7 @@ const WritingReview = () => {
         content: "리뷰가 저장 및 업로드 되었습니다.",
         confirmText: "확인",
         closeOnMaskClick: true,
-        onConfirm: () => go('/viewprodDetail/6491f54a-48f9-11ef-bcc9-af0a24947caf'),
+        onConfirm: () => go(`/viewprodDetail/${plaId}`),
         });
     };
 
@@ -92,12 +121,14 @@ const WritingReview = () => {
             <form name="reviewForm" onSubmit={(event)=>handleSubmit(event)}>
                 <StarRateDiv>
                     <div className="imgWrapper">
-                        <img src={profile} alt="기본 프로필 사진" />
+                        <img src={enteredPlaceImg} alt="장소 사진" />
                     </div>
                     <div className="rateWrapper">
+                        <span className="title">{enteredPlaceName}</span>
+                        <span className="addr">{enteredPlaceAddr}</span>
                         <span className="desc">{userName}님 이곳은 어떠셨나요?</span>
                         <Rate id="rate" className="rate" defaultValue={3} allowHalf allowClear={false} 
-                            onChange = {val => setEnteredRate(val) }
+                            value={enteredRate} onChange = {val => setEnteredRate(val) }
                         />
                     </div>
                 </StarRateDiv>
@@ -126,7 +157,6 @@ const WritingReview = () => {
                         className='imageUploader'
                         value={enteredFile}        
                         onChange={
-                            // setEnteredFile
                             (val) => {handleImageUpload(val);}
                         }
                         upload={mockUpload}
@@ -140,6 +170,7 @@ const WritingReview = () => {
                         placeholder="리뷰를 작성해주세요."
                         showCount
                         autoSize={{ minRows: 3, maxRows: 5 }}
+                        value={endteredCont}
                         onChange={(val) => {setEnteredConts(val)}}
                     />
                 </ReviewDiv>
@@ -186,6 +217,17 @@ const StarRateDiv = styled.div`
         display: flex;
         flex-direction: column;
         justify-content: flex-start;
+        text-align: left;
+        width: 52vw;
+        & .title {
+            font-size: 1.35em;
+            font-family: 'Pretendart-ExtraBold';
+        }
+
+        & .addr {
+            font-size: 0.7em;
+            color : #adadad;
+        }
 
         & .desc { 
             font-size: 1rem; 

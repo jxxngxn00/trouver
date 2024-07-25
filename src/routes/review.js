@@ -1,7 +1,7 @@
 import { Router } from "express";
 const router = Router();
 
-import CgetPlaceReview, { CinsertPlaceReview,
+import CgetPlaceReview, { CgetPlaceReviewDetail, CinsertPlaceReview,
     CupdatePlaceReview, CdeletePlaceReview,
     CgetPlanReview, CinsertPlanReview,
     CupdatePlanReview, CdeletePlanReview
@@ -10,9 +10,10 @@ import CgetPlaceReview, { CinsertPlaceReview,
 router.get("/", (req, res) => { res.send("review CRUD")});
 
 router.get("/getPlaceReview/:id", CgetPlaceReview);
+router.get("/getPlaceReviewDetail/:plaRid", CgetPlaceReviewDetail);
 router.post("/insertPlaceReview", CinsertPlaceReview);
-router.get("/updatePlaceReview", CupdatePlaceReview);
-router.get("/deletePlaceReview", CdeletePlaceReview);
+router.patch("/updatePlaceReview", CupdatePlaceReview);
+router.patch("/deletePlaceReview/:plaRid", CdeletePlaceReview);
 
 router.get("/getPlanReview", CgetPlanReview);
 router.get("/insertPlanReview", CinsertPlanReview);

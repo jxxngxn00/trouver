@@ -1,14 +1,7 @@
 import db from '../database/db.js'; // 데이터베이스 연결 설정
 
 // 일정 Insert :: Plan
-export const MinsertPlan = (req, res) => {
-    const { date, budget, tags, user_login_id } = req.body;
-    const plan_start = date[0];
-    const plan_end = date[1];
-    const plan_budget = ""+budget[0]+" ~ "+""+budget[1];
-    const plan_tag = tags.join(',');
-    const data = [plan_start, plan_end, plan_budget, plan_tag, user_login_id];
-
+export const MinsertPlan = (data, res) => {
     try {
         const sql = `
             INSERT INTO plan(plan_start, plan_end, plan_budget, plan_tag, user_id) 
@@ -20,7 +13,6 @@ export const MinsertPlan = (req, res) => {
                 res.status(500).send('Database query error');
                 return;
             };
-            // res.send(rows);
         })
     } catch (error) {
         console.error('Error : ', error);
@@ -144,9 +136,43 @@ export const MgetPlan = (req, res) => {
 }
 
 // 일정 Update :: Plan
-export const MupdatePlan = (req, res) => {
+export const MupdatePlan = (data, res) => {
+    try {
+        const sql = `
+            UPDATE plan
+            SET plan_title = ?,
+                plan_start = ?,
+                plan_end = ?,
+                plan_tag = ?,
+                plan_budget = ?,
+                pla_r_edit_date = CURRENT_TIMESTAMP
+            WHERE bin_to_uuid(plan_id) = ?
+        `;
+        db.query(sql, data, (err, rows) => {
+            if (err) {
+                console.error('Database query error : ', err);
+                res.status(500).send('Database query error');
+                return;
+            };
+            // console.log( rows );
+            res.send(rows);
+        })
+    } catch (error) {
+        console.error('Error : ', error);
+        res.status(500).send('Server error');
+    }
+}
+
+// 일정 Update :: DatePlan
+export const MupdateDatePlan = (req, res) => {
 
 }
+
+// 일정 Update :: route
+export const MupdateRoute = (req, res) => {
+
+}
+
 
 // 일정 Delete
 export const MdeletePlan = (req, res) => {
@@ -154,7 +180,7 @@ export const MdeletePlan = (req, res) => {
         const sql = `
             UPDATE plan
             SET plan_is_delete = CURRENT_TIMESTAMP
-            WHERE plan_id = %s AND user_id = %s
+            WHERE plan_id = ? AND user_id = ?
         `;
         db.query(sql, /* 파라미터 들어갈 자리 ,*/ (err, row) => {
             if (err) {

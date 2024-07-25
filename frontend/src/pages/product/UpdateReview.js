@@ -1,15 +1,14 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import TopBtnBar from '../components/TopBtnBar';
 import { CheckBoxInput, CheckBoxLabel } from '../../css/Tag';
 import styled from 'styled-components';
-import profile from '../../images/default_profile.png';
 import { ImageUploader, Rate, TextArea, Modal } from 'antd-mobile';
 import UseAnimations from 'react-useanimations';
 import radioButton from 'react-useanimations/lib/radioButton';
 
 import { sleep } from "antd-mobile/es/utils/sleep"
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 const mockUpload = async (file) => {
     await sleep(3000);
@@ -21,10 +20,74 @@ const mockUpload = async (file) => {
 const UpdateReview = () => {
     const userName = '도레미';
     const go = useNavigate();
+    const [enteredPlaceId, setEnteredPlaceId] = useState("");
+    const [enteredPlaceName, setEnteredPlaceName] = useState("");
+    const [enteredPlaceImg, setEnteredPlaceImg] = useState("");
+    const [enteredPlaceAddr, setEnteredPlaceAddr] = useState("");
     const [enteredRate, setEnteredRate] = useState();
     const [enteredTags, setEnteredTags] = useState([]);
     const [endteredCont, setEnteredConts] = useState("");
     const [enteredFile, setEnteredFile] = useState([]);
+    const plaRid = useParams().plaRid;
+
+    const getPlaceReviewDetail = async () => {
+        try {
+            const res = await axios.get(`/api/review/getPlaceReviewDetail/${plaRid}`);
+            const result = res.data[0];
+            const review = {
+                plaId : result.pla_id,
+                plaName : result.pla_name,
+                plaThumb : result.pla_thumb,
+                plaAddr : result.pla_addr,
+                plaRuuid: result.pla_r_uuid,
+                userUuid: result.user_uuid,
+                plaRimg: result.pla_r_img,
+                plaRdate: result.pla_r_date,
+                plaRrate: result.pla_r_rate,
+                plaRtag: result.pla_r_tag,
+                plaRcont: result.pla_r_content,
+            };
+            
+            return review;
+        } catch (error) {
+            console.error("Error fetching product detail : ",error);
+        }
+    }
+
+    useEffect(() => {
+        const fetchData = async () => {
+            const res = await getPlaceReviewDetail();
+            console.log(res);
+            if (res) {
+                setEnteredPlaceId(res.plaId);
+                setEnteredPlaceName(res.plaName);
+                setEnteredPlaceImg(res.plaThumb);
+                setEnteredPlaceAddr(res.plaAddr);
+
+                setEnteredRate(res.plaRrate);
+                const defaultCheckedTags = res.plaRtag?.split('/');
+                setEnteredTags(defaultCheckedTags || []);
+                setEnteredConts(res.plaRcont);
+
+                const imgs = res.plaRimg?.split('|');
+                const imgsJson = imgs.map((item) => {
+                    return { url : item }
+                })
+                console.log("imgs : ",imgsJson);
+                setEnteredFile(imgsJson || []);
+
+                // 저장된 Tag input 설정
+                defaultCheckedTags?.forEach(tag => {
+                    const checkbox = document.querySelector(`input[name="tag"][value="${tag}"]`);
+                    if (checkbox) checkbox.checked = true;
+                });
+            }
+        };
+        fetchData();
+        // eslint-disable-next-line
+    },[]);
+
+
 
     const handleImageUpload = (val) => {
         setEnteredFile(val); 
@@ -36,29 +99,33 @@ const UpdateReview = () => {
         setEnteredTags(checkedLabels);
     }
     
+    const resetCheckboxes = () => {
+        document.querySelectorAll('.tagCheckBox input:checked').forEach(input => {
+            input.checked = false;
+        });
+        setEnteredTags([]);
+    };
+
     const handleSubmit = (e) => {
         // 페이지 리로드 방지
         e.preventDefault();
-
-        const form = document.forms['reviewForm'];
-        console.log(endteredCont);
-
         // state 결합 : 제출된 폼의 내용을 모두 담은 객체 생성
         const reviewData = {
+            r_id : plaRid,
             r_rate : enteredRate,
             r_img : enteredFile,
             r_tag : enteredTags,
             r_content : endteredCont,
         };
-        console.log(reviewData);
+
         try {
             // DB에 formData 저장 
-            axios.post(`/api/review/insertPlaceReview`, reviewData, {
+            axios.patch(`/api/review/updatePlaceReview`, reviewData, {
                 headers : {
                     "Context-Type" : "multipart/form-data",
                 },
             });
-            // 화면 이동 코드 
+            // 화면 이동 모달 팝업
             saveConfirm();
         } catch (error) {
             console.error("Error fetching plan insert : ",error);
@@ -67,22 +134,22 @@ const UpdateReview = () => {
         // 양방형 바인딩 : 입력 후 form에 적은 값 화면에서 없애기
         setEnteredRate(0);
         setEnteredFile([]);
-        setEnteredTags([]);
+        resetCheckboxes();
         setEnteredConts("");
 
     };
 
-    // 저장 완료 모달 팝업
+    // 수정 완료 모달 팝업
     const saveConfirm = () => {
         Modal.alert({
         header: (
             <UseAnimations autoplay animation={radioButton} size={56} />
         ),
-        title: "리뷰 저장 완료",
-        content: "리뷰가 저장 및 업로드 되었습니다.",
+        title: "리뷰 수정 완료",
+        content: "리뷰가 수정 및 업로드 되었습니다.",
         confirmText: "확인",
         closeOnMaskClick: true,
-        onConfirm: () => go('/viewprodDetail/6491f54a-48f9-11ef-bcc9-af0a24947caf'),
+        onConfirm: () => go(`/viewprodDetail/${enteredPlaceId}`),
         });
     };
 
@@ -92,12 +159,14 @@ const UpdateReview = () => {
             <form name="reviewForm" onSubmit={(event)=>handleSubmit(event)}>
                 <StarRateDiv>
                     <div className="imgWrapper">
-                        <img src={profile} alt="기본 프로필 사진" />
+                        <img src={enteredPlaceImg} alt="장소 사진" />
                     </div>
                     <div className="rateWrapper">
+                        <span className="title">{enteredPlaceName}</span>
+                        <span className="addr">{enteredPlaceAddr}</span>
                         <span className="desc">{userName}님 이곳은 어떠셨나요?</span>
                         <Rate id="rate" className="rate" defaultValue={3} allowHalf allowClear={false} 
-                            onChange = {val => setEnteredRate(val) }
+                            value={enteredRate} onChange = {val => setEnteredRate(val) }
                         />
                     </div>
                 </StarRateDiv>
@@ -126,7 +195,6 @@ const UpdateReview = () => {
                         className='imageUploader'
                         value={enteredFile}        
                         onChange={
-                            // setEnteredFile
                             (val) => {handleImageUpload(val);}
                         }
                         upload={mockUpload}
@@ -140,11 +208,12 @@ const UpdateReview = () => {
                         placeholder="리뷰를 작성해주세요."
                         showCount
                         autoSize={{ minRows: 3, maxRows: 5 }}
+                        value={endteredCont}
                         onChange={(val) => {setEnteredConts(val)}}
                     />
                 </ReviewDiv>
                 <SubmitBtn className='submitBtn' block size='middle' onClick={() => handleSubmit}>
-                    작성 완료
+                    수정 완료
                 </SubmitBtn>
             </form>
         </div>
@@ -186,6 +255,17 @@ const StarRateDiv = styled.div`
         display: flex;
         flex-direction: column;
         justify-content: flex-start;
+        text-align: left;
+        width: 52vw;
+        & .title {
+            font-size: 1.35em;
+            font-family: 'Pretendart-ExtraBold';
+        }
+
+        & .addr {
+            font-size: 0.7em;
+            color : #adadad;
+        }
 
         & .desc { 
             font-size: 1rem; 

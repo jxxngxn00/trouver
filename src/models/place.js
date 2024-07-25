@@ -86,7 +86,6 @@ export const MgetPlaceListByCate5 = (req, res) => {
 // 여행 장소 상세보기
 export const MgetPlace = (req, res) => {
     try {
-        // console.log(req.params.id);
         const sql = `SELECT BIN_TO_UUID(pla_id) as pla_id, pla_name, pla_cate, pla_thumb, pla_image, pla_rate_avg, pla_addr1, pla_content, pla_phone FROM place WHERE BIN_TO_UUID(pla_id)= ?
         `;
         db.query(sql, [req.params.id], (err, row) => {
@@ -95,7 +94,6 @@ export const MgetPlace = (req, res) => {
                 res.status(500).send('Database query error');
                 return;
             };
-            // console.log( rows );
             res.send(row);
         })
     } catch (error) {

@@ -14,8 +14,9 @@ import PlanUpdate from './pages/plan/PlanUpdate';
 
 import Product from './pages/Product';
 import ViewProductDetail from './pages/product/ViewProductDetail';
-import WritingReview from './pages/product/WritingReview';
 
+import WritingReview from './pages/product/WritingReview';
+import UpdateReview from './pages/product/UpdateReview';
 import Settings from './pages/Settings';
 
 import Profile from './pages/setting/Profile';
@@ -72,7 +73,8 @@ function RouteTransitions() {
 
         <Route path='/product' element={<Product />} />
         <Route path='/viewprodDetail/:id' element={<ViewProductDetail />} />
-        <Route path='/makeReview' element={<WritingReview />} />
+        <Route path='/makeReview/:plaId' element={<WritingReview />} />
+        <Route path='/updateReview/:plaRid' element={<UpdateReview/>}/>
 
         <Route path="/settings" element={<Settings />} />
         <Route path="/profile" element={<Profile />} />

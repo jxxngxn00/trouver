@@ -2,13 +2,64 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 
 import test from '../../images/test.jfif';
-import { Divider, Rate, ImageViewer } from 'antd-mobile';
+import { Divider, Rate, ImageViewer, Modal } from 'antd-mobile';
+import { CheckCircleFilled, ExclamationCircleFilled } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
-export const Review = ({ reviews }) => {
+export const Review = ({ reviews, id }) => {
   const [visible, setVisible] = useState(false);
-  const user_uuid = "";
+  const user_uuid = "0eb6e69c-47cc-11ef-b3c9-7085c2d2eea0";
   const go = useNavigate();
+
+  
+    // 삭제 전 경고 모달 팝업
+    const warning = (review_id) => {
+        Modal.alert({
+        header: (
+            <ExclamationCircleFilled
+            style={{
+                fontSize: `2rem`,
+                color: "var(--adm-color-warning)",
+            }}
+            />
+        ),
+        title: "일정 삭제",
+        content: (
+            <>
+            <div> 일정을 정말 삭제할까요? </div>
+            <div> 삭제된 일정은 복구하기 어렵습니다! </div>
+            </>
+        ),
+        showCloseButton: true,
+        confirmText: "삭제하기",
+        onConfirm: async () => {
+            axios.patch(`/api/review/deletePlaceReview/${review_id}`);
+            deletAlert();
+        },
+        });
+    };
+
+    // 삭제 완료 모달 팝업
+    const deletAlert = async () => {
+        Modal.alert({
+        header: (
+            <CheckCircleFilled
+            style={{
+                fontSize: `64pt`,
+                color: "var(--adm-color-confirm)",
+            }}
+            />
+        ),
+        title: "삭제 완료",
+        content: "정상적으로 삭제되었습니다.",
+        confirmText: "확인",
+        closeOnMaskClick: true,
+        onConfirm: () => {
+            window.location.reload();
+        },
+        });
+    };
     return (
         <div>
             <TitleSpan className='title'>네이버 블로그 리뷰</TitleSpan>
@@ -32,7 +83,8 @@ export const Review = ({ reviews }) => {
             <TitleSpan className='title'>트루버 리뷰</TitleSpan>
             {/* // eslint-disable-next-line */}
             { reviews.map ((review, idx) => {
-                // console.log(review);
+                // eslint-disable-next-line
+                if (review.pla_r_is_deleted) return;
                 return(
                 <ReviewWrapper key={idx}>
                     <div className='reviewWrapper'>
@@ -40,7 +92,7 @@ export const Review = ({ reviews }) => {
                         <div>{review.pla_r_tag}</div>
                         <Rate readOnly value={review.pla_r_rate}/>
                         <ImgSlider className='reviewImgSlider'>
-                            {[...review.pla_r_img.split('|')].map((item, index)=> (
+                            { review.pla_r_img && [...review.pla_r_img.split('|')].map((item, index)=> (
                                 <>
                                 <img className='reviewThumb' key={index} src={item} alt="썸네일" onClick={() => setVisible(true)}/>
                                 <ImageViewer
@@ -48,7 +100,7 @@ export const Review = ({ reviews }) => {
                                         mask: 'customize-mask',
                                         body: 'customize-body',
                                     }}
-                                    image={test}
+                                    image={item}
                                     visible={visible}
                                     onClose={() => {
                                         setVisible(false);
@@ -61,15 +113,15 @@ export const Review = ({ reviews }) => {
                         </div>
                     </div>
                     {   
-                        review.user_uuid = user_uuid && (
+                        review.user_uuid === user_uuid && (
                         <EditBtnWrapper className='editBtnWrapper'>
-                            <div className='reviewBtn editBtn'>수정</div>
-                            <div className='reviewBtn deleteBtn'>삭제</div>
+                            <div className='reviewBtn editBtn' onClick={() => go(`/updateReview/${review.pla_r_uuid}`)}>수정</div>
+                            <div className='reviewBtn deleteBtn' onClick={() => warning(review.pla_r_uuid)}>삭제</div>
                         </EditBtnWrapper> )
                     }
                 </ReviewWrapper>)
             })}
-            <ReviewBtn onClick={()=> go('/makeReview')}>리뷰 쓰러 가기</ReviewBtn>
+            <ReviewBtn onClick={()=> go(`/makeReview/${id}`)}>리뷰 쓰러 가기</ReviewBtn>
         </div>
     );
 };
@@ -199,17 +251,23 @@ const ReviewBtn = styled.div`
 `;
 
 const EditBtnWrapper = styled.div`
+    margin-top: 3%;
     display: flex;
     justify-content: space-evenly;
 
     & .reviewBtn {
-        width: 20vw;
+        width: 35vw;
         padding: 1vh 0vw;
         text-align: center;
         background-color: #45866b;
         color: white;
         border-radius: 15px;
         font-family: 'Pretendart-ExtraBold';
+        transition-duration: 0.2s;
+        &:active {
+            background-color: #557366;
+            color: #ababab;
+        }
     }
 `;
 

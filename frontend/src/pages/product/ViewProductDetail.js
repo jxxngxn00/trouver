@@ -24,6 +24,7 @@ function ViewProductDetail(props) {
     const [curIndex, setCurIndex] = useState(0);
     const [reviews, setReviews] = useState([]);
 
+
     function handleChange(index){
         setCurIndex(index);
     };
@@ -66,8 +67,6 @@ function ViewProductDetail(props) {
         }
     ];
 
-
-
     const renderSlides = imageData.map(image => {
         return(
             <div key={image.alt}>
@@ -101,7 +100,7 @@ function ViewProductDetail(props) {
             id: 3,
             title: "리뷰",
             class: 'review',
-            content: (<Review reviews={reviews}/>)
+            content: (<Review reviews={reviews} id={id}/>)
         }
     ];
 
@@ -182,7 +181,7 @@ function ViewProductDetail(props) {
                         <CarryOutOutlined className='icon' />
                         일정추가
                     </button>
-                    <button className='prodBtn' onClick={() => go('/makeReview')}>
+                    <button className='prodBtn' onClick={() => go(`/makeReview/${id}`)}>
                         <EditOutlined className='icon'/>
                         리뷰쓰기
                     </button>
