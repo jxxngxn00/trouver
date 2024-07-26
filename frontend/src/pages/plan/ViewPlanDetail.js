@@ -23,11 +23,17 @@ import bus from '../../images/icons/bus.png'
 import sun from '../../images/icons/sun.gif'
 
 // hooks
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 function ViewPlanDetail() {
     const [view, setView] = useState(false);
+    const [plan, setPlan] = useState();
     const go = useNavigate();
+    const { planId } = useParams();
+
+    const getPlan = async () => {
+        
+    };
 
     // 책갈피 저장 완료 모달 팝업
     const saveConfirm = async () => {

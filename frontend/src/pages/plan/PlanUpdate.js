@@ -128,10 +128,11 @@ function PlanUpdate() {
             if (user_login_id) {
                 try {
                     const res = await axios.get(`/api/plan/getPlanId/${user_login_id}`);
-                    setPlanId(res.data);
-                } catch (error) {
+                    // console.log(res.data[0].plan_uuid);
+                    setPlanId(res.data[0].plan_uuid);
+                } catch (error) { 
                     console.error(error);
-                }
+                } 
             }
         };
 
@@ -142,30 +143,69 @@ function PlanUpdate() {
     // form 전달 데이터 ref
     const planTitleRef = useRef(), 
         planDateRef = useRef(), 
-        planBudgetRef = useRef(), 
-        planDailyRef = useRef(), 
-        planRoutesRef = useRef(), 
-        planTagRefs = useRef([]);
+        planBudgetRef = useRef();
 
     function savePlan() {
-        console.log("ref current :: ", 
-            planTitleRef.current, " , ",
-            planDateRef.current, " , ", 
-            planBudgetRef.current.innerHTML, " , ", 
-            planDailyRef.current, " , ", 
-            planRoutesRef.current, " , ", 
-            planTagRefs.current.map(ref => ref.innerHTML));
-        go("/viewplan");
+
+        const dateArray = planDateRef.current.innerHTML.split('~');
+        let newDateArray = [];
+        // eslint-disable-next-line
+        dateArray.map(date => {
+            const newDate = new Date(date); 
+            newDateArray = [...newDateArray, newDate];
+        });
+
+        // 전달 데이터 formData
+        // - plan
+        const planFormData = {
+            user_id : user_login_id,     
+            plan_id : planId ? planId : null ,   
+            plan_title : planTitleRef.current.value,
+            plan_start : newDateArray[0],
+            plan_end : newDateArray[1],
+            plan_budget : planBudgetRef.current.innerHTML,
+            plan_tag : tags.join(','),
+        }
+        // - date_plan
+        const datePlanFormData = dateRange.map(date => {
+            const datePlanDate = new Date(date);
+            const newDatePlanFormData = {
+                plan_id: planId,
+                date_plan_date: datePlanDate,
+            };
+            return newDatePlanFormData; 
+        });
+
+        // - route
+        const routeFormData = placeArray.map((item, idx) => {
+            const place = item[0];
+
+            const pla_id = place.id;
+            const route_index = idx;
+            const route_tip = place.route_tip;
+            const newRouteFormData = {
+                pla_id: pla_id,
+                route_index: route_index,
+                route_tip: route_tip,
+            };
+            return newRouteFormData;
+        });
+
+        const data = [planFormData, datePlanFormData, routeFormData];
+
+        try {
+            // DB에 formData 저장 
+            axios.patch(`/api/plan/insertPlan/${user_login_id}`, data, {
+                headers : {
+                    "Context-Type" : "multipart/form-data",
+                },
+            });
+            saveConfirm();
+            
+        } catch (error) {
+            console.error("Error fetching plan insert : ",error);
+        }
     }
-
-    const checkRef = () => {
-        console.log("planDailyRef.current : ", planDailyRef.current);
-
-        console.log("planRoutesRef.current : ", planRoutesRef.current);
-        planTagRefs.current.forEach((ref, index) => {
-            console.log(`planTagRefs.current[${index}].innerHTML : `, ref.innerHTML);
-        });     
-    };
 
     // 삭제 전 경고 모달 팝업
     const warning = () => {
@@ -211,6 +251,7 @@ function PlanUpdate() {
     };
 
     // 저장 완료 모달 팝업
+    // eslint-disable-next-line
     const saveConfirm = () => {
         Modal.alert({
         header: (
@@ -225,21 +266,19 @@ function PlanUpdate() {
         content: "일정이 저장 및 업로드 되었습니다.",
         confirmText: "확인",
         closeOnMaskClick: true,
-        onConfirm: () => savePlan(),
+        onConfirm: () => go(`/viewplandetail/${planId}`),
         });
     };
 
     return (
         <div className="homeBgDiv viewDetailWrapper">
             <TopBtnBar />
-            <button onClick={()=> checkRef()}>저장할때 넘길 변수 확인 버튼</button>
             <form name="plan-form">
                 <div className="planTitle">
                     <PlanTitle id="planTitle" ref={planTitleRef} type="text" placeholder="혼자 떠나는 제주여행" />
                 </div>
                 <PlanInfo>
                     <div className="planDate" id="planBudget">
-                    {/* { planId ? planId[0].plan_uuid : "일정 생성 중 오류 발생" } */}
                     예산 : <span ref={planBudgetRef} >{budget ? budgetString : "예산 정보가 없습니다."}</span>
                     </div>
                 </PlanInfo>
@@ -304,10 +343,8 @@ function PlanUpdate() {
                     <div className="wrapper2">
                         <div className="wrapper3">
                             <TouchDnd 
-                                planDailyRef={planDailyRef} planRoutesRef={planRoutesRef}
                                 list={placeArray} setList={setPlaceArray} 
-                                daily={daily}
-                                setDaily = {setDaily}
+                                daily={daily} setDaily = {setDaily}
                                 dateRange={dateRange}
                             />
                         </div>
@@ -320,7 +357,6 @@ function PlanUpdate() {
                         tags.map((tag, idx) => {
                             return (<Tag 
                                     key={idx} 
-                                    ref={el => planTagRefs.current[idx] = el} 
                                     color='#45866B'>{tag}
                                 </Tag>)
                         })
@@ -362,7 +398,7 @@ function PlanUpdate() {
                     </ConfirmBtn>
                     </Popup>
 
-                    <div className="vPlanDetailBtn" onClick={() => saveConfirm()}>
+                    <div className="vPlanDetailBtn" onClick={() => savePlan()}>
                     <FontAwesomeIcon
                         className="icon"
                         size="2xl"

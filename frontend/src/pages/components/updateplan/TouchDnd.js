@@ -8,9 +8,13 @@ import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { DeleteOutlined } from '@ant-design/icons';
 import { Swiper } from 'antd-mobile';
 
-export default function TouchDnd({ planDailyRef, planRoutesRef, list, setList, daily, setDaily, dateRange , result }) {
+export default function TouchDnd({ list, setList, daily, setDaily, dateRange }) {
+  
+  
   // 날짜 형식 맞춤
   const [formatDateRange, setFormatDateRange ] = useState([]);
+  const [ isDeleteMode, setIsDeleteMode ] = useState(false);
+  const [ selectedItems, setSelectedItems ] = useState([]);
 
   useEffect(() => {
     // eslint-disable-next-line
@@ -21,16 +25,21 @@ export default function TouchDnd({ planDailyRef, planRoutesRef, list, setList, d
     // eslint-disable-next-line
   },[dateRange]);
 
-  const [ isDeleteMode, setIsDeleteMode ] = useState(false);
-  const [ selectedItems, setSelectedItems ] = useState([]);
-
   const handleOnDragEnd = (result) => {
     if (!result.destination || isDeleteMode) return;
 
+    const sourceIndex = result.source.index;
+    const destinationIndex = result.destination.index;
+    const sourceDroppableId = parseInt(result.source.droppableId.split('-')[1]);
+    const destinationDroppableId = parseInt(result.destination.droppableId.split('-')[1]);
+    
+    if (sourceDroppableId !== destinationDroppableId) return; // 다른 droppable 간 이동 방지
+    
     const items = Array.from(list);
-    const [reorderedItem] = items.splice(result.source.index, 1);
-    items.splice(result.destination.index, 0, reorderedItem);
+    const [reorderedItem] = items[sourceDroppableId].splice(sourceIndex, 1);
+    items[sourceDroppableId].splice(destinationIndex, 0, reorderedItem);
     setList(items);
+
   };
 
   const toggleDeleteMode = () => {
@@ -51,16 +60,28 @@ export default function TouchDnd({ planDailyRef, planRoutesRef, list, setList, d
     setSelectedItems([]);
   };
 
+  const handleRouteTipChange = (dateIndex, itemId, value) => {
+    const updatedList = list.map((dailyList, idx) => {
+      if (idx === dateIndex) {
+        return dailyList.map(item => {
+          if (item.id === itemId) {
+            return { ...item, route_tip: value };
+          }
+          return item;
+        });
+      }
+      return dailyList;
+    });
+    setList(updatedList);
+  }
   const getDaily = (index) => {
     return formatDateRange[index];
   }
 
   const swipeItem = (swipeRange) => {
-    console.log("list :: ", list);
+    // console.log("list : ",list);
     return swipeRange.map((temp, dateIndex) => {
       const dailyList = list[dateIndex] || [];
-      
-      console.log("dailyList :: ",dailyList);
       return (
         <Swiper.Item key={dateIndex}>
           <DeleteModeWrapper>
@@ -77,11 +98,13 @@ export default function TouchDnd({ planDailyRef, planRoutesRef, list, setList, d
             )}
           </DeleteModeWrapper>
           <DragDropContext onDragEnd={handleOnDragEnd}>
-            <Droppable droppableId="droppable-1" direction="vertical">
+            <Droppable droppableId={`droppable-${dateIndex}`} direction="vertical">
               {(provided) => (
                 <div {...provided.droppableProps} ref={provided.innerRef}>
                   {dailyList.map((item, idx) => (
-                    <Draggable key={item.id} draggableId={item.id.toString()} index={idx}>
+                    <Draggable key={item.id} 
+                      draggableId={`draggable-${dateIndex}-${item.id}`} 
+                      index={idx} >
                       {(provided) => (
                         <RouteDiv
                           ref={provided.innerRef}
@@ -100,16 +123,21 @@ export default function TouchDnd({ planDailyRef, planRoutesRef, list, setList, d
                             <span className='placeName'>{item.placeName}</span>
                             <div className='detailsWrapper'>
                               <span className='placeCate'>{item.placeCate}</span>
-                              {item.placeRate && (
+                              {item.placeRate ? (
                                 <span className='placeRate'>
                                   <FontAwesomeIcon icon={faStar} style={{ color: "#FFD43B" }} />
                                   {item.placeRate}
                                 </span>
-                              )}
+                              ) : null }
                             </div>
                             {!isDeleteMode && (
                               <div className='comment'>
-                                <input type='text' placeholder='테스터님 만의 특별한 팁을 적어주세요!(선택)' />
+                                <input 
+                                  type='text' 
+                                  placeholder='테스터님 만의 특별한 팁을 적어주세요!(선택)' 
+                                  value = {item.route_tip || ''}
+                                  onChange={(e) => handleRouteTipChange(dateIndex, item.id, e.target.value )}
+                                />
                               </div>
                             )}
                           </div>

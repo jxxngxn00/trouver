@@ -71,7 +71,6 @@ function MakePlan() {
                 </div>
             );
         case 3:
-            // console.log(SetBudget);
             return(
                 <div className='bgDiv makePlanDiv'>
                     <SetBudget onBudgetChange={setBudget}/>

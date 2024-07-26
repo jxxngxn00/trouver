@@ -67,7 +67,7 @@ function RouteTransitions() {
 
         <Route path="/makeplan" element={<MakePlan />} />
         <Route path="/viewplan" element={<ViewPlan />} />
-        <Route path="/viewplandetail" element={<ViewPlanDetail />} />
+        <Route path="/viewplandetail/:planId" element={<ViewPlanDetail />} />
 
         <Route path='/planupdate' element={<PlanUpdate />} />
 
