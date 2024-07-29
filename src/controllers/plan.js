@@ -41,7 +41,7 @@ export const CInsertPlan = asyncHandler(async (req, res) => {
             MinsertRoute({...item, date_plan_id : datePlanIds[idx].date_plan_id, 
                 user_id : user_id},res);
         })
-        console.log("=====================");
+        // console.log("=====================");
     });
 });
 

@@ -6,12 +6,14 @@ const conn = mysql.createConnection({
     host: process.env.REACT_APP_DB_HOST,
     port: process.env.REACT_APP_DB_PORT,
     user: process.env.REACT_APP_DB_USER,
-    password: process.env.REACT_APP_DB_PASSWORD,
+    password: '1234',
     database: 'trouver'
 });
 
 conn.connect((err) => {
-    if (err) console.log(err);
+    if (err) {
+        console.log(err);
+    }
     else console.log('✅ MySQL Database Connected Successfully');
 });
 

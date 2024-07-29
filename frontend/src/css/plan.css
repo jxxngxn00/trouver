@@ -193,7 +193,7 @@
     & .contents{
         display: flex;
         border-radius: 15px;
-        height: 30vh;
+        height: 35vh;
         margin: 3vh 5vw;
         box-shadow:0px 4px 18px -5px hsla(234, 44%, 26%, 0.411);
         background-color: white;

@@ -486,12 +486,14 @@ const VPlanDetailBtnWrapper = styled.div`
 const PlanTitle = styled.input`
   /* display: block; */
   font-family: "KCC-Hanbit";
-  font-size: 1.75rem;
+  font-size: 1.15rem;
   padding: 1.4vh 5vw;
   border-radius: 30px;
   border: none;
   box-shadow: 0px 0px 27px -9px rgba(130, 130, 130, 0.75);
-  margin-top: 7vh;
+  margin-top: 7vh!important;
+  margin:auto;
+  width:84%;
 `;
 
 const DateBtn = styled.button`

@@ -8,7 +8,7 @@ import { Divider, Swiper, Tabs } from 'antd-mobile';
 import profile from '../../images/default_profile.png';
 
 import ProfileUpdate from '../components/setting/ProfileUpdate';
-import {MyReview} from '../components/Review';
+import { MyReview } from '../components/Review';
 import Plan from '../components/setting/Plan';
 import MySaved from '../components/setting/MySaved';
 

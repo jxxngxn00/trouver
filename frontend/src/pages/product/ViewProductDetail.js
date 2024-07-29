@@ -293,7 +293,7 @@ const ButtonDiv = styled.div`
 const TabPane = styled.div`
     position: -webkit-sticky;
     position: sticky;
-    top: 3rem;
+    top: 2.5rem;
     background: white;
     z-index: 1000;
 

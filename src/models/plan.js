@@ -153,9 +153,9 @@ export const MgetPlanList = (req, res) => {
                     dp.plan_id
             ) AS count_routes ON p.plan_id = count_routes.plan_id
             WHERE 
-                p.plan_is_deleted IS NULL
+                p.plan_is_deleted IS NULL AND BIN_TO_UUID(u.user_id) = ?
             ORDER BY 
-                p.plan_reg DESC;
+                p.plan_reg DESC
         `;
         db.query(sql, [req.params.id], (err, rows) => {
             if (err) {
@@ -236,9 +236,9 @@ export const MgetRoute = (req, res) => {
             const sql = `
                 select 
                     *, 
-                    date_format(dp.date_plan_date, '%Y년 %m월 %d일') as date_plan_date,
                     BIN_TO_UUID(dp.date_plan_id) as date_plan_uuid,
-                    BIN_TO_UUID(rp.date_plan_id) as route_date_plan_uuid
+                    BIN_TO_UUID(rp.date_plan_id) as route_date_plan_uuid,
+                    BIN_TO_UUID(rp.pla_id) as route_pla_id
                 from (SELECT r.date_plan_id as date_plan_id, 
                         r.pla_id as pla_id, 
                         r.route_id as route_id,
@@ -353,4 +353,9 @@ export const MupdateHits = (req, res) => {
         console.error("Error : ", error);
         res.status(500).send('Server error');
     }
+}
+
+// 내 일정 보기
+export const MgetMyPlan = (req, res) => {
+    
 }

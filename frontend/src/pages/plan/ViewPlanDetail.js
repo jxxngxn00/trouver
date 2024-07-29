@@ -39,6 +39,8 @@ const formatDate = (date) => {
 };
 
 function ViewPlanDetail() {
+    const curr_user_id = 'fdb19576-48f1-11ef-bcc9-af0a24947caf';
+    // const curr_user_id = 'fdb19c88-48f1-11ef-bcc9-af0a24947caf';
     const [view, setView] = useState(false);
     const [plan, setPlan] = useState([]);
     const [datePlan, setDatePlan] = useState([]);
@@ -50,7 +52,7 @@ function ViewPlanDetail() {
     useEffect(() => {
         const getPlanDetail = async () => {
             const res = await axios.get(`/api/plan/getPlanDetail/${planId}`);
-            // console.log(">> getPlanDetail :: ",res.data.datePlan);
+            console.log(">> getPlanDetail :: ",res.data.datePlan);
             const resPlan = res.data.plan[0];
             const resDatePlan = res.data.datePlan;
             setPlan(resPlan);
@@ -59,7 +61,7 @@ function ViewPlanDetail() {
 
         const getRoute = async () => {
             const res = await axios.get(`/api/plan/getPlanDetailRoute/${planId}`);
-            // console.log(">> getPlanDetailRouter : ", res.data);
+            console.log(">> getPlanDetailRouter : ", res.data);
             setRoute(res.data);
         }
         getPlanDetail();
@@ -162,15 +164,16 @@ function ViewPlanDetail() {
                     </span>
                     <ul className='dropDownBtn' onClick={()=>setView(!view)}>
                         <img src={dots} alt='더보기' />
-                        {view && <Dropdown planId = {plan?.plan_d} userId = {plan?.user_id}/>}
+                        {view && <Dropdown currUserId={curr_user_id} planId = {plan?.plan_d} userId = {plan?.user_id}/>}
                     </ul>
                 </div>
 
                 {/* 반복될 부분 */}
                 { route.map((r, idx) => {
                     // console.log(r?.date_plan_uuid === datePlan[index]?.date_plan_uuid);
-                    return r.date_plan_uuid === datePlan[index].date_plan_uuid ? 
-                    (<div className='routeDiv'>
+                    return r.date_plan_uuid === datePlan[index]?.date_plan_uuid ? 
+                    (
+                    <><div className='routeDiv' key={idx} onClick={()=>go(`/viewProdDetail/${r.route_pla_id}`)}>
                             <div className='route'>
                                 <span className='placeName'>{r.pla_name}</span>
                                 <div className='detailsWrapper'>
@@ -191,26 +194,31 @@ function ViewPlanDetail() {
                             </div>
                             { r.route_tip ? 
                                 (
-                                    <div className='routeDiv commentDiv'>
+                                    <div className='routeDiv commentDiv' key={idx}>
                                         <span> 이용자님 만의 Tip!</span>
                                         <span className='content'>웨이팅 10분에서 15분정도 있어용!!!</span>
                                     </div>
                                 ) : null
                             }
-                            
-                        </div>)
-                        : null
+                        </div>
+                        
+                        { idx !== route.length - 1 && route[idx+1].date_plan_uuid === datePlan[index]?.date_plan_uuid ? (
+                            <div className='moveInfoWrapper'>
+                                <DistantCalc /> 
+                                <span className='moveInfo'><img src={car} alt='car icon' />999km</span>
+                                <span className='moveInfo'><img src={bus} alt='bus icon' />999km</span>
+                            </div>
+                        ) : null
+                        }
+                        </>
+                        ) : null
                     })
                 }
 
                 <div className='wrapper2'>
                     <div className='line'></div>
                     <div className='wrapper3'>
-                        <div className='moveInfoWrapper'>
-                            <DistantCalc />
-                            <span className='moveInfo'><img src={car} alt='car icon' />999km</span>
-                            <span className='moveInfo'><img src={bus} alt='bus icon' />999km</span>
-                        </div>
+                        
 
                         <div className='imgSlider'>
                             <img src={test} alt='장소관련 사진' />

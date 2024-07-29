@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 /* components */
 import TouchDnd from "../components/updateplan/TouchDnd";
 import CalendarPicker from "../components/updateplan/CalendarPicker";
@@ -40,11 +40,7 @@ function ExistedPlanUpdate() {
     const location = useLocation();
     const { date, budget, tags, user_login_id } = location.state || {};
     const go = useNavigate();
-
-
-    const dateString = date ? `${getDateToString(date?.toString(), 0)} ~ ${getDateToString(date?.toString(), 1)}` : "";
-    const budgetString = budget ? `₩ ${budget[0]} ~ ₩ ${budget[1]}` : '';
-    
+    const { planId } = useParams();
     const [visibleCalendar, setVisibleCalendar] = useState(false); // 달력 보임 state
     const [visibleSearchPlace, setVisibleSearchPlace] = useState(false); // 장소 검색 state
     
@@ -57,12 +53,19 @@ function ExistedPlanUpdate() {
     const [daily, setDaily] = useState(0); // N일차 -- N
     const [dateRange, setDateRange] = useState([]);
     
+    const dateString = date ? `${getDateToString(date?.toString(), 0)} ~ ${getDateToString(date?.toString(), 1)}` : "";
+    const budgetString = budget ? `₩ ${budget[0]} ~ ₩ ${budget[1]}` : '';
     const dateStrings = dateString?.split(',');
+    
     // eslint-disable-next-line
     const [defaultDate, setDefaultDate] = useState ( () =>
         dateStrings?.map(dateString => new Date(dateString))
     );
-    
+    const [plan, setPlan] = useState();
+    const [datePlan, setDatePlan] = useState([]);
+    const [pRoute, setpRoute] = useState([]);
+    const [index, setIndex] = useState(0);
+
     // 날짜 변수 변경
     const handleValueChange = (value) => {
         // console.log(value);
@@ -115,26 +118,50 @@ function ExistedPlanUpdate() {
         // eslint-disable-next-line
     }, [date]);
     
-    // 저장될 plan DB (초안)
-    // eslint-disable-next-line
-    const [planId, setPlanId] = useState();
+    // get plan Detail
     useEffect(() => {
         // 장소 추가 및 정보 수정을 위해 임의로 만들어둔 plan_id 저장
-        const getPlanId = async (user_login_id) => {
-            if (user_login_id) {
-                try {
-                    const res = await axios.get(`/api/plan/getPlanId/${user_login_id}`);
-                    // console.log(res.data[0].plan_uuid);
-                    setPlanId(res.data[0].plan_uuid);
-                } catch (error) { 
-                    console.error(error);
-                } 
-            }
+        const getPlanDetail = async () => {
+            const res = await axios.get(`/api/plan/getPlanDetail/${planId}`);
+            console.log(">>> getPlan+datePlan",res);
+            const resPlan = res.data.plan[0];
+            const resDatePlan = res.data.datePlan;
+            setPlan(resPlan);
+            setDatePlan(resDatePlan);
         };
 
-        getPlanId(user_login_id);
+        const getRoute = async () => {
+            const res = await axios.get(`/api/plan/getPlanDetailRoute/${planId}`);
+            console.log(">> getPlanDetailRouter : ", res.data);
+            setRoute(res.data);
+        }
+
+        getPlanDetail();
+        getRoute();
         // eslint-disable-next-line
-    },[user_login_id]);
+    },[planId]);
+
+    const getDayName = (week_n) => {
+        // console.log('week_n :: ' ,week_n);
+        switch (week_n) {
+            case '0': 
+                return '일요일';
+            case '1': 
+                return '월요일';
+            case '2': 
+                return '화요일';
+            case '3': 
+                return '수요일';
+            case '4': 
+                return '목요일';
+            case '5': 
+                return '금요일';
+            case '6': 
+                return '토요일';
+            default:
+                return 'Error';
+        }
+    };
 
     // form 전달 데이터 ref
     const planTitleRef = useRef(), 
@@ -287,11 +314,13 @@ function ExistedPlanUpdate() {
             <TopBtnBar />
             <form name="plan-form">
                 <div className="planTitle">
-                    <PlanTitle id="planTitle" ref={planTitleRef} type="text" placeholder="혼자 떠나는 제주여행" />
+                    <PlanTitle id="planTitle" ref={planTitleRef} 
+                    value={plan.plan_title}
+                    type="text" placeholder="혼자 떠나는 제주여행" />
                 </div>
                 <PlanInfo>
                     <div className="planDate" id="planBudget">
-                    예산 : <span ref={planBudgetRef} >{budget ? budgetString : "예산 정보가 없습니다."}</span>
+                    예산 : <span ref={planBudgetRef} >{plan?.plan_budget}</span>
                     </div>
                 </PlanInfo>
                 <PlanDate id="planDate">
@@ -328,18 +357,18 @@ function ExistedPlanUpdate() {
                 {/* N일차 라디오 버튼 */}
                 <div className="dateRadioBtn">
                     <div className="dateRadioBoxWrapper">
-                    {dateRange.map((dateN, index) => (
-                        <React.Fragment key={index} >
+                    {datePlan.map((dateN, idx) => (
+                        <React.Fragment key={idx} >
                             <InfoRadioBoxInput
                                 type="radio"
-                                id={`day${index + 1}`}
+                                id={`day${idx + 1}`}
                                 name="day"
-                                value={index}
-                                onChange={(e) => {setDaily(e.target.value);}}
-                                checked = {index === daily}
+                                value={idx}
+                                onChange={(e) => {setIndex(e.target.value);}}
+                                checked = {idx === index}
                             />
-                            <InfoCheckBoxLabel htmlFor={`day${index + 1}`}>
-                                {index + 1}일차
+                            <InfoCheckBoxLabel htmlFor={`day${idx + 1}`}>
+                                {idx + 1}일차
                             </InfoCheckBoxLabel>
                         </React.Fragment>
                     ))}
