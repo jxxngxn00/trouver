@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 // components
 import DistantCalc from '../components/viewplan/DistantCalc';
@@ -24,16 +24,39 @@ import sun from '../../images/icons/sun.gif'
 
 // hooks
 import { useNavigate, useParams } from 'react-router-dom';
+import axios from 'axios';
+
+const getDateToString = (date) => {
+    const newDate = new Date(date);
+    return formatDate(newDate);
+};
+
+const formatDate = (date) => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth()+1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+};
 
 function ViewPlanDetail() {
     const [view, setView] = useState(false);
-    const [plan, setPlan] = useState();
+    const [plan, setPlan] = useState([]);
+    const [datePlan, setDatePlan] = useState([]);
     const go = useNavigate();
     const { planId } = useParams();
 
-    const getPlan = async () => {
-        
-    };
+    useEffect(() => {
+        const getPlanDetail = async () => {
+            const res = await axios.get(`/api/plan/getPlanDetail/${planId}`);
+            console.log(">> getPlanDetail :: ",res.data);
+            const resPlan = res.data.plan[0];
+            const resDatePlan = res.data.datePlan;
+            setPlan(resPlan);
+            setDatePlan(resDatePlan);
+        };
+        getPlanDetail();
+        // eslint-disable-next-line
+    },[planId]);
 
     // 책갈피 저장 완료 모달 팝업
     const saveConfirm = async () => {
@@ -62,91 +85,41 @@ function ViewPlanDetail() {
         <Menu/>
         <div className='homeBgDiv viewDetailWrapper'>
             <PlanTitle className='planTitle'>
-                혼자 떠나는 제주여행
+                {plan.plan_title}
             </PlanTitle>
             <PlanInfo>
                 <div className='planDate'>
-                    2022-09-07 ~ 2022-09-16 <br/>
-                    예산 : ₩ 900,000
+                    {getDateToString(plan.plan_start)} ~ {getDateToString(plan.plan_end)} <br/>
+                    예산 : {plan.plan_budget}
                 </div>
                 <div className='writerDiv'>
                     <span>작성자닉네임</span>
                     <Avatar src=''/>
                 </div>
             </PlanInfo>
-            <div className='dateRadioBtn'>
-                <div className='dateRadioBoxWrapper'>
-                    <InfoRadioBoxInput
-                        type="radio"
-                        id='day1'
-                        name='day'
-                        value='1'
-                    />
-                    <InfoCheckBoxLabel htmlFor='day1'>
-                        1일차
-                    </InfoCheckBoxLabel>
 
-                    <InfoRadioBoxInput
-                        type="radio"
-                        id='day2'
-                        name='day'
-                        value='2'
-                    />
-                    <InfoCheckBoxLabel htmlFor='day2'>
-                        2일차
-                    </InfoCheckBoxLabel>
-
-                    <InfoRadioBoxInput
-                        type="radio"
-                        id='day3'
-                        name='day'
-                        value='2'
-                    />
-                    <InfoCheckBoxLabel htmlFor='day3'>
-                        3일차
-                    </InfoCheckBoxLabel>
-
-                    <InfoRadioBoxInput
-                        type="radio"
-                        id='day4'
-                        name='day'
-                        value='2'
-                    />
-                    <InfoCheckBoxLabel htmlFor='day4'>
-                        4일차
-                    </InfoCheckBoxLabel>
-
-                    <InfoRadioBoxInput
-                        type="radio"
-                        id='day5'
-                        name='day'
-                        value='2'
-                    />
-                    <InfoCheckBoxLabel htmlFor='day5'>
-                        5일차
-                    </InfoCheckBoxLabel>
-
-                    <InfoRadioBoxInput
-                        type="radio"
-                        id='day6'
-                        name='day'
-                        value='2'
-                    />
-                    <InfoCheckBoxLabel htmlFor='day6'>
-                        6일차
-                    </InfoCheckBoxLabel>
-
-                    <InfoRadioBoxInput
-                        type="radio"
-                        id='day7'
-                        name='day'
-                        value='2'
-                    />
-                    <InfoCheckBoxLabel htmlFor='day7'>
-                        7일차
-                    </InfoCheckBoxLabel>
+            {/* N일차 라디오 버튼 */}
+            <div className="dateRadioBtn">
+                    <div className="dateRadioBoxWrapper">
+                    {datePlan.map((dateN, index) => (
+                        <React.Fragment key={index} >
+                            <InfoRadioBoxInput
+                                type="radio"
+                                id={`day${index + 1}`}
+                                name="day"
+                                value={index}
+                                // onChange={(e) => {setDaily(e.target.value);}}
+                                // checked = {index === daily}
+                            />
+                            <InfoCheckBoxLabel htmlFor={`day${index + 1}`}>
+                                {index + 1}일차
+                            </InfoCheckBoxLabel>
+                        </React.Fragment>
+                    ))}
+                    </div>
                 </div>
-            </div>
+
+
             <div className='mapWrapper'>
                 <img src={mapPicture} alt='지도 예시' />
             </div>

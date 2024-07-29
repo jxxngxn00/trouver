@@ -147,30 +147,93 @@ export const MgetPlanList = (req, res) => {
         res.status(500).send('Server error');
     } 
 }
-// 일정 상세 보기
+
+// 일정 상세 보기 :: planDB
 export const MgetPlan = (req, res) => {
-    try {
-        const sql = `
-            SELECT bin_to_uuid(p.plan_id) as plan_uuid, u.user_name , p.plan_title, p.plan_reg,
-                p.plan_start, p.plan_end, p.plan_tag, p.plan_budget, p.plan_saved
-            from plan p
-            LEFT join user u
-            on p.user_id = u.user_id
-            WHERE bin_to_uuid(p.plan_id) = %s
-        `;
-        db.query(sql, [req.params.id], (err, rows) => {
-            if (err) {
-                console.error('Database query error : ', err);
-                res.status(500).send('Database query error');
-                return;
-            };
-            // console.log("result :: ",row);
-            res.send(rows);
-        })
-    } catch (error) {
-        console.error('Error : ', error);
-        res.status(500).send('Server error');
-    } 
+    return new Promise((resolve, reject) => {
+        try {
+            const sql = `
+                SELECT p.plan_id , 
+                p.plan_title , p.plan_start , p.plan_end , 
+                p.plan_saved, p.plan_budget
+                FROM plan p
+                WHERE BIN_TO_UUID(p.plan_id) = ?
+            `;
+            db.query(sql, [req.params.id], (err, rows) => {
+                if (err) {
+                    console.error('Database query error : ', err);
+                    reject('Database query error');
+                } else {
+                    // console.log(">> plan result :: ", rows);
+                    resolve(rows);
+                }
+            });
+        } catch (error) {
+            console.error('Error : ', error);
+            reject('Server error');
+        }
+    });
+}
+
+// 일정 상세 보기 :: date_plan
+export const MgetDatePlan = (req, res) => {
+    return new Promise((resolve, reject) => {
+        try {
+            const sql = `
+                SELECT plan_id, date_plan_id, date_plan_date
+                FROM date_plan 
+                WHERE BIN_TO_UUID(plan_id) = ?
+            `;
+            db.query(sql, [req.params.id], (err, rows) => {
+                if (err) {
+                    console.error('Database query error : ', err);
+                    reject('Database query error');
+                } else {
+                    // console.log(">> date plan result :: ", rows);
+                    resolve(rows);
+                }
+            });
+        } catch (error) {
+            console.error('Error : ', error);
+            reject('Server error');
+        }
+    });
+};
+
+// 일정 상세 보기 :: route
+export const MgetRoute = (req, res) => {
+    return new Promise((resolve, reject) => {
+        try {
+            const sql = `
+                SELECT r.date_plan_id as date_plan_id, 
+                        r.pla_id as pla_id, 
+                        r.route_id as route_id,
+                        r.route_index as route_index,
+                        r.route_tip as route_tip,
+                        p.pla_name as pla_name, 
+                        p.pla_addr1 as pla_addr1, 
+                        p.pla_cate as pla_cate, 
+                        p.pla_rate_avg as pla_rate_avg, 
+                        p.pla_image as pla_image 
+                FROM route r
+                LEFT JOIN place p
+                ON r.pla_id = p.pla_id
+                WHERE BIN_TO_UUID(dp.plan_id) = ?
+            `;
+            db.query(sql, [req.params.id], (err, rows) => {
+                if (err) {
+                    console.error('Database query error : ', err);
+                    reject('Database query error');
+                } else {
+                    // console.log(">> date plan result :: ", rows);
+                    resolve(rows);
+                }
+            });
+        } catch (error) {
+            console.error('Error : ', error);
+            reject('Server error');
+        }
+    });
 }
 
 // 일정 Update :: Plan

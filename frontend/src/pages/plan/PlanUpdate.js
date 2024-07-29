@@ -36,10 +36,6 @@ const getDatesInRange = (startDate, endDate) => {
   return dates;
 };
 
-// 저장 모달 팝업
-
-
-
 function PlanUpdate() {
     const location = useLocation();
     const { date, budget, tags, user_login_id } = location.state || {};
@@ -178,19 +174,35 @@ function PlanUpdate() {
 
         // - route
         const routeFormData = placeArray.map((item, idx) => {
-            const place = item[0];
-
-            const pla_id = place.id;
-            const route_index = idx;
-            const route_tip = place.route_tip;
-            const newRouteFormData = {
-                pla_id: pla_id,
-                route_index: route_index,
-                route_tip: route_tip,
-            };
-            return newRouteFormData;
+            if (Array.isArray(item)) {
+                return item.map((subItem, subIdx) => {
+                    const place = subItem;
+                    const pla_id = place.id;
+                    const route_index = subIdx; // 인덱스를 문자열로 결합하여 고유 인덱스 생성
+                    const route_tip = place.route_tip;
+                    const newRouteFormData = {
+                        pla_id: pla_id,
+                        route_index: route_index,
+                        route_tip: route_tip,
+                    };
+                    return newRouteFormData;
+                });
+            } else {
+                const place = item;
+                const pla_id = place.id;
+                const route_index = 0;
+                const route_tip = place.route_tip;
+                const newRouteFormData = {
+                    pla_id: pla_id,
+                    route_index: route_index,
+                    route_tip: route_tip,
+                };
+                return newRouteFormData;
+            }
         });
-
+        
+        console.log(routeFormData);
+        
         const data = [planFormData, datePlanFormData, routeFormData];
 
         try {

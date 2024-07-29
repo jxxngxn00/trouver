@@ -16,7 +16,7 @@ function MakePlan() {
     const [tags, setTags] = useState([]);
     
     const user_name = '도레미';
-    const user_id = 'd3ca4a15-2a0c-11ef-9ffb-7085c2d2eea0';
+    const user_id = 'fdb19576-48f1-11ef-bcc9-af0a24947caf';
 
     const handleSubmit = async () => {
         // 각각 component에서 입력한 내용 변수 저장
