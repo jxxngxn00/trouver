@@ -47,14 +47,15 @@ function Settings(props) {
                 <div className='profileBtn'><FontAwesomeIcon className='icon' icon={faBookmark} style={{ color: "#ffffff", }} />책갈피</div>
             </BtnWrapper>
             <Line />
-            {/* 예약/취소 내역 */}
+            {/* 예약/취소 내역 => 예약 시스템 구축 미비로 인한 기능 개발 보류 */}
+            {/*
             <ReserveLog>
                 예약 / 취소 내역
                 <div className='menu' onClick={() => handleClick(1) }>숙소</div>
                 <div className='menu' onClick={() => handleClick(2) }>레저 티켓</div>
                 <div className='menu' onClick={() => handleClick(3) }>맛집</div>
             </ReserveLog>
-            <Line />
+            <Line />  */}
             {/* 고객센터 */}
             <Service>
                 고객센터

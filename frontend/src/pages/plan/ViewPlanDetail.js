@@ -42,22 +42,52 @@ function ViewPlanDetail() {
     const [view, setView] = useState(false);
     const [plan, setPlan] = useState([]);
     const [datePlan, setDatePlan] = useState([]);
+    const [route, setRoute] = useState([]);
+    const [index, setIndex] = useState(0);
     const go = useNavigate();
     const { planId } = useParams();
 
     useEffect(() => {
         const getPlanDetail = async () => {
             const res = await axios.get(`/api/plan/getPlanDetail/${planId}`);
-            console.log(">> getPlanDetail :: ",res.data);
+            // console.log(">> getPlanDetail :: ",res.data.datePlan);
             const resPlan = res.data.plan[0];
             const resDatePlan = res.data.datePlan;
             setPlan(resPlan);
             setDatePlan(resDatePlan);
         };
+
+        const getRoute = async () => {
+            const res = await axios.get(`/api/plan/getPlanDetailRoute/${planId}`);
+            // console.log(">> getPlanDetailRouter : ", res.data);
+            setRoute(res.data);
+        }
         getPlanDetail();
+        getRoute();
         // eslint-disable-next-line
     },[planId]);
 
+    const getDayName = (week_n) => {
+        // console.log('week_n :: ' ,week_n);
+        switch (week_n) {
+            case '0': 
+                return '일요일';
+            case '1': 
+                return '월요일';
+            case '2': 
+                return '화요일';
+            case '3': 
+                return '수요일';
+            case '4': 
+                return '목요일';
+            case '5': 
+                return '금요일';
+            case '6': 
+                return '토요일';
+            default:
+                return 'Error';
+        }
+    }
     // 책갈피 저장 완료 모달 팝업
     const saveConfirm = async () => {
         const result = await Modal.confirm({
@@ -93,92 +123,95 @@ function ViewPlanDetail() {
                     예산 : {plan.plan_budget}
                 </div>
                 <div className='writerDiv'>
-                    <span>작성자닉네임</span>
+                    <span>{plan.user_name}</span>
                     <Avatar src=''/>
                 </div>
             </PlanInfo>
-
-            {/* N일차 라디오 버튼 */}
-            <div className="dateRadioBtn">
-                    <div className="dateRadioBoxWrapper">
-                    {datePlan.map((dateN, index) => (
-                        <React.Fragment key={index} >
-                            <InfoRadioBoxInput
-                                type="radio"
-                                id={`day${index + 1}`}
-                                name="day"
-                                value={index}
-                                // onChange={(e) => {setDaily(e.target.value);}}
-                                // checked = {index === daily}
-                            />
-                            <InfoCheckBoxLabel htmlFor={`day${index + 1}`}>
-                                {index + 1}일차
-                            </InfoCheckBoxLabel>
-                        </React.Fragment>
-                    ))}
-                    </div>
-                </div>
-
-
             <div className='mapWrapper'>
                 <img src={mapPicture} alt='지도 예시' />
             </div>
+            
+            {/* N일차 라디오 버튼 */}
+            <div className="dateRadioBtn">
+                <div className="dateRadioBoxWrapper">
+                {datePlan.map((dateN, idx) => (
+                    <React.Fragment key={idx} >
+                        <InfoRadioBoxInput
+                            type="radio"
+                            id={`day${idx + 1}`}
+                            name="day"
+                            value={idx}
+                            onChange={(e) => {setIndex(e.target.value);}}
+                            defaultChecked = {idx === index}
+                        />
+                        <InfoCheckBoxLabel htmlFor={`day${idx + 1}`}>
+                            {idx + 1}일차
+                        </InfoCheckBoxLabel>
+                    </React.Fragment>
+                ))}
+                </div>
+            </div>
+            
+            
+
             <div className='routesWrapper'>
                 <div className='wrapper1'>
-                    <span className='date'>9월 7일 목요일</span>
+                    <span className='date'>
+                        {datePlan[index]?.date_plan_date}&nbsp;
+                        {getDayName(datePlan[index]?.week_n)}
+                    </span>
                     <ul className='dropDownBtn' onClick={()=>setView(!view)}>
                         <img src={dots} alt='더보기' />
-                        {view && <Dropdown />}
+                        {view && <Dropdown planId = {plan?.plan_d} userId = {plan?.user_id}/>}
                     </ul>
                 </div>
 
                 {/* 반복될 부분 */}
-                <div className='wrapper2'>
-                    <div className='line'></div>
-                    <div className='wrapper3'>
-                        <div className='routeDiv'>
+                { route.map((r, idx) => {
+                    // console.log(r?.date_plan_uuid === datePlan[index]?.date_plan_uuid);
+                    return r.date_plan_uuid === datePlan[index].date_plan_uuid ? 
+                    (<div className='routeDiv'>
                             <div className='route'>
-                                <span className='placeName'>제주 국제공항</span>
+                                <span className='placeName'>{r.pla_name}</span>
                                 <div className='detailsWrapper'>
                                     <DistantCalc />
-                                    <span className='placeCate'>공항</span>
+                                    <span className='placeCate'>{r.pla_cate}</span>
+                                    { r.pla_rate_avg ? 
+                                        (<span className='placeRate'>
+                                            <FontAwesomeIcon icon={faStar} />
+                                            {r.pla_rate_avg}
+                                        </span>) : null
+                                    }
+
                                 </div>
                             </div>
                             <div className='weather'>
                                 <img src={sun} alt='날씨' />
                                 온도
                             </div>
-                        </div>
+                            { r.route_tip ? 
+                                (
+                                    <div className='routeDiv commentDiv'>
+                                        <span> 이용자님 만의 Tip!</span>
+                                        <span className='content'>웨이팅 10분에서 15분정도 있어용!!!</span>
+                                    </div>
+                                ) : null
+                            }
+                            
+                        </div>)
+                        : null
+                    })
+                }
 
-                        <div className='routeDiv commentDiv'>
-                            <span> 이용자님 만의 Tip!</span>
-                            <span className='content'>웨이팅 10분에서 15분정도 있어용!!!</span>
-                        </div>
-                        
-
+                <div className='wrapper2'>
+                    <div className='line'></div>
+                    <div className='wrapper3'>
                         <div className='moveInfoWrapper'>
                             <DistantCalc />
                             <span className='moveInfo'><img src={car} alt='car icon' />999km</span>
                             <span className='moveInfo'><img src={bus} alt='bus icon' />999km</span>
                         </div>
 
-                        <div className='routeDiv'>
-                            <div className='route'>
-                                <span className='placeName'>몽상 드 애월</span>
-                                <div className='detailsWrapper'>
-                                    <DistantCalc />
-                                    <span className='placeCate'>카페</span>
-                                    <span className='placeRate'>
-                                        <FontAwesomeIcon icon={faStar} />
-                                        4.2(7,231)
-                                    </span>
-                                </div>
-                            </div>
-                            <div className='weather'>
-                                <img src={sun} alt='날씨' />
-                                온도
-                            </div>
-                        </div>
                         <div className='imgSlider'>
                             <img src={test} alt='장소관련 사진' />
                             <img src={test} alt='장소관련 사진' />
@@ -190,7 +223,7 @@ function ViewPlanDetail() {
             </div>
 
             <div className='trouverRecomm'>
-                <RecommTitle className='title'><FontAwesomeIcon icon={faThumbsUp} />트루버의 추천을 받아보세요 </RecommTitle>
+                <RecommTitle className='title'><FontAwesomeIcon icon={faThumbsUp} />&nbsp; 트루버의 추천을 받아보세요 </RecommTitle>
                 <div className='imgSlider'>
                     <div className='trouverRecommDetail'>
                         <img src={test} alt='장소관련 사진' />
@@ -198,29 +231,7 @@ function ViewPlanDetail() {
                         <div className='detailsWrapper'>
                             <span className='placeCate'>카페</span>
                             <span className='placeRate'>
-                                <FontAwesomeIcon icon={faStar} />
-                                4.2(7,231)
-                            </span>
-                        </div>
-                    </div>
-                    <div className='trouverRecommDetail'>
-                        <img src={test} alt='장소관련 사진' />
-                        <span className='placeName'>애월 가나다라 카페</span>
-                        <div className='detailsWrapper'>
-                            <span className='placeCate'>카페</span>
-                            <span className='placeRate'>
-                                <FontAwesomeIcon icon={faStar} />
-                                4.2(7,231)
-                            </span>
-                        </div>
-                    </div>
-                    <div className='trouverRecommDetail'>
-                        <img src={test} alt='장소관련 사진' />
-                        <span className='placeName'>애월 가나다라 카페</span>
-                        <div className='detailsWrapper'>
-                            <span className='placeCate'>카페</span>
-                            <span className='placeRate'>
-                                <FontAwesomeIcon icon={faStar} />
+                                <FontAwesomeIcon icon={faStar} /> &nbsp;
                                 4.2(7,231)
                             </span>
                         </div>
@@ -233,7 +244,7 @@ function ViewPlanDetail() {
                     <FontAwesomeIcon className='icon' size='2xl' icon={faBookmark} style={{ color: "#c9c9c9" }} />
                     <span>999+</span>
                 </div>
-                <div className='vPlanDetailBtn' onClick={() => go('/planUpdate')}>
+                <div className='vPlanDetailBtn' onClick={() => go(`/planUpdate/${plan.plan_id}`)}>
                     <FontAwesomeIcon className='icon' size='2xl' icon={faCalendarDay} style={{ color: "#c9c9c9", }} />
                     <span>일정 편집</span>
                 </div>

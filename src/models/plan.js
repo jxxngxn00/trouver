@@ -125,13 +125,37 @@ export const MinsertRoute = (data, res) => {
 export const MgetPlanList = (req, res) => {
     try {
         const sql = `
-            SELECT bin_to_uuid(p.plan_id) as plan_uuid, u.user_name , p.plan_title, p.plan_reg,
-                p.plan_start, p.plan_end, p.plan_tag, p.plan_budget, p.plan_saved
-            from plan p
-            LEFT join user u
-            on p.user_id = u.user_id
-            ORDER BY p.plan_reg DESC
-            WHERE !p.plan_is_deleted
+            SELECT 
+                bin_to_uuid(p.plan_id) as plan_uuid,
+                u.user_name, 
+                p.plan_title, 
+                p.plan_reg,
+                date_format(p.plan_start, "%Y-%m-%d") as plan_start, 
+                date_format(p.plan_end, "%Y-%m-%d") as plan_end, 
+                p.plan_tag, 
+                p.plan_budget, 
+                p.plan_saved, 
+                p.plan_is_deleted, 
+                COALESCE(count_routes.count_routes, 0) AS count_routes
+            FROM 
+                plan p
+            LEFT JOIN 
+                user u ON p.user_id = u.user_id
+            LEFT JOIN (
+                SELECT 
+                    dp.plan_id, 
+                    COUNT(r.route_id) AS count_routes
+                FROM 
+                    route r
+                LEFT JOIN 
+                    date_plan dp ON r.date_plan_id = dp.date_plan_id
+                GROUP BY 
+                    dp.plan_id
+            ) AS count_routes ON p.plan_id = count_routes.plan_id
+            WHERE 
+                p.plan_is_deleted IS NULL
+            ORDER BY 
+                p.plan_reg DESC;
         `;
         db.query(sql, [req.params.id], (err, rows) => {
             if (err) {
@@ -139,7 +163,6 @@ export const MgetPlanList = (req, res) => {
                 res.status(500).send('Database query error');
                 return;
             };
-            // console.log("result :: ",row);
             res.send(rows);
         })
     } catch (error) {
@@ -153,10 +176,13 @@ export const MgetPlan = (req, res) => {
     return new Promise((resolve, reject) => {
         try {
             const sql = `
-                SELECT p.plan_id , 
+                SELECT BIN_TO_UUID(p.plan_id) as plan_id , u.user_name, 
+                BIN_TO_UUID(u.user_id) as user_id,
                 p.plan_title , p.plan_start , p.plan_end , 
                 p.plan_saved, p.plan_budget
                 FROM plan p
+                LEFT JOIN user u
+                ON p.user_id = u.user_id
                 WHERE BIN_TO_UUID(p.plan_id) = ?
             `;
             db.query(sql, [req.params.id], (err, rows) => {
@@ -180,7 +206,10 @@ export const MgetDatePlan = (req, res) => {
     return new Promise((resolve, reject) => {
         try {
             const sql = `
-                SELECT plan_id, date_plan_id, date_plan_date
+                SELECT plan_id, 
+                    BIN_TO_UUID(date_plan_id) as date_plan_uuid, 
+                    DATE_FORMAT(date_plan_date, '%Y년 %m월 %d일') as date_plan_date,
+                    DATE_FORMAT(date_plan_date, '%w') as week_n
                 FROM date_plan 
                 WHERE BIN_TO_UUID(plan_id) = ?
             `;
@@ -205,7 +234,12 @@ export const MgetRoute = (req, res) => {
     return new Promise((resolve, reject) => {
         try {
             const sql = `
-                SELECT r.date_plan_id as date_plan_id, 
+                select 
+                    *, 
+                    date_format(dp.date_plan_date, '%Y년 %m월 %d일') as date_plan_date,
+                    BIN_TO_UUID(dp.date_plan_id) as date_plan_uuid,
+                    BIN_TO_UUID(rp.date_plan_id) as route_date_plan_uuid
+                from (SELECT r.date_plan_id as date_plan_id, 
                         r.pla_id as pla_id, 
                         r.route_id as route_id,
                         r.route_index as route_index,
@@ -215,17 +249,19 @@ export const MgetRoute = (req, res) => {
                         p.pla_cate as pla_cate, 
                         p.pla_rate_avg as pla_rate_avg, 
                         p.pla_image as pla_image 
-                FROM route r
-                LEFT JOIN place p
-                ON r.pla_id = p.pla_id
-                WHERE BIN_TO_UUID(dp.plan_id) = ?
+                    FROM route r
+                    LEFT JOIN place p
+                    ON r.pla_id = p.pla_id) rp
+                left join date_plan dp 
+                on dp.date_plan_id = rp.date_plan_id
+                where BIN_to_uuid(dp.plan_id) = ?
             `;
             db.query(sql, [req.params.id], (err, rows) => {
                 if (err) {
                     console.error('Database query error : ', err);
                     reject('Database query error');
                 } else {
-                    // console.log(">> date plan result :: ", rows);
+                    // console.log(">> route result :: ", rows);
                     resolve(rows);
                 }
             });
@@ -295,6 +331,26 @@ export const MdeletePlan = (req, res) => {
         })
     } catch (error) {
         console.error('Error : ', error);
+        res.status(500).send('Server error');
+    }
+}
+
+// 조회수 증가
+export const MupdateHits = (req, res) => {
+    try {
+        const sql = `
+            UPDATE plan
+            SET plan_hit = plan_hit + 1
+            WHERE BIN_TO_UUID(plan_id) = ?
+        `;
+        db.query(sql, [req.params.id], (err, row) => {
+            if (err) {
+                console.error('Database query error : ', err);
+                res.status(500).send('Database query error');
+            };
+        })
+    } catch (error) {
+        console.error("Error : ", error);
         res.status(500).send('Server error');
     }
 }

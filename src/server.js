@@ -6,6 +6,7 @@ import cors from "cors";
 import placeRoutes from "./routes/place.js";
 import planRoutes from "./routes/plan.js";
 import reviewRoutes from "./routes/review.js";
+import bookmarkRoutes from "./routes/bookmark.js";
 import api from "./api.js";
 
 
@@ -28,6 +29,7 @@ app.use("/api", api);
 app.use("/api/place", placeRoutes);
 app.use("/api/plan", planRoutes);
 app.use("/api/review", reviewRoutes);
+app.use("/api/bookmark", bookmarkRoutes);
 
 // ML
 // app.post('/recommend', async (req,res) => {

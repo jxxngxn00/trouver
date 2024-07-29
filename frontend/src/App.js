@@ -34,6 +34,7 @@ import ScrollToTop from './ScrollToTop';
 
 /* CSS files + images */
 import './App.css';
+import ExistedPlanUpdate from './pages/plan/ExistedPlanUpdate';
 // import logo from './images/trouver_logo.png'
 
 
@@ -70,6 +71,7 @@ function RouteTransitions() {
         <Route path="/viewplandetail/:planId" element={<ViewPlanDetail />} />
 
         <Route path='/planupdate' element={<PlanUpdate />} />
+        <Route path='/planupdate/:id' element={<ExistedPlanUpdate />} />
 
         <Route path='/product' element={<Product />} />
         <Route path='/viewprodDetail/:id' element={<ViewProductDetail />} />

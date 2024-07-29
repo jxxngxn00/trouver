@@ -1,0 +1,221 @@
+import db from '../database/db.js'; // 데이터베이스 연결 설정
+
+/* 여행지 북마크 */
+// 여행지 북마크 추가
+export const MsavePlace = (data, res) => {
+    try {
+        const sql = `
+            INSERT INTO saved_place(user_id, pla_id, sp_cate) 
+            VALUES (uuid_to_bin(?), uuid_to_bin(?), ?)
+        `;
+        db.query(sql, data, (err, rows) => {
+            if (err) {
+                console.error('Database query error : ', err);
+                res.status(500).send('Database query error');
+                return;
+            };
+        })
+    } catch (error) {
+        console.error('Error : ', error);
+        res.status(500).send('Server error');
+    }
+};
+
+// 여행지 북마크 해제
+export const MunsavePlace = (data, res) => {
+    try {
+        const sql = `
+            DELETE FROM saved_place
+            WHERE pla_id = ? AND user_id = ?
+        `;
+        db.query(sql, data, (err, rows) => {
+            if (err) {
+                console.error('Database query error : ', err);
+                res.status(500).send('Database query error');
+                return;
+            };
+        })
+    } catch (error) {
+        console.error('Error : ', error);
+        res.status(500).send('Server error');
+    }
+};
+
+// 사용자별 여행지 북마크 상태 확인
+export const MisSavedPlace = (req, res) => {
+    try {
+        const sql = `
+            SELECT count(sp_id) as saved
+            FROM saved_place
+            WHERE BIN_TO_UUID(pla_id) = ? AND BIN_TO_UUID(user_id) = ?
+        `;
+        db.query(sql, data, (err, row) => {
+            if (err) {
+                console.error('Database query error : ', err);
+                res.status(500).send('Database query error');
+                return;
+            } else {
+                return row;
+            }
+        })
+    } catch (error) {
+        console.error('Error : ', error);
+        res.status(500).send('Server error');
+    } 
+}
+
+// 여행지의 북마크 수 증가
+export const MupdatePlaceSavePlus = (req, res) => {
+    try {
+        const sql = `
+            UPDATE place
+            FROM pla_saved = pla_saved + 1
+            WHERE BIN_TO_UUID(pla_id) = ?
+        `;
+        db.query(sql, data, (err, row) => {
+            if (err) {
+                console.error('Database query error : ', err);
+                res.status(500).send('Database query error');
+                return;
+            } else {
+                return row;
+            }
+        })
+    } catch (error) {
+        console.error('Error : ', error);
+        res.status(500).send('Server error');
+    } 
+}
+
+// 여행지의 북마크 수 감소
+export const MupdatePlaceSaveMinus = (req, res) => {
+    try {
+        const sql = `
+            UPDATE place
+            FROM pla_saved = pla_saved - 1
+            WHERE BIN_TO_UUID(pla_id) = ?
+        `;
+        db.query(sql, data, (err, row) => {
+            if (err) {
+                console.error('Database query error : ', err);
+                res.status(500).send('Database query error');
+                return;
+            } else {
+                return row;
+            }
+        })
+    } catch (error) {
+        console.error('Error : ', error);
+        res.status(500).send('Server error');
+    } 
+}
+
+/* 일정 북마크 */
+// 일정 북마크 추가
+export const MsavePlan = (data, res) => {
+    try {
+        const sql = `
+            INSERT INTO saved_plan(user_id, plan_id) 
+            VALUES (uuid_to_bin(?), uuid_to_bin(?))
+        `;
+        db.query(sql, data, (err, rows) => {
+            if (err) {
+                console.error('Database query error : ', err);
+                res.status(500).send('Database query error');
+                return;
+            };
+        })
+    } catch (error) {
+        console.error('Error : ', error);
+        res.status(500).send('Server error');
+    }
+};
+
+// 일정 북마크 해제
+export const MunsavePlan = (data, res) => {
+    try {
+        const sql = `
+            DELETE FROM saved_plan
+            WHERE BIN_TO_UUID(plan_id) = ? AND BIN_TO_UUID(user_id) = ?
+        `;
+        db.query(sql, data, (err, rows) => {
+            if (err) {
+                console.error('Database query error : ', err);
+                res.status(500).send('Database query error');
+                return;
+            };
+        })
+    } catch (error) {
+        console.error('Error : ', error);
+        res.status(500).send('Server error');
+    }
+};
+
+// 사용자별 일정 북마크 상태 확인
+export const MisSavedPlan = (req, res) => {
+    try {
+        const sql = `
+            SELECT s_state as saved
+            FROM saved_plan
+            WHERE BIN_TO_UUID(plan_id) = ? AND BIN_TO_UUID(user_id) = ?
+        `;
+        db.query(sql, data, (err, row) => {
+            if (err) {
+                console.error('Database query error : ', err);
+                res.status(500).send('Database query error');
+                return;
+            } else {
+                return row;
+            }
+        })
+    } catch (error) {
+        console.error('Error : ', error);
+        res.status(500).send('Server error');
+    } 
+}
+
+// 일정의 북마크 수 증가
+export const MupdatePlanSavePlus = (req, res) => {
+    try {
+        const sql = `
+            UPDATE plan
+            FROM plan_saved = plan_saved + 1
+            WHERE BIN_TO_UUID(plan_id) = ?
+        `;
+        db.query(sql, data, (err, row) => {
+            if (err) {
+                console.error('Database query error : ', err);
+                res.status(500).send('Database query error');
+                return;
+            } else {
+                return row;
+            }
+        })
+    } catch (error) {
+        console.error('Error : ', error);
+        res.status(500).send('Server error');
+    } 
+}
+
+// 일정의 북마크 수 감소
+export const MupdatePlanSaveMinus = (req, res) => {
+    try {
+        const sql = `
+            UPDATE plan
+            FROM plan_saved = plan_saved - 1
+            WHERE BIN_TO_UUID(plan_id) = ?
+        `;
+        db.query(sql, data, (err, row) => {
+            if (err) {
+                console.error('Database query error : ', err);
+                res.status(500).send('Database query error');
+                return;
+            } else {
+                return row;
+            }
+        })
+    } catch (error) {
+        console.error('Error : ', error);
+        res.status(500).send('Server error');
+    } 
+}

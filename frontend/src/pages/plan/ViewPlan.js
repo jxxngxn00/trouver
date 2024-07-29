@@ -9,8 +9,9 @@ import test from '../../images/test.jfif'
 
 import SearchBox from '../components/SearchBox';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faBookmark } from '@fortawesome/free-solid-svg-icons'
+import { faBookmark, faMapPin } from '@fortawesome/free-solid-svg-icons'
 import { DotLoading, InfiniteScroll, List } from 'antd-mobile';
+import axios from 'axios';
 
 const InfiniteScrollContent = ({ hasMore }) => {
     return (<>
@@ -32,8 +33,14 @@ function ViewPlan() {
         setHasMore(append.length > 0);
     };
 
-    const handleNavigate = (e) => {
-        navigate('/ViewPlanDetail');
+    const handleNavigate = async (e, plan_uuid) => {
+        try {
+            axios.patch(`/api/plan/updateHits/${plan_uuid}`);
+            console.log('Navigating to:', `/ViewPlanDetail/${plan_uuid}`); // 디버깅을 위해 로그 추가
+            navigate(`/ViewPlanDetail/${plan_uuid}`);
+        } catch (error) {
+            console.error('Error updating hits : ',error);
+        }
     };
 
     return (
@@ -50,18 +57,35 @@ function ViewPlan() {
                 <List>
                 {data.map((item, index) => (
                     <List.Item key={index}>
-                        <div key={index} className='contents' onClick={() => handleNavigate()}>
+                        <div key={index} className='contents' onClick={(e) => handleNavigate(e, item.plan_uuid)}>
                             <div className='imgWrapper'>
                                 <img src={test} alt="thumbnail" />
                             </div>
                             <div className='descWrapper'>
                                 <div className='saved'>
                                     <FontAwesomeIcon className='icon' icon={faBookmark} style={{ marginRight: 5, color: '#45866B'}}/>
-                                    999+
+                                    {item.plan_saved}
                                 </div>
-                                <div className='planTitle'>{item}, Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum</div>
+                                <div className='planTitle'>
+                                    {item.plan_title}
+                                </div>
                                 <div className='detailsWrapper'>
-                                    <div className='router'>6 routes</div>
+                                    <div className='detail'>
+                                        <FontAwesomeIcon className="descicon" icon={faMapPin} size="xs" /> 
+                                        {item.count_routes} route
+                                    </div>
+                                    <div className='detail'>
+                                        <FontAwesomeIcon className="descicon" icon={faMapPin} size="xs" /> 
+                                         {item.plan_start} <br/> ~ {item.plan_end}
+                                    </div>
+                                    <div className='detail'>
+                                        <FontAwesomeIcon className="descicon" icon={faMapPin} size="xs" /> 
+                                         {item.plan_budget}
+                                    </div>
+                                    <div className='detail tag'>
+                                        <FontAwesomeIcon className="descicon" icon={faMapPin} size="xs" /> 
+                                         {item.plan_tag}
+                                    </div>
                                 </div>
                             </div>
                         </div>

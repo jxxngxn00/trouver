@@ -3,7 +3,9 @@ import { MinsertPlan, MinsertDatePlan, MinsertRoute,
     MgetPlanId, MgetPlanList, MgetPlan, MgetDatePlanId,
     MupdatePlan, MupdateDatePlan, MupdateRoute,
     MdeletePlan,
-    MgetDatePlan} from '../models/plan.js';
+    MgetDatePlan,
+    MupdateHits,
+    MgetRoute} from '../models/plan.js';
 
 export const CInsertPlan_temp = asyncHandler(async (req, res) => {
     const { date, budget, tags, user_login_id } = req.body;
@@ -49,7 +51,7 @@ export const CgetPlanList = asyncHandler(async (req, res) => {
     MgetPlanList(req, res);
 });
 
-// 일정 상세보기
+// 일정 상세보기 (plan + dateplan)
 export const CgetPlan = asyncHandler(async (req, res) => {
     try {
         const plan = await MgetPlan(req, res);
@@ -65,6 +67,19 @@ export const CgetPlan = asyncHandler(async (req, res) => {
     }
 });
 
+// 일정 상세보기 (route)
+export const CgetRoute = asyncHandler(async (req, res) => {
+    try {
+        const result = await MgetRoute(req, res);
+        // console.log('>> id :: ', req.params.id);
+        // console.log('>> result :: ', result);
+        res.send(result);
+    } catch (error) {
+        console.error('Error : ', error);
+        res.status(500).send('Server error');
+    }
+})
+
 // 일정 Update :: Plan
 export const CupdatePlan = asyncHandler(async (req, res) => {
     MupdatePlan(req, res);
@@ -77,4 +92,8 @@ export const CdeletePlan = asyncHandler(async (req, res) => {
     MdeletePlan(req, res);
 })
 
+// 조회수 증가
+export const CupdateHits = asyncHandler(async (req, res) => {
+    MupdateHits(req, res);
+});
 export default CInsertPlan;
