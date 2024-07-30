@@ -8,3 +8,4 @@ python
 python/*
 *.zip
 src/database/db.js
+.env

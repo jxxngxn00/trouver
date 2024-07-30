@@ -18,7 +18,7 @@ const InfiniteScrollContent = ({ hasMore }) => {
         {hasMore ? ( <>
             <span>Loading</span>
             <DotLoading />
-        </>) : (<span>결과 로딩중...</span>)}
+        </>) : (<span>오류 발생시, 문의하기를 통해 오류 상황을 알려주세요!</span>)}
     </>);
 };
 
@@ -36,7 +36,7 @@ function ViewPlan() {
     const handleNavigate = async (e, plan_uuid) => {
         try {
             axios.patch(`/api/plan/updateHits/${plan_uuid}`);
-            console.log('Navigating to:', `/ViewPlanDetail/${plan_uuid}`); // 디버깅을 위해 로그 추가
+            // console.log('Navigating to:', `/ViewPlanDetail/${plan_uuid}`); // 디버깅을 위해 로그 추가
             navigate(`/ViewPlanDetail/${plan_uuid}`);
         } catch (error) {
             console.error('Error updating hits : ',error);

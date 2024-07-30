@@ -115,32 +115,61 @@ function ViewProductDetail(props) {
 
     // 모아보기 저장 토글
     const [saved, setSaved] = useState(false);
-    const handleSaved = () => {
+    useEffect(() => {
+        const getSavedState = async (id) => {
+            try {
+                const res = await axios.get(`/api/bookmark/getSavedPlaceState/${id}`, 
+                    { params : { 
+                        user_id : '0eb6e69c-47cc-11ef-b3c9-7085c2d2eea0',
+                    }}
+                );
+                console.log("res.data :: ", res.data.saved);
+                if (res.data.saved !== 0) {
+                    setSaved(true);
+                }
+            } catch (err) {
+                console.error("get State of Bookmark : ", err);
+            }
+        };
+        getSavedState(id);
+    }, [id]);
+    const handleSaved = async () => {
         if (saved) {
-            Toast.show({
-                icon:(<UseAnimations className='toastIcon' 
-                    strokeColor='white'
-                    fillColor='white' 
-                    animation={plusToX} size={56} 
-                    autoplay
-                    wrapperStyle={{ margin:'auto' }}
-                    />),
-                content:'모아보기에서 해제되었어요!',
-                duration: 1200,
-            });
+            try {
+                axios.delete(`/api/bookmark/unsavePlace/${id}`);
+                Toast.show({
+                    icon:(<UseAnimations className='toastIcon' 
+                        strokeColor='white'
+                        fillColor='white' 
+                        animation={plusToX} size={56} 
+                        autoplay
+                        wrapperStyle={{ margin:'auto' }}
+                        />),
+                    content:'모아보기에서 해제되었어요!',
+                    duration: 1200,
+                });     
+            } catch (error) {
+                console.error("Error fetching bookmark", error);
+            };
         } else {
-            Toast.show({
-                icon:(<UseAnimations className='toastIcon' 
-                    strokeColor='white'
-                    fillColor='white' 
-                    animation={bookmark} size={56} 
-                    autoplay 
-                    wrapperStyle={{ margin:'auto' }}/>),
-                content:'책갈피에 저장되었어요!',
-                duration: 1200,
-            });
+            try {
+                axios.post(`/api/bookmark/savePlace/${id}`);
+                Toast.show({
+                    icon:(<UseAnimations className='toastIcon' 
+                        strokeColor='white'
+                        fillColor='white' 
+                        animation={bookmark} size={56} 
+                        autoplay 
+                        wrapperStyle={{ margin:'auto' }}/>),
+                    content:'책갈피에 저장되었어요!',
+                    duration: 1200,
+                });        
+               
+            } catch (error) {
+                console.error("Error fetching bookmark", error);
+            };
         }
-        setSaved(!saved)
+        setSaved(!saved);
     }
 
     return (

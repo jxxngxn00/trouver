@@ -153,7 +153,7 @@ export const MgetPlanList = (req, res) => {
                     dp.plan_id
             ) AS count_routes ON p.plan_id = count_routes.plan_id
             WHERE 
-                p.plan_is_deleted IS NULL AND BIN_TO_UUID(u.user_id) = ?
+                p.plan_is_deleted IS NULL
             ORDER BY 
                 p.plan_reg DESC
         `;

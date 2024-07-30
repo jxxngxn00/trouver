@@ -11,16 +11,16 @@ function RecommProduct({cate}) {
 
     // eslint-disable-next-line
     const getPlaceList = async () => {
-        console.log(cate);
+        // console.log(cate);
         try {
             if (!cate) {
                 const res = await axios.get(`/api/place/getPlaceList5`);
                 setPlaces(res.data);
-                console.log("none cate :",res.data);
+                // console.log("none cate :",res.data);
             } else {
                 const res = await axios.get(`/api/place/getPlaceListByCate5/${cate}`);
                 setPlaces(res.data);
-                console.log(`${cate} :: `,res.data);
+                // console.log(`${cate} :: `,res.data);
             }
             
         } catch (error) {

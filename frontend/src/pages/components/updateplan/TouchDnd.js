@@ -9,14 +9,13 @@ import { DeleteOutlined } from '@ant-design/icons';
 import { Swiper } from 'antd-mobile';
 
 export default function TouchDnd({ list, setList, daily, setDaily, dateRange }) {
-  
-  
   // 날짜 형식 맞춤
   const [formatDateRange, setFormatDateRange ] = useState([]);
   const [ isDeleteMode, setIsDeleteMode ] = useState(false);
   const [ selectedItems, setSelectedItems ] = useState([]);
 
   useEffect(() => {
+    console.log(">>> dateRange : ",dateRange);
     // eslint-disable-next-line
     const formattedDates = dateRange.map(date => 
       format(date, 'PPPP', { addSuffix: true, locale: ko })
@@ -79,8 +78,9 @@ export default function TouchDnd({ list, setList, daily, setDaily, dateRange }) 
   }
 
   const swipeItem = (swipeRange) => {
-    // console.log("list : ",list);
+    console.log(">>> list : ",list);
     return swipeRange.map((temp, dateIndex) => {
+      console.log(">>> temp : ", temp);
       const dailyList = list[dateIndex] || [];
       return (
         <Swiper.Item key={dateIndex}>
@@ -120,13 +120,13 @@ export default function TouchDnd({ list, setList, daily, setDaily, dateRange }) 
                             />
                           )}
                           <div className={isDeleteMode ? 'route deleteMode' : 'route'}>
-                            <span className='placeName'>{item.placeName}</span>
+                            <span className='placeName'>{item.placeName || item.pla_name}</span>
                             <div className='detailsWrapper'>
-                              <span className='placeCate'>{item.placeCate}</span>
-                              {item.placeRate ? (
+                              <span className='placeCate'>{item.placeCate || item.pla_cate}</span>
+                              {item.placeRate || item.pla_rate_avg ? (
                                 <span className='placeRate'>
                                   <FontAwesomeIcon icon={faStar} style={{ color: "#FFD43B" }} />
-                                  {item.placeRate}
+                                  {item.placeRate || item.pla_rate_avg}
                                 </span>
                               ) : null }
                             </div>

@@ -11,7 +11,8 @@ import styled from 'styled-components';
 import { Avatar, Toast, Modal } from 'antd-mobile';
 import { CheckCircleFilled } from '@ant-design/icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faStar, faThumbsUp, faBookmark, faCalendarDay, faSquareShareNodes } from '@fortawesome/free-solid-svg-icons'
+import { faStar, faThumbsUp, faBookmark, faCalendarDay, faSquareShareNodes } from '@fortawesome/free-solid-svg-icons';
+import plusToX from 'react-useanimations/lib/plusToX';
 
 
 // images
@@ -25,6 +26,7 @@ import sun from '../../images/icons/sun.gif'
 // hooks
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
+import UseAnimations from 'react-useanimations';
 
 const getDateToString = (date) => {
     const newDate = new Date(date);
@@ -39,13 +41,14 @@ const formatDate = (date) => {
 };
 
 function ViewPlanDetail() {
-    const curr_user_id = 'fdb19576-48f1-11ef-bcc9-af0a24947caf';
-    // const curr_user_id = 'fdb19c88-48f1-11ef-bcc9-af0a24947caf';
+    // const curr_user_id = 'fdb19576-48f1-11ef-bcc9-af0a24947caf'; // mac
+    const curr_user_id = '0eb6e69c-47cc-11ef-b3c9-7085c2d2eea0'; // window
     const [view, setView] = useState(false);
     const [plan, setPlan] = useState([]);
     const [datePlan, setDatePlan] = useState([]);
     const [route, setRoute] = useState([]);
     const [index, setIndex] = useState(0);
+    const [saved, setSaved] = useState(false);
     const go = useNavigate();
     const { planId } = useParams();
 
@@ -64,8 +67,26 @@ function ViewPlanDetail() {
             console.log(">> getPlanDetailRouter : ", res.data);
             setRoute(res.data);
         }
+
+        const getSavedState = async (id) => {
+            try {
+                const res = await axios.get(`/api/bookmark/getSavedPlanState/${id}`, 
+                    { params : { 
+                        user_id : '0eb6e69c-47cc-11ef-b3c9-7085c2d2eea0',
+                    }}
+                );
+                console.log("res.data :: ", res.data.saved);
+                if (res.data.saved !== 0) {
+                    setSaved(true);
+                }
+            } catch (err) {
+                console.error("get State of Bookmark : ", err);
+            }
+        };
+
         getPlanDetail();
         getRoute();
+        getSavedState(planId);
         // eslint-disable-next-line
     },[planId]);
 
@@ -92,24 +113,51 @@ function ViewPlanDetail() {
     }
     // 책갈피 저장 완료 모달 팝업
     const saveConfirm = async () => {
-        const result = await Modal.confirm({
-            header: ( <CheckCircleFilled
-                    style={{ 
-                        fontSize: 64, 
-                        color: 'var(--adm-color-confirm)'
-                    }} /> ),
-            title: '책갈피 저장 완료',
-            content: '책갈피에 담아뒀어요!',
-            confirmText: '책갈피에서 확인하기',
-            cancelText: '더 둘러보기',
-            closeOnMaskClick: true,
-        });
 
-        if (result) { 
-            Toast.show( { content:'책갈피 -- 준비중입니다.', position:'bottom'})
+        if (saved) {
+            try {
+                axios.delete(`/api/bookmark/unsavePlan/${planId}`);
+                Toast.show({
+                    icon:(<UseAnimations className='toastIcon' 
+                        strokeColor='white'
+                        fillColor='white' 
+                        animation={plusToX} size={56} 
+                        autoplay
+                        wrapperStyle={{ margin:'auto' }}
+                        />),
+                    content:'모아보기에서 해제되었어요!',
+                    duration: 1200,
+                });     
+            } catch (error) {
+                console.error("Error fetching bookmark", error);
+            };            
         } else {
-            Toast.show( { content:'마이페이지의 "책갈피"에서 확인할 수 있어요!', position:'bottom'})
+            try {
+                axios.post(`/api/bookmark/savePlan/${planId}`);
+                const result = await Modal.confirm({
+                    header: ( <CheckCircleFilled
+                            style={{ 
+                                fontSize: 64, 
+                                color: 'var(--adm-color-confirm)'
+                            }} /> ),
+                    title: '책갈피 저장 완료',
+                    content: '책갈피에 담아뒀어요!',
+                    confirmText: '책갈피에서 확인하기',
+                    cancelText: '더 둘러보기',
+                    closeOnMaskClick: true,
+                });
+
+                if (result) { 
+                    Toast.show( { content:'책갈피 -- 준비중입니다.', position:'bottom'})
+                } else {
+                    Toast.show( { content:'마이페이지의 "책갈피"에서 확인할 수 있어요!', position:'bottom'})
+                }
+                
+            } catch (error) {
+                console.error("Error fetching bookmark", error);
+            };
         }
+        setSaved(!saved);
     }
     return (
         <>
@@ -192,15 +240,15 @@ function ViewPlanDetail() {
                                 <img src={sun} alt='날씨' />
                                 온도
                             </div>
-                            { r.route_tip ? 
-                                (
-                                    <div className='routeDiv commentDiv' key={idx}>
-                                        <span> 이용자님 만의 Tip!</span>
-                                        <span className='content'>웨이팅 10분에서 15분정도 있어용!!!</span>
-                                    </div>
-                                ) : null
-                            }
                         </div>
+                        { r.route_tip ? 
+                            (
+                                <div className='routeDiv commentDiv' key={idx}>
+                                    <span> 이용자님 만의 Tip!</span>
+                                    <span className='content'>{r.route_tip}</span>
+                                </div>
+                            ) : null
+                        }
                         
                         { idx !== route.length - 1 && route[idx+1].date_plan_uuid === datePlan[index]?.date_plan_uuid ? (
                             <div className='moveInfoWrapper'>
@@ -220,12 +268,12 @@ function ViewPlanDetail() {
                     <div className='wrapper3'>
                         
 
-                        <div className='imgSlider'>
+                        {/* <div className='imgSlider'>
                             <img src={test} alt='장소관련 사진' />
                             <img src={test} alt='장소관련 사진' />
                             <img src={test} alt='장소관련 사진' />
                             <img src={test} alt='장소관련 사진' />
-                        </div>
+                        </div> */}
                     </div>
                 </div>
             </div>
@@ -249,13 +297,17 @@ function ViewPlanDetail() {
 
             <div className='vPlanDetailBtnWrapper'>
                 <div className='vPlanDetailBtn' onClick={() => saveConfirm()}>
-                    <FontAwesomeIcon className='icon' size='2xl' icon={faBookmark} style={{ color: "#c9c9c9" }} />
-                    <span>999+</span>
+                    <FontAwesomeIcon className='icon' size='2xl' icon={faBookmark} 
+                        style={ saved ? { color: "#45866b" } : { color: "#c9c9c9" }} 
+                    />
+                    <span>{plan.plan_saved}</span>
                 </div>
-                <div className='vPlanDetailBtn' onClick={() => go(`/planUpdate/${plan.plan_id}`)}>
-                    <FontAwesomeIcon className='icon' size='2xl' icon={faCalendarDay} style={{ color: "#c9c9c9", }} />
-                    <span>일정 편집</span>
-                </div>
+                {curr_user_id === plan.user_id && 
+                    <div className='vPlanDetailBtn' onClick={() => go(`/planUpdate/${plan.plan_id}`)}>
+                        <FontAwesomeIcon className='icon' size='2xl' icon={faCalendarDay} style={{ color: "#c9c9c9", }} />
+                        <span>일정 편집</span>
+                    </div>
+                }
                 <div className='vPlanDetailBtn' onClick={() => { Toast.show( {content:'공유하기 -- 준비중입니다.', position:'center'})}}>
                     <FontAwesomeIcon className='icon' size='2xl' icon={faSquareShareNodes} style={{ color: "#c9c9c9", }} />
                     <span>일정 공유</span>

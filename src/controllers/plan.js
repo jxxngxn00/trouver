@@ -48,6 +48,7 @@ export const CInsertPlan = asyncHandler(async (req, res) => {
 
 // 일정 목록보기 (최신순)
 export const CgetPlanList = asyncHandler(async (req, res) => {
+    // console.log(">>> getPlanList Controller");
     MgetPlanList(req, res);
 });
 

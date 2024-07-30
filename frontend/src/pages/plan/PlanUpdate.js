@@ -287,7 +287,7 @@ function PlanUpdate() {
             <TopBtnBar />
             <form name="plan-form">
                 <div className="planTitle">
-                    <PlanTitle id="planTitle" ref={planTitleRef} type="text" placeholder="혼자 떠나는 제주여행" />
+                    <PlanTitle id="planTitle" ref={planTitleRef} type="text" placeholder="제목을 입력해주세요." required/>
                 </div>
                 <PlanInfo>
                     <div className="planDate" id="planBudget">

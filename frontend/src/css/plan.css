@@ -186,14 +186,14 @@
 
     & .searchContainer {
         margin: 1vh 0;
-        width: 100vw;
+        width: 100vw!important;
         position : relative;
     }
 
     & .contents{
         display: flex;
         border-radius: 15px;
-        height: 35vh;
+        height: min-content;
         margin: 3vh 5vw;
         box-shadow:0px 4px 18px -5px hsla(234, 44%, 26%, 0.411);
         background-color: white;
@@ -201,14 +201,14 @@
     
     & .imgWrapper img{
         border-radius: 15px 0px 0px 15px;
-        width: 40vw;
+        width: 10vw;
         height: 100%;
         object-fit: cover;
     }
 
     & .descWrapper {
         text-align: left;
-        width: 60%;
+        width: 100%;
         margin: 3.5% 3%;
         overflow: hidden;
 
@@ -218,7 +218,7 @@
     }
 
     & .descWrapper .planTitle{
-        width: 40.5vw!important;
+        width: 100%!important;
         position: relative;
         padding-left: 0;
 

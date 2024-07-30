@@ -16,8 +16,8 @@ function MakePlan() {
     const [tags, setTags] = useState([]);
     
     const user_name = '도레미';
-    // const user_id = '0eb6e69c-47cc-11ef-b3c9-7085c2d2eea0'; // window
-    const user_id = 'fdb19576-48f1-11ef-bcc9-af0a24947caf'; // mac
+    const user_id = '0eb6e69c-47cc-11ef-b3c9-7085c2d2eea0'; // window
+    // const user_id = 'fdb19576-48f1-11ef-bcc9-af0a24947caf'; // mac
 
     const handleSubmit = async () => {
         // 각각 component에서 입력한 내용 변수 저장

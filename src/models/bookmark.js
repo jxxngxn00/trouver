@@ -2,13 +2,13 @@ import db from '../database/db.js'; // 데이터베이스 연결 설정
 
 /* 여행지 북마크 */
 // 여행지 북마크 추가
-export const MsavePlace = (data, res) => {
+export const MsavePlace = (req, res) => {
     try {
         const sql = `
-            INSERT INTO saved_place(user_id, pla_id, sp_cate) 
-            VALUES (uuid_to_bin(?), uuid_to_bin(?), ?)
+            INSERT INTO saved_place(user_id, pla_id) 
+            VALUES (uuid_to_bin('0eb6e69c-47cc-11ef-b3c9-7085c2d2eea0'), uuid_to_bin(?))
         `;
-        db.query(sql, data, (err, rows) => {
+        db.query(sql, [req.params.plaId], (err, rows) => {
             if (err) {
                 console.error('Database query error : ', err);
                 res.status(500).send('Database query error');
@@ -22,18 +22,20 @@ export const MsavePlace = (data, res) => {
 };
 
 // 여행지 북마크 해제
-export const MunsavePlace = (data, res) => {
+export const MunsavePlace = (req, res) => {
+    console.log(req.params.plaId);
     try {
         const sql = `
             DELETE FROM saved_place
-            WHERE pla_id = ? AND user_id = ?
+            WHERE bin_to_uuid(pla_id) = ? AND bin_to_uuid(user_id) = '0eb6e69c-47cc-11ef-b3c9-7085c2d2eea0'
         `;
-        db.query(sql, data, (err, rows) => {
+        db.query(sql, [req.params.plaId], (err, rows) => {
             if (err) {
                 console.error('Database query error : ', err);
                 res.status(500).send('Database query error');
                 return;
             };
+            // console.log(">>> MunsavePlace result : ",rows);
         })
     } catch (error) {
         console.error('Error : ', error);
@@ -42,7 +44,7 @@ export const MunsavePlace = (data, res) => {
 };
 
 // 사용자별 여행지 북마크 상태 확인
-export const MisSavedPlace = (req, res) => {
+export const MisSavedPlace = (data, res) => {
     try {
         const sql = `
             SELECT count(sp_id) as saved
@@ -55,7 +57,8 @@ export const MisSavedPlace = (req, res) => {
                 res.status(500).send('Database query error');
                 return;
             } else {
-                return row;
+                console.log(row[0]);
+                res.send({ saved : row[0].saved });
             }
         })
     } catch (error) {
@@ -69,10 +72,10 @@ export const MupdatePlaceSavePlus = (req, res) => {
     try {
         const sql = `
             UPDATE place
-            FROM pla_saved = pla_saved + 1
+            SET pla_saved = pla_saved + 1
             WHERE BIN_TO_UUID(pla_id) = ?
         `;
-        db.query(sql, data, (err, row) => {
+        db.query(sql, [req.params.plaId], (err, row) => {
             if (err) {
                 console.error('Database query error : ', err);
                 res.status(500).send('Database query error');
@@ -92,10 +95,10 @@ export const MupdatePlaceSaveMinus = (req, res) => {
     try {
         const sql = `
             UPDATE place
-            FROM pla_saved = pla_saved - 1
+            SET pla_saved = pla_saved - 1
             WHERE BIN_TO_UUID(pla_id) = ?
         `;
-        db.query(sql, data, (err, row) => {
+        db.query(sql, [req.params.plaId], (err, row) => {
             if (err) {
                 console.error('Database query error : ', err);
                 res.status(500).send('Database query error');
@@ -112,13 +115,13 @@ export const MupdatePlaceSaveMinus = (req, res) => {
 
 /* 일정 북마크 */
 // 일정 북마크 추가
-export const MsavePlan = (data, res) => {
+export const MsavePlan = (req, res) => {
     try {
         const sql = `
             INSERT INTO saved_plan(user_id, plan_id) 
-            VALUES (uuid_to_bin(?), uuid_to_bin(?))
+            VALUES (uuid_to_bin('0eb6e69c-47cc-11ef-b3c9-7085c2d2eea0'), uuid_to_bin(?))
         `;
-        db.query(sql, data, (err, rows) => {
+        db.query(sql,[req.params.planId], (err, rows) => {
             if (err) {
                 console.error('Database query error : ', err);
                 res.status(500).send('Database query error');
@@ -132,13 +135,14 @@ export const MsavePlan = (data, res) => {
 };
 
 // 일정 북마크 해제
-export const MunsavePlan = (data, res) => {
+export const MunsavePlan = (req, res) => {
     try {
         const sql = `
             DELETE FROM saved_plan
-            WHERE BIN_TO_UUID(plan_id) = ? AND BIN_TO_UUID(user_id) = ?
+            WHERE BIN_TO_UUID(plan_id) = ? 
+                AND BIN_TO_UUID(user_id) = '0eb6e69c-47cc-11ef-b3c9-7085c2d2eea0'
         `;
-        db.query(sql, data, (err, rows) => {
+        db.query(sql, [req.params.planId], (err, rows) => {
             if (err) {
                 console.error('Database query error : ', err);
                 res.status(500).send('Database query error');
@@ -152,10 +156,10 @@ export const MunsavePlan = (data, res) => {
 };
 
 // 사용자별 일정 북마크 상태 확인
-export const MisSavedPlan = (req, res) => {
+export const MisSavedPlan = (data, res) => {
     try {
         const sql = `
-            SELECT s_state as saved
+            SELECT count(s_id) as saved
             FROM saved_plan
             WHERE BIN_TO_UUID(plan_id) = ? AND BIN_TO_UUID(user_id) = ?
         `;
@@ -179,10 +183,10 @@ export const MupdatePlanSavePlus = (req, res) => {
     try {
         const sql = `
             UPDATE plan
-            FROM plan_saved = plan_saved + 1
+            SET plan_saved = plan_saved + 1
             WHERE BIN_TO_UUID(plan_id) = ?
         `;
-        db.query(sql, data, (err, row) => {
+        db.query(sql, [req.params.planId], (err, row) => {
             if (err) {
                 console.error('Database query error : ', err);
                 res.status(500).send('Database query error');
@@ -202,10 +206,10 @@ export const MupdatePlanSaveMinus = (req, res) => {
     try {
         const sql = `
             UPDATE plan
-            FROM plan_saved = plan_saved - 1
+            SET plan_saved = plan_saved - 1
             WHERE BIN_TO_UUID(plan_id) = ?
         `;
-        db.query(sql, data, (err, row) => {
+        db.query(sql, [req.params.planId], (err, row) => {
             if (err) {
                 console.error('Database query error : ', err);
                 res.status(500).send('Database query error');

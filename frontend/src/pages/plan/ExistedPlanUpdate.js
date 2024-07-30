@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 /* components */
 import TouchDnd from "../components/updateplan/TouchDnd";
 import CalendarPicker from "../components/updateplan/CalendarPicker";
@@ -25,20 +25,22 @@ import axios from "axios";
 
 // 날짜 사이의 날짜 배열 생성
 const getDatesInRange = (startDate, endDate) => {
-  const date = new Date(startDate.getTime());
-  const dates = [];
+    if (!startDate || !endDate) {
+        console.error("startDate or endDate is undefined");
+        return [];
+    }
+    const date = new Date(startDate.getTime());
+    const dates = [];
 
-  while (date <= endDate) {
-    dates.push(new Date(date));
-    date.setDate(date.getDate() + 1);
-  }
+    while (date <= endDate) {
+        dates.push(new Date(date));
+        date.setDate(date.getDate() + 1);
+    }
 
-  return dates;
+    return dates;
 };
 
 function ExistedPlanUpdate() {
-    const location = useLocation();
-    const { date, budget, tags, user_login_id } = location.state || {};
     const go = useNavigate();
     const { planId } = useParams();
     const [visibleCalendar, setVisibleCalendar] = useState(false); // 달력 보임 state
@@ -49,30 +51,75 @@ function ExistedPlanUpdate() {
     const [placeArray, setPlaceArray] = useState([]);
     
     // 날짜 선택 관련 변수
-    const [valFromCal, setValFromCal] = useState( dateString || "" ); // 달력에서 날짜 선택시
+    const [valFromCal, setValFromCal] = useState(""); // 달력에서 날짜 선택시
     const [daily, setDaily] = useState(0); // N일차 -- N
+    const [date, setDate] = useState();
     const [dateRange, setDateRange] = useState([]);
     
-    const dateString = date ? `${getDateToString(date?.toString(), 0)} ~ ${getDateToString(date?.toString(), 1)}` : "";
-    const budgetString = budget ? `₩ ${budget[0]} ~ ₩ ${budget[1]}` : '';
-    const dateStrings = dateString?.split(',');
-    
     // eslint-disable-next-line
-    const [defaultDate, setDefaultDate] = useState ( () =>
-        dateStrings?.map(dateString => new Date(dateString))
-    );
+    const [defaultDate, setDefaultDate] = useState ([]);
     const [plan, setPlan] = useState();
     const [datePlan, setDatePlan] = useState([]);
-    const [pRoute, setpRoute] = useState([]);
     const [index, setIndex] = useState(0);
+
+    // get plan Detail
+    useEffect(() => {
+        console.log(">>> dateRange : ",placeArray.length);
+        // select from plan + date_plan
+        const getPlanDetail = async () => {
+            const res = await axios.get(`/api/plan/getPlanDetail/${planId}`);
+            console.log(">>> getPlan + datePlan",res.data);
+            const resPlan = res.data.plan[0];
+            const resDatePlan = res.data.datePlan;
+            setPlan(resPlan);
+            // eslint-disable-next-line no-unused-expressions
+            setValFromCal(
+                `${getDateToString(resPlan?.plan_start.toString(), 0)} 
+                ~ ${getDateToString(resPlan?.plan_end.toString(),0)}`
+            );
+            setDate(`${getDateToString(resPlan?.plan_start?.toString(), 0)},${getDateToString(resPlan?.plan_end?.toString(),0)}`);
+            setDatePlan(resDatePlan);
+        };
+        // select from route
+        const getRoute = async () => {
+            const res = await axios.get(`/api/plan/getPlanDetailRoute/${planId}`);
+            console.log(">> getPlanDetailRouter : ", res.data);
+            setPlaceArray(await groupByDatePlanId(res.data));
+        }
+        const groupByDatePlanId = async (data) => {
+            const groupedData = data.reduce((acc, item) => {
+                // 공통된 요소로 묶음 (여기서는 date_plan_id)
+                const datePlanId = item.date_plan_uuid;
+                
+                if (!acc[datePlanId]) {
+                    acc[datePlanId] = [];
+                }
+                acc[datePlanId].push(item);
+                return acc;
+            }, {});
+        
+            // 결과를 배열 형태로 변환
+            const result = Object.values(groupedData);
+            console.log(">>> result : ", groupedData);
+            return result;
+        };
+
+        getPlanDetail();
+        getRoute();
+        // eslint-disable-next-line
+    },[planId]);
 
     // 날짜 변수 변경
     const handleValueChange = (value) => {
-        // console.log(value);
         setValFromCal(value);
         const [start, end] = value?.split("~").map((date) => new Date(date));
-        const dates = getDatesInRange(start, end);
-        setDateRange(dates);
+        
+        if (!isNaN(start) && !isNaN(end)) {
+            const dates = getDatesInRange(start, end);
+            setDateRange(dates);
+        } else {
+            console.error("Invalid start or end date");
+        }
     };
     
     // 장소 추가
@@ -109,37 +156,24 @@ function ExistedPlanUpdate() {
     };
 
     const dateRef = useRef(date);
+    const dateString = date ? `${getDateToString(date?.toString(), 0)} ~ ${getDateToString(date?.toString(), 1)}` : "";
     const dateStringRef = useRef(dateString);
+    
     useEffect(() => {
         dateRef.current = date;
         dateStringRef.current = dateString;
-        getDatesInRange(new Date(date[0]), new Date(date[1]));
-        handleValueChange(dateStringRef.current);
-        // eslint-disable-next-line
-    }, [date]);
     
-    // get plan Detail
-    useEffect(() => {
-        // 장소 추가 및 정보 수정을 위해 임의로 만들어둔 plan_id 저장
-        const getPlanDetail = async () => {
-            const res = await axios.get(`/api/plan/getPlanDetail/${planId}`);
-            console.log(">>> getPlan+datePlan",res);
-            const resPlan = res.data.plan[0];
-            const resDatePlan = res.data.datePlan;
-            setPlan(resPlan);
-            setDatePlan(resDatePlan);
-        };
-
-        const getRoute = async () => {
-            const res = await axios.get(`/api/plan/getPlanDetailRoute/${planId}`);
-            console.log(">> getPlanDetailRouter : ", res.data);
-            setRoute(res.data);
+        if (plan?.plan_start && plan?.plan_end) {
+            const start = new Date(plan.plan_start);
+            const end = new Date(plan.plan_end);
+            if (!isNaN(start) && !isNaN(end)) {
+                getDatesInRange(start, end);
+                handleValueChange(dateStringRef.current);
+            }
         }
+    }, []);
+    
 
-        getPlanDetail();
-        getRoute();
-        // eslint-disable-next-line
-    },[planId]);
 
     const getDayName = (week_n) => {
         // console.log('week_n :: ' ,week_n);
@@ -168,7 +202,7 @@ function ExistedPlanUpdate() {
         planDateRef = useRef(), 
         planBudgetRef = useRef();
 
-    function savePlan() {
+    function updatePlan() {
 
         const dateArray = planDateRef.current.innerHTML.split('~');
         let newDateArray = [];
@@ -181,13 +215,13 @@ function ExistedPlanUpdate() {
         // 전달 데이터 formData
         // - plan
         const planFormData = {
-            user_id : user_login_id,     
+            // user_id : user_login_id,     
             plan_id : planId ? planId : null ,   
             plan_title : planTitleRef.current.value,
             plan_start : newDateArray[0],
             plan_end : newDateArray[1],
             plan_budget : planBudgetRef.current.innerHTML,
-            plan_tag : tags.join(','),
+            // plan_tag : tags.join(','),
         }
         // - date_plan
         const datePlanFormData = dateRange.map(date => {
@@ -234,11 +268,11 @@ function ExistedPlanUpdate() {
 
         try {
             // DB에 formData 저장 
-            axios.patch(`/api/plan/insertPlan/${user_login_id}`, data, {
-                headers : {
-                    "Context-Type" : "multipart/form-data",
-                },
-            });
+            // axios.patch(`/api/plan/insertPlan/${user_login_id}`, data, {
+            //     headers : {
+            //         "Context-Type" : "multipart/form-data",
+            //     },
+            // });
             saveConfirm();
             
         } catch (error) {
@@ -301,8 +335,8 @@ function ExistedPlanUpdate() {
             }}
             />
         ),
-        title: "일정 저장 완료",
-        content: "일정이 저장 및 업로드 되었습니다.",
+        title: "일정 수정 완료",
+        content: "일정이 수정 및 업로드 되었습니다.",
         confirmText: "확인",
         closeOnMaskClick: true,
         onConfirm: () => go(`/viewplandetail/${planId}`),
@@ -315,7 +349,7 @@ function ExistedPlanUpdate() {
             <form name="plan-form">
                 <div className="planTitle">
                     <PlanTitle id="planTitle" ref={planTitleRef} 
-                    value={plan.plan_title}
+                    defaultValue={plan?.plan_title}
                     type="text" placeholder="혼자 떠나는 제주여행" />
                 </div>
                 <PlanInfo>
@@ -365,7 +399,7 @@ function ExistedPlanUpdate() {
                                 name="day"
                                 value={idx}
                                 onChange={(e) => {setIndex(e.target.value);}}
-                                checked = {idx === index}
+                                defalutChecked = {idx === index}
                             />
                             <InfoCheckBoxLabel htmlFor={`day${idx + 1}`}>
                                 {idx + 1}일차
@@ -385,7 +419,7 @@ function ExistedPlanUpdate() {
                         <div className="wrapper3">
                             <TouchDnd 
                                 list={placeArray} setList={setPlaceArray} 
-                                daily={daily} setDaily = {setDaily}
+                                daily={datePlan} setDaily = {setDatePlan}
                                 dateRange={dateRange}
                             />
                         </div>
@@ -394,14 +428,14 @@ function ExistedPlanUpdate() {
                     {/* 선택된 태그 */}
                     <div className="wrapper2">
                     <div className="wrapper3 tags">
-                    {tags && tags.length > 0 ? 
+                    {/* {tags && tags.length > 0 ? 
                         tags.map((tag, idx) => {
                             return (<Tag 
                                     key={idx} 
                                     color='#45866B'>{tag}
                                 </Tag>)
                         })
-                    : "태그가 없습니다."}
+                    : "태그가 없습니다."} */}
                     </div>
                     </div>
                 </div>
@@ -439,7 +473,7 @@ function ExistedPlanUpdate() {
                     </ConfirmBtn>
                     </Popup>
 
-                    <div className="vPlanDetailBtn" onClick={() => savePlan()}>
+                    <div className="vPlanDetailBtn" onClick={() => updatePlan()}>
                     <FontAwesomeIcon
                         className="icon"
                         size="2xl"
@@ -515,12 +549,14 @@ const VPlanDetailBtnWrapper = styled.div`
 const PlanTitle = styled.input`
   /* display: block; */
   font-family: "KCC-Hanbit";
-  font-size: 1.75rem;
+  font-size: 1.15rem;
   padding: 1.4vh 5vw;
   border-radius: 30px;
   border: none;
   box-shadow: 0px 0px 27px -9px rgba(130, 130, 130, 0.75);
-  margin-top: 7vh;
+  margin-top: 7vh!important;
+  margin:auto;
+  width:84%;
 `;
 
 const DateBtn = styled.button`
