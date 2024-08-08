@@ -218,5 +218,30 @@ export const MdeletePlanReview = (req, res) => {
         res.status(500).send('Server error');
     }
 };
-/* 일정 리뷰 CRUD --end */
+/* 일정 리뷰 CRUD -- end */
+/* 마이페이지 리뷰 CRUD */
+export const MgetMyReview = (req, res) => {
+    try {
+        const sql = `
+            SELECT BIN_TO_UUID(pla_r_id) as pla_r_uuid, user_id, 
+            pla_r_date, pla_r_rate, pla_r_tag, pla_r_content,
+            BIN_TO_UUID(pla_id) as pla_id
+            FROM pla_review
+            WHERE BIN_TO_UUID(user_id) = ? AND pla_r_is_deleted IS NULL
+            ORDER BY pla_r_date DESC
+        `;
+        db.query(sql,[req.params.id], (err, rows) => {
+            if (err) {
+                console.error('Database query error : ', err);
+                res.status(500).send('Database query error');
+                return;
+            };
+            res.send(rows);
+        })
+    } catch (error) {
+        console.error('Error : ', error);
+        res.status(500).send('Server error');
+    }
+}
+/* 마이페이지 리뷰 CRUD -- end */
 export default MgetPlaceReview;

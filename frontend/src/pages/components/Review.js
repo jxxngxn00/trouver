@@ -1,18 +1,17 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
-import test from '../../images/test.jfif';
+import noResult from '../../images/no-result.gif';
 import { Divider, Rate, ImageViewer, Modal } from 'antd-mobile';
 import { CheckCircleFilled, ExclamationCircleFilled } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
-export const Review = ({ reviews, id }) => {
-  const [visible, setVisible] = useState(false);
-  const user_uuid = "0eb6e69c-47cc-11ef-b3c9-7085c2d2eea0";
-  const go = useNavigate();
-
-  
+export const Review = ({ reviews, id, naverReview }) => {
+    const [visible, setVisible] = useState(false);
+    const user_uuid = "fdb19576-48f1-11ef-bcc9-af0a24947caf";
+    const go = useNavigate();
+    
     // 삭제 전 경고 모달 팝업
     const warning = (review_id) => {
         Modal.alert({
@@ -24,11 +23,11 @@ export const Review = ({ reviews, id }) => {
             }}
             />
         ),
-        title: "일정 삭제",
+        title: "리뷰 삭제",
         content: (
             <>
-            <div> 일정을 정말 삭제할까요? </div>
-            <div> 삭제된 일정은 복구하기 어렵습니다! </div>
+            <div> 리뷰를 정말 삭제할까요? </div>
+            <div> 삭제된 리뷰는 복구하기 어렵습니다! </div>
             </>
         ),
         showCloseButton: true,
@@ -60,29 +59,53 @@ export const Review = ({ reviews, id }) => {
         },
         });
     };
+
     return (
         <div>
-            <TitleSpan className='title'>네이버 블로그 리뷰</TitleSpan>
+            {/* 네이버 블로그 리뷰 */}
+            <TitleSpan className='title'>네이버 블로그</TitleSpan>
             <BlogReviewWrapper>
-                {[...Array(10)].map((index)=> (
-                    <BlogReviewDiv key={index}>
-                        <img className='thumb' src={test} alt="썸네일"/>
+            {naverReview && naverReview.length > 0 ? (
+                naverReview.map((nItem, index) => (
+                    <BlogReviewDiv 
+                        key={index}  
+                        onClick={() => window.open(nItem?.link, "_blank", "noopener noreferrer")}
+                    >
+                        {/* <img className='thumb' src={test} alt="썸네일"/> */}
                         <BlogInfo>
-                            <span className='blogTitle content'>블로그 이름</span>
-                            <div className='blogContent content'>블로그 내용 블로그 내용 블로그 내용 블로그 내용 블로그 내용 블로그 내용 </div>
+                            <span className='blogTitle content' dangerouslySetInnerHTML={{__html: nItem?.title}}></span>
+                            <div className='blogContent content' dangerouslySetInnerHTML={{__html: nItem?.description}}></div>
                         </BlogInfo>
                     </BlogReviewDiv>
-                ))}
+                ))
+            ) : (
+                <NoResultDiv>
+                    <img className="noResultIcon" src={noResult} alt="No results" />
+                    <span className='noResultDesc'>검색 결과를 찾을 수 없어요 🥲</span>
+                </NoResultDiv>
+            )}
             </BlogReviewWrapper>
 
             <Divider/>
-            <TitleSpan className='title'>구글 평점</TitleSpan>
-            {/* api data 형식 확인 후 디자인 / 프론트 작업 진행 계획 */}
-            <Divider/>
+            {/* <TitleSpan className='title'>구글 평점</TitleSpan>
+            <Divider/> */}
 
             <TitleSpan className='title'>트루버 리뷰</TitleSpan>
             {/* // eslint-disable-next-line */}
-            { reviews.map ((review, idx) => {
+            { !reviews || (Array.isArray(reviews) && reviews.length === 0) ? (
+                <ReviewWrapper>
+                    아직 리뷰가 작성되지 않았어요. 🥲 <br/>
+                    트루버 리뷰와 함께하세요!<br/>
+                    <br/>
+                    <lord-icon
+                        src="https://cdn.lordicon.com/nizfqlnk.json"
+                        trigger="loop"
+                        delay="3000"
+                        colors="primary:#45866b"
+                        style={{ width : "35vw", height : "35vw"}}
+                    />
+                </ReviewWrapper>
+            ) : reviews.map ((review, idx) => {
                 // eslint-disable-next-line
                 if (review.pla_r_is_deleted) return;
                 return(
@@ -126,24 +149,61 @@ export const Review = ({ reviews, id }) => {
     );
 };
 
-export const MyReview = () => {
+export const MyReview = ({ user_id }) => {
     const [visible, setVisible] = useState(false);
+    const [reviews, setReviews] = useState([]);
+    const go = useNavigate();
+
+    const getMyReview = async () => {
+        try {
+            const res = await axios.get(`/api/review/getMyReview/${user_id}`);
+            console.log(res.data);
+            setReviews(res.data);
+
+        } catch (error) {
+            console.error("Error getMyReview Axios : ",error);
+        }
+    }
+
+    useEffect(()=> {
+        getMyReview();
+        // eslint-disable-next-line
+    },[])
+
     return (
-        <ReviewWrapper>
+        <>
+        { !reviews || (Array.isArray(reviews) && reviews.length === 0) ? (
+            <ReviewWrapper>
+                아직 리뷰가 작성되지 않았어요. 🥲 <br/>
+                트루버 리뷰와 함께하세요!<br/>
+                <br/>
+                <lord-icon
+                    src="https://cdn.lordicon.com/nizfqlnk.json"
+                    trigger="loop"
+                    delay="3000"
+                    colors="primary:#45866b"
+                    style={{ width : "35vw", height : "35vw"}}
+                /><br/>
+                <ReviewBtn onClick={()=> go(`/product`)}>여행지 구경하고 리뷰쓰기</ReviewBtn>
+            </ReviewWrapper>
+        ) : reviews.map ((review, idx) => {
+            // eslint-disable-next-line
+            if (review.pla_r_is_deleted) return;
+            return(
+            <ReviewWrapper key={idx}>
                 <div className='reviewWrapper'>
-                    <div>내가 쓴 리뷰</div>
-                    <div>태그</div>
-                    <Rate readOnly value={4}/>
+                    <div>{review.pla_r_tag}</div>
+                    <Rate readOnly value={review.pla_r_rate}/>
                     <ImgSlider className='reviewImgSlider'>
-                        {[...Array(3)].map((index)=> (
+                        { review.pla_r_img && [...review.pla_r_img.split('|')].map((item, index)=> (
                             <>
-                            <img className='reviewThumb' key={index} src={test} alt="썸네일" onClick={() => setVisible(true)}/>
+                            <img className='reviewThumb' key={index} src={item} alt="썸네일" onClick={() => setVisible(true)}/>
                             <ImageViewer
                                 classNames={{
                                     mask: 'customize-mask',
                                     body: 'customize-body',
                                 }}
-                                image={test}
+                                image={item}
                                 visible={visible}
                                 onClose={() => {
                                     setVisible(false);
@@ -152,10 +212,17 @@ export const MyReview = () => {
                         ))}
                     </ImgSlider>
                     <div>
-                        내용 내용 내용 내용 내용 내용 내용 내용 내용 내용 내용 내용 
+                        {review.pla_r_content}
                     </div>
                 </div>
-            </ReviewWrapper>
+                <EditBtnWrapper className='editBtnWrapper'>
+                    <div className='reviewBtn editBtn' onClick={() => go(`/updateReview/${review.pla_r_uuid}`)}>수정</div>
+                    <div className='reviewBtn deleteBtn' onClick={() => go(`/viewproddetail/${review.pla_id}`)}>여행지 보러가기</div>
+                </EditBtnWrapper>
+
+            </ReviewWrapper>)
+        })}
+        </>
     );
 };
 
@@ -170,7 +237,7 @@ const BlogReviewWrapper = styled.div`
     display: flex;
     gap: 3vw;
     margin: 2vh 3vw;
-    padding: 0 2vw 3vh;
+    padding: 3vh 2vw 3vh;
 `;
 
 const BlogReviewDiv = styled.div`
@@ -180,8 +247,8 @@ const BlogReviewDiv = styled.div`
         height: 50%;
     }
 
-    width: 35vw;
-    height: 30vh;
+    width: 53vw;
+    height: 14vh;
     border-radius: 10px;
     overflow: hidden;
     flex-shrink: 0;
@@ -189,7 +256,7 @@ const BlogReviewDiv = styled.div`
     box-shadow: 0px 0px 5px 2px #bcbcbc;
 
     & .content { 
-        padding: 1vh 0.8vw;
+        padding: 0.5vh 1.3vw 0vh;
         display: block;
 
         width: 90%;
@@ -202,24 +269,36 @@ const BlogReviewDiv = styled.div`
         -webkit-box-orient: vertical;
         word-wrap:break-word; 
         line-height: 1em;
-        height: 1em; 
-    }
+        height: 2.7rem; 
+        & b{
+            font-family:'Pretendart-ExtraBold'; 
+            color: #45866B;
+            font-size: inherit;
+        }
+    } 
 
     & .blogContent {
-        height: 3em; 
+        height: 6.2em; 
         line-height: 1.6em;
         -webkit-line-clamp: 2; /* 라인수 */
+        font-size: 0.65rem;
+        font-family: 'KCC-Hanbit';
+        color: #6f6f6f;
     }
 `;
 
 const BlogInfo = styled.div`
-    & .blogTitle { font-family:'Pretendart-ExtraBold'; }
+    & .blogTitle { 
+        font-family:'Pretendart-ExtraBold'; 
+        font-size: 0.85rem;
+    }
 `;
 
 const ReviewWrapper = styled.div`
     margin-top: 2vh;
     font-size: 1rem;
     padding-bottom: 3vh;
+    text-align: center;
     & .reviewWrapper {
         text-align: left;
         width: 80vw;
@@ -268,6 +347,19 @@ const EditBtnWrapper = styled.div`
             background-color: #557366;
             color: #ababab;
         }
+    }
+`;
+
+const NoResultDiv = styled.div`
+    width : 100vw;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    & span {
+        font-family: 'KCC-Hanbit';
+    }
+    & .noResultIcon {
+        width: 35vw;
     }
 `;
 

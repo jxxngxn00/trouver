@@ -1,44 +1,8 @@
-import bcrypt from bcrypt;
-import userDB from '../models/user.js';
+import asyncHandler from 'express-async-handler';
+// import bcrypt from bcrypt;
+import { mIsSigned } from '../models/user.js';
 
-const textToHash = async (text) => {
-    const saltRounds = 10;
-    try {
-        const hash = await bcrypt.hash(text, saltRounds);
-        return hash
-    } catch (err) {
-        console.log(err);
-        return err;
-    }
-}
-
-exports.signup = async (req, res) => {
-    const { userID, userPW } = req.body;
-
-    try {
-        const getUser = await userDB.getUser(userID);
-        if (getUser.length) {
-            res.status(401).json('이미 존재하는 아이디입니다.');
-            return; 
-        }
-        const hash = await textToHash(userPW);
-        const signup = await userDB.signup([userID, hash]);
-        res.status(200).json('가입 성공');
-
-    } catch (err) {
-        console.error(err);
-        res.status(500).json(err);
-    }
-};
-
-exports.getUserUUID = async (req, res) => {
-    const { user_login_id } = req.body;
-    try {
-        const user_UUID = await userDB.getUserUUID(user_login_id);
-        res.status(200).json(user_UUID);
-        
-    } catch (err) {
-        console.error(err);
-        res.status(500).json(err);
-    }
-}
+// 회원가입 여부 판단 => true : 로그인, false : 회원가입
+export const cIsSigned = asyncHandler( async(req, res) => {
+    mIsSigned(req, res);
+});

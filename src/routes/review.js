@@ -4,7 +4,8 @@ const router = Router();
 import CgetPlaceReview, { CgetPlaceReviewDetail, CinsertPlaceReview,
     CupdatePlaceReview, CdeletePlaceReview,
     CgetPlanReview, CinsertPlanReview,
-    CupdatePlanReview, CdeletePlanReview
+    CupdatePlanReview, CdeletePlanReview,
+    CgetMyReview,
 } from "../controllers/review.js";//여행지 리뷰 모델
 
 router.get("/", (req, res) => { res.send("review CRUD")});
@@ -20,4 +21,5 @@ router.get("/insertPlanReview", CinsertPlanReview);
 router.get("/updatePlanReview", CupdatePlanReview);
 router.get("/deletePlanReview", CdeletePlanReview);
 
+router.get("/getMyReview/:id", CgetMyReview);
 export default router;

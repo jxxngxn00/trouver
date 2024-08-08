@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
 /* import page & components */
 import StartPage from './pages/StartPage';
-
+import KakaoLogin from './pages/components/Login/KakaoLogin';
 import Home from './pages/Home';
 import Plan from './pages/components/home/Plan';
 
@@ -26,9 +26,10 @@ import FAQ from './pages/setting/FAQ';
 import QnA from './pages/setting/QnA';
 import QnADetail from './pages/setting/QnADetail';
 import QnAInsert from './pages/setting/QnAInsert';
+import QnAUpdate from './pages/setting/QnAUpdate';
 
 import SearchPage from './pages/SearchPage';
-
+import Map from './pages/components/viewplan/Map';
 // 페이지 이동시 무조건 맨 위로 스크롤하도록 함
 import ScrollToTop from './ScrollToTop';
 
@@ -62,7 +63,9 @@ function RouteTransitions() {
   return (
     <div className='App'>
       <Routes>
+        <Route path='/map' element={<Map/>}/>
         <Route path="/" element={<StartPage />} />
+        <Route path="/kakaoLogin" element={<KakaoLogin/>}/>
         <Route path="/home" element={<Home />} />
         <Route path="/plan" element={<Plan />} />
 
@@ -85,8 +88,10 @@ function RouteTransitions() {
         <Route path='/faq' element={<FAQ />} />
 
         <Route path='/qna' element={<QnA />} />
-        <Route path='/qnaDetail' element={<QnADetail />} />
-        <Route path='/qnaInsert' element={<QnAInsert />} />
+        <Route path='/qnaDetail/:qid' element={<QnADetail />} />
+        <Route path='/qnaInsert/:id' element={<QnAInsert />} />
+        <Route path='/qnaUpdate/:qid' element={<QnAUpdate />} />
+        
 
         <Route path='/search' element={<SearchPage />} />
       </Routes>

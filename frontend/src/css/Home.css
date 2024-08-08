@@ -16,10 +16,13 @@
     font-weight: normal;
     font-style: normal;
 }
-
 *{
     font-family: 'Pretendard-Regular';
     font-size: 1rem;
+
+    & a {
+        color: black;
+    }
 }
 
 .homeBgDiv {
@@ -44,6 +47,7 @@
 
 .div-100 {
     /* display: block; */
+    padding-top: 0.2vh;
     background-color: #ffffff;
     width: 90%;
     min-height: 100px;
@@ -61,6 +65,33 @@
     background: rgb(169, 199, 179);
     width: 50%;
     height: 100px;  
+}
+.feedDiv.div-100 {
+    display: grid;
+    background: none !important;
+    box-shadow: none !important;
+    grid-template-columns: 48% 48%;
+    gap : 3vw;
+    justify-items: stretch;
+}
+.feedDiv .div-50 {
+    width: 100%;
+    background-color: white;
+}
+
+.savedDiv {
+    color: white !important;
+    & .savedTitle {
+        color: white !important;
+    }
+    & .count {
+        font-family: 'KCC-Hanbit';   
+        text-align: right;
+        width: 72%;
+        display: block;
+        padding: 0vh 6vw 3vh 6vw;
+        font-size: 2rem;
+    }
 }
 
 /* welcome div */

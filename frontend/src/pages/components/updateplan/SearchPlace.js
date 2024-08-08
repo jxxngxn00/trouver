@@ -134,7 +134,7 @@ const SearchDiv = styled.div`
     & .placeWrapper { 
         position: relative;
         overflow-y:scroll; 
-        height: 70vh;
+        height : calc(var(--vh, 1vh)*70);
     }
 `;
 

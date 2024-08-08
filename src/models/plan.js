@@ -248,7 +248,9 @@ export const MgetRoute = (req, res) => {
                         p.pla_addr1 as pla_addr1, 
                         p.pla_cate as pla_cate, 
                         p.pla_rate_avg as pla_rate_avg, 
-                        p.pla_image as pla_image 
+                        p.pla_image as pla_image,
+                        p.pla_addr_x as pla_addr_x,
+                        p.pla_addr_y as pla_addr_y
                     FROM route r
                     LEFT JOIN place p
                     ON r.pla_id = p.pla_id) rp
@@ -315,14 +317,14 @@ export const MupdateRoute = (req, res) => {
 
 
 // 일정 Delete
-export const MdeletePlan = (req, res) => {
+export const MdeletePlan = (data, res) => {
     try {
         const sql = `
             UPDATE plan
-            SET plan_is_delete = CURRENT_TIMESTAMP
-            WHERE plan_id = ? AND user_id = ?
+            SET plan_is_deleted = CURRENT_TIMESTAMP
+            WHERE BIN_TO_UUID(plan_id) = ? AND BIN_TO_UUID(user_id) = ?
         `;
-        db.query(sql, /* 파라미터 들어갈 자리 ,*/ (err, row) => {
+        db.query(sql, data, (err, row) => {
             if (err) {
                 console.error('Database query error : ', err);
                 res.status(500).send('Database query error');
@@ -356,6 +358,103 @@ export const MupdateHits = (req, res) => {
 }
 
 // 내 일정 보기
+
+// 내가 만든 일정 보기
 export const MgetMyPlan = (req, res) => {
-    
+    try {
+        const sql = `
+            SELECT 
+                bin_to_uuid(p.plan_id) as plan_uuid,
+                u.user_name, 
+                p.plan_title, 
+                p.plan_reg,
+                date_format(p.plan_start, "%Y-%m-%d") as plan_start, 
+                date_format(p.plan_end, "%Y-%m-%d") as plan_end, 
+                p.plan_tag, 
+                p.plan_budget, 
+                p.plan_saved, 
+                p.plan_is_deleted, 
+                COALESCE(count_routes.count_routes, 0) AS count_routes
+            FROM 
+                plan p
+            LEFT JOIN 
+                user u ON p.user_id = u.user_id
+            LEFT JOIN (
+                SELECT 
+                    dp.plan_id, 
+                    COUNT(r.route_id) AS count_routes
+                FROM 
+                    route r
+                LEFT JOIN 
+                    date_plan dp ON r.date_plan_id = dp.date_plan_id
+                GROUP BY 
+                    dp.plan_id
+            ) AS count_routes ON p.plan_id = count_routes.plan_id
+            WHERE 
+                p.plan_is_deleted IS NULL 
+                AND BIN_TO_UUID(p.user_id) = ?
+            ORDER BY 
+                p.plan_reg DESC
+        `;
+        db.query(sql, [req.params.id], (err, rows) => {
+            if (err) {
+                console.error('Database query error : ', err);
+                res.status(500).send('Database query error');
+                return;
+            };
+            res.send(rows);
+        })
+    } catch (error) {
+        console.error('Error : ', error);
+        res.status(500).send('Server error');
+    } 
+}
+
+// 가장 최근의 일정 보기
+export const MgetRecentPlan = (req, res) => {
+    try {
+        const sql = `
+            SELECT 
+                bin_to_uuid(p.plan_id) as plan_uuid,
+                p.plan_title, 
+                p.plan_reg,
+                date_format(p.plan_start, "%Y-%m-%d") as plan_start, 
+                date_format(p.plan_end, "%Y-%m-%d") as plan_end, 
+                p.plan_tag, 
+                p.plan_budget, 
+                p.plan_saved, 
+                COALESCE(count_routes.count_routes, 0) AS count_routes
+            FROM 
+                plan p
+            LEFT JOIN 
+                user u ON p.user_id = u.user_id
+            LEFT JOIN (
+                SELECT 
+                    dp.plan_id, 
+                    COUNT(r.route_id) AS count_routes
+                FROM 
+                    route r
+                LEFT JOIN 
+                    date_plan dp ON r.date_plan_id = dp.date_plan_id
+                GROUP BY 
+                    dp.plan_id
+            ) AS count_routes ON p.plan_id = count_routes.plan_id
+            WHERE 
+                p.plan_is_deleted IS NULL AND BIN_TO_UUID(u.user_id) = ?
+            ORDER BY 
+                p.plan_reg DESC
+            LIMIT 1
+        `;
+        db.query(sql, [req.params.id], (err, rows) => {
+            if (err) {
+                console.error('Database query error : ', err);
+                res.status(500).send('Database query error');
+                return;
+            };
+            res.send(rows);
+        })
+    } catch (error) {
+        console.error('Error : ', error);
+        res.status(500).send('Server error');
+    } 
 }

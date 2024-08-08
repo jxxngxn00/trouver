@@ -5,6 +5,7 @@ import TouchDnd from "../components/updateplan/TouchDnd";
 import CalendarPicker from "../components/updateplan/CalendarPicker";
 import TopBtnBar from "../components/TopBtnBar";
 import SearchPlace from "../components/updateplan/SearchPlace";
+import Map from "../components/viewplan/Map";
 
 /* library */
 import styled from "styled-components";
@@ -15,11 +16,10 @@ import {
   faTrash,
   faCalendar,
 } from "@fortawesome/free-solid-svg-icons";
-import { Modal, Popup, Tag } from "antd-mobile";
+import { Modal, Popup } from "antd-mobile";
 import { CheckCircleFilled, ExclamationCircleFilled } from "@ant-design/icons";
 
 /* etc */
-import mapPicture from "../../images/map.png";
 import { getDateToString } from "../components/makeplan/DatePickerCustom";
 import axios from "axios";
 
@@ -43,6 +43,7 @@ const getDatesInRange = (startDate, endDate) => {
 function ExistedPlanUpdate() {
     const go = useNavigate();
     const { planId } = useParams();
+    const [geometry, setGeometry] = useState([]);
     const [visibleCalendar, setVisibleCalendar] = useState(false); // 달력 보임 state
     const [visibleSearchPlace, setVisibleSearchPlace] = useState(false); // 장소 검색 state
     
@@ -52,6 +53,7 @@ function ExistedPlanUpdate() {
     
     // 날짜 선택 관련 변수
     const [valFromCal, setValFromCal] = useState(""); // 달력에서 날짜 선택시
+    // eslint-disable-next-line
     const [daily, setDaily] = useState(0); // N일차 -- N
     const [date, setDate] = useState();
     const [dateRange, setDateRange] = useState([]);
@@ -64,13 +66,14 @@ function ExistedPlanUpdate() {
 
     // get plan Detail
     useEffect(() => {
-        console.log(">>> dateRange : ",placeArray.length);
         // select from plan + date_plan
         const getPlanDetail = async () => {
             const res = await axios.get(`/api/plan/getPlanDetail/${planId}`);
-            console.log(">>> getPlan + datePlan",res.data);
+            // console.log(">>> getPlan + datePlan",res.data);
             const resPlan = res.data.plan[0];
-            const resDatePlan = res.data.datePlan;
+            const resDatePlan = Array.isArray(res.data.datePlan) ? res.data.datePlan : [];
+            // console.log(">>> datePlan", resDatePlan);
+            
             setPlan(resPlan);
             // eslint-disable-next-line no-unused-expressions
             setValFromCal(
@@ -80,12 +83,24 @@ function ExistedPlanUpdate() {
             setDate(`${getDateToString(resPlan?.plan_start?.toString(), 0)},${getDateToString(resPlan?.plan_end?.toString(),0)}`);
             setDatePlan(resDatePlan);
         };
+
+        getPlanDetail();
+        // eslint-disable-next-line
+    },[planId]);
+
+    useEffect(()=>{
         // select from route
         const getRoute = async () => {
             const res = await axios.get(`/api/plan/getPlanDetailRoute/${planId}`);
-            console.log(">> getPlanDetailRouter : ", res.data);
             setPlaceArray(await groupByDatePlanId(res.data));
-        }
+            const updatedGeometry = res.data.map((r)=> ({
+                x: r.pla_addr_y,
+                y: r.pla_addr_x,
+            }));
+            // console.log(">> updatedGeometry",updatedGeometry);
+            setGeometry(updatedGeometry);
+        };
+
         const groupByDatePlanId = async (data) => {
             const groupedData = data.reduce((acc, item) => {
                 // 공통된 요소로 묶음 (여기서는 date_plan_id)
@@ -100,14 +115,10 @@ function ExistedPlanUpdate() {
         
             // 결과를 배열 형태로 변환
             const result = Object.values(groupedData);
-            console.log(">>> result : ", groupedData);
             return result;
         };
-
-        getPlanDetail();
         getRoute();
-        // eslint-disable-next-line
-    },[planId]);
+    },[]);
 
     // 날짜 변수 변경
     const handleValueChange = (value) => {
@@ -129,7 +140,7 @@ function ExistedPlanUpdate() {
             const res = await axios.get(`/api/place/getPlace/${route}`);
             const result = res.data[0];
             const newRoute =   {
-                id: result.pla_id,
+                id: result.pla_id || result.route_pla_id,
                 placeName: result.pla_name,
                 placeCate: result.pla_cate,
                 placeRate: result.pla_rate_avg,
@@ -171,10 +182,12 @@ function ExistedPlanUpdate() {
                 handleValueChange(dateStringRef.current);
             }
         }
-    }, []);
+
+        // console.log(">>> placeArray : ",);
+    // eslint-disable-next-line
+    }, [placeArray]);
     
-
-
+    // eslint-disable-next-line
     const getDayName = (week_n) => {
         // console.log('week_n :: ' ,week_n);
         switch (week_n) {
@@ -214,6 +227,7 @@ function ExistedPlanUpdate() {
 
         // 전달 데이터 formData
         // - plan
+        // eslint-disable-next-line
         const planFormData = {
             // user_id : user_login_id,     
             plan_id : planId ? planId : null ,   
@@ -224,6 +238,7 @@ function ExistedPlanUpdate() {
             // plan_tag : tags.join(','),
         }
         // - date_plan
+        // eslint-disable-next-line
         const datePlanFormData = dateRange.map(date => {
             const datePlanDate = new Date(date);
             const newDatePlanFormData = {
@@ -262,17 +277,12 @@ function ExistedPlanUpdate() {
             }
         });
         
-        console.log(routeFormData);
+        console.log(">>> routeFormData : ",routeFormData);
         
-        const data = [planFormData, datePlanFormData, routeFormData];
+        // const data = [planFormData, datePlanFormData, routeFormData];
 
         try {
-            // DB에 formData 저장 
-            // axios.patch(`/api/plan/insertPlan/${user_login_id}`, data, {
-            //     headers : {
-            //         "Context-Type" : "multipart/form-data",
-            //     },
-            // });
+
             saveConfirm();
             
         } catch (error) {
@@ -305,7 +315,19 @@ function ExistedPlanUpdate() {
     };
 
     // 삭제 완료 모달 팝업
-    const deletAlert = async () => {
+    const deletAlert = async (planId) => {
+        const deletePlan = async(planId) => {
+            const data = { 
+                user_id : plan.user_id,
+                plan_id : plan.plan_id 
+            }
+            axios.patch(`/api/plan/deletePlan/${planId}`, data, {
+                headers : {
+                    "Context-Type" : "multipart/form-data",
+                },
+            })
+        };
+        deletePlan(planId)
         Modal.alert({
         header: (
             <CheckCircleFilled
@@ -391,7 +413,7 @@ function ExistedPlanUpdate() {
                 {/* N일차 라디오 버튼 */}
                 <div className="dateRadioBtn">
                     <div className="dateRadioBoxWrapper">
-                    {datePlan.map((dateN, idx) => (
+                    { Array.isArray(datePlan) && datePlan.map((dateN, idx) => (
                         <React.Fragment key={idx} >
                             <InfoRadioBoxInput
                                 type="radio"
@@ -408,18 +430,16 @@ function ExistedPlanUpdate() {
                     ))}
                     </div>
                 </div>
-
-                <div className="mapWrapper">
-                    <img src={mapPicture} alt="지도 예시" />
+                <div className='mapWrapper'>
+                    <Map geometry={geometry}/>
                 </div>
-
                 <div className="routesWrapper">
                     {/* 여행 장소 경유지 설정 */}
                     <div className="wrapper2">
                         <div className="wrapper3">
                             <TouchDnd 
                                 list={placeArray} setList={setPlaceArray} 
-                                daily={datePlan} setDaily = {setDatePlan}
+                                daily={daily} setDaily = {setDaily}
                                 dateRange={dateRange}
                             />
                         </div>
@@ -466,7 +486,7 @@ function ExistedPlanUpdate() {
                     <SearchPlace onValChange={handleValueChange} route={route} setRoute={setRoute}/>
                     <ConfirmBtn
                         onClick={() => {
-                            addPlaceRoute(daily);
+                            addPlaceRoute(index);
                         }}
                     >
                         등록하기
@@ -480,9 +500,9 @@ function ExistedPlanUpdate() {
                         icon={faFloppyDisk}
                         style={{ color: "#c9c9c9" }}
                     />
-                    <span>일정 저장</span>
+                    <span>일정 수정</span>
                     </div>
-                    <div className="vPlanDetailBtn" onClick={() => warning()}>
+                    <div className="vPlanDetailBtn" onClick={() => warning(plan?.plan_id)}>
                     <FontAwesomeIcon
                         className="icon"
                         size="2xl"

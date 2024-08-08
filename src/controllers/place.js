@@ -1,6 +1,6 @@
 // import bcrypt from bcrypt;
 import asyncHandler from 'express-async-handler';
-import MgetPlaceList from '../models/place.js';
+import MgetPlaceList, { MgetPlaceListByCate, MupdateHits } from '../models/place.js';
 import { MgetPlaceList5, MgetPlace, MgetPlaceListByCate5, MgetPlaceListBySearch } from '../models/place.js';
 
 
@@ -22,9 +22,17 @@ export const CgetPlaceListByCate5 = asyncHandler(async (req,res) => {
     MgetPlaceListByCate5(req,res);
 });
 
+export const CgetPlaceListByCate = asyncHandler(async (req,res) => {
+    const cate = req.params.cate;
+    MgetPlaceListByCate(req,res);
+});
+
 export const CgetPlaceListBySearch = asyncHandler(async (req, res) => {
     const searchTerm = req.params.searchTerm;
     MgetPlaceListBySearch(req,res);
 })
 
+export const CupdateHit = asyncHandler(async (req, res) => {
+    MupdateHits(req, res);
+});
 export default CgetPlaceList;

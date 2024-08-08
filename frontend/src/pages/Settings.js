@@ -12,7 +12,8 @@ import { useNavigate } from 'react-router-dom';
 function Settings(props) {
     const user_name = "도레미";
     const go = useNavigate();
-    
+
+    // eslint-disable-next-line
     const handleClick = (idx) => {
         const propsToPass = { message: idx};
         go('/reserve', { state: propsToPass });
@@ -43,8 +44,14 @@ function Settings(props) {
                     <FontAwesomeIcon className='icon' icon={faPercent} style={{ color: "#ffffff", }} />
                     쿠폰
                 </div>
-                <div className='profileBtn'><FontAwesomeIcon className='icon' icon={faPenNib} style={{ color: "#ffffff", }} />내 일정</div>
-                <div className='profileBtn'><FontAwesomeIcon className='icon' icon={faBookmark} style={{ color: "#ffffff", }} />책갈피</div>
+                <div className='profileBtn' onClick={() => go('/profile')}>
+                    <FontAwesomeIcon className='icon' icon={faPenNib} style={{ color: "#ffffff", }} />
+                    내 일정
+                </div>
+                <div className='profileBtn' onClick={() => go('/profile')}>
+                    <FontAwesomeIcon className='icon' icon={faBookmark} style={{ color: "#ffffff", }} />
+                    책갈피
+                </div>
             </BtnWrapper>
             <Line />
             {/* 예약/취소 내역 => 예약 시스템 구축 미비로 인한 기능 개발 보류 */}
@@ -67,6 +74,11 @@ function Settings(props) {
             <Etc>
                 <div className='menu'>공지사항</div>
                 <div className='menu'>앱 설정</div>
+            </Etc>
+            <Line />
+            <Etc>
+                <div className='menu'>연락처 : trouver00gmail.com</div>
+                <div className='menu'>출처들...</div>
             </Etc>
         </div>
         </>

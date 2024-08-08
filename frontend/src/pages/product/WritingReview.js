@@ -21,7 +21,7 @@ const WritingReview = () => {
     const userName = '도레미';
     const go = useNavigate();
     const { plaId } = useParams();
-    const userUuid = '0eb6e69c-47cc-11ef-b3c9-7085c2d2eea0';
+    const userUuid = 'fdb19576-48f1-11ef-bcc9-af0a24947caf';
     const [enteredPlaceName, setEnteredPlaceName] = useState("");
     const [enteredPlaceImg, setEnteredPlaceImg] = useState("");
     const [enteredPlaceAddr, setEnteredPlaceAddr] = useState("");

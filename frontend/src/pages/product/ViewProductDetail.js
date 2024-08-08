@@ -23,35 +23,52 @@ function ViewProductDetail(props) {
     const [productDetail, setProductDetail] = useState("");
     const [curIndex, setCurIndex] = useState(0);
     const [reviews, setReviews] = useState([]);
+    const [naverReview, setNaverReview] = useState([]);
+    const [callReview, setCallReview] = useState(true);
 
 
     function handleChange(index){
         setCurIndex(index);
     };
-
-    const getPlace = async () => {
-        try {
-            const res = await axios.get(`/api/place/getPlace/${id}`);
-            setProductDetail(res.data);
-        } catch (error) {
-            console.error("Error fetching product detail : ",error);
-        }
-    };
-
-    const getPlaceReview = async () => {
-        try {
-            const res = await axios.get(`/api/review/getPlaceReview/${id}`);
-            setReviews(res.data);
-        } catch (err) {
-            console.error("Error fetching place review : ",err);
-        }
-    }
-
     useEffect(() => {
+        const getNaverReview = async () => {
+            try {
+                const placeName = productDetail[0]?.pla_name + " 제주";
+                if (placeName) {
+                    const res = await axios.get(`/search/blog?query=${placeName}`);
+                    setNaverReview(res.data.items);
+                    // console.log(">>> naver :: ", res.data.items);
+                    setCallReview(false);
+                } else {
+                    console.error("Error: productDetail[0]?.pla_name is undefined");
+                }
+            } catch (err) {
+                console.error("Error fetching naver review : ",err);
+            }    
+        };
+
+        const getPlace = async () => {
+            try {
+                const res = await axios.get(`/api/place/getPlace/${id}`);
+                setProductDetail(res.data);
+                if (callReview) getNaverReview();
+            } catch (error) {
+                console.error("Error fetching product detail : ",error);
+            }
+        };
+    
+        const getPlaceReview = async () => {
+            try {
+                const res = await axios.get(`/api/review/getPlaceReview/${id}`);
+                setReviews(res.data);
+            } catch (err) {
+                console.error("Error fetching place review : ",err);
+            }
+        };
         getPlace();
         getPlaceReview();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    },[]);
+    },[productDetail]);
 
     /* 이미지 슬라이드 */
     const imageData = [
@@ -100,7 +117,7 @@ function ViewProductDetail(props) {
             id: 3,
             title: "리뷰",
             class: 'review',
-            content: (<Review reviews={reviews} id={id}/>)
+            content: (<Review reviews={reviews} id={id} naverReview={naverReview}/>)
         }
     ];
 
@@ -120,7 +137,7 @@ function ViewProductDetail(props) {
             try {
                 const res = await axios.get(`/api/bookmark/getSavedPlaceState/${id}`, 
                     { params : { 
-                        user_id : '0eb6e69c-47cc-11ef-b3c9-7085c2d2eea0',
+                        user_id : 'fdb19576-48f1-11ef-bcc9-af0a24947caf',
                     }}
                 );
                 console.log("res.data :: ", res.data.saved);

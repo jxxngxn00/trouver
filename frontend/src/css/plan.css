@@ -189,14 +189,15 @@
         width: 100vw!important;
         position : relative;
     }
-
+    & .contentsWrapper { width: 100vw; }
     & .contents{
         display: flex;
         border-radius: 15px;
         height: min-content;
-        margin: 3vh 5vw;
+        margin: 3vh auto;
         box-shadow:0px 4px 18px -5px hsla(234, 44%, 26%, 0.411);
         background-color: white;
+        width: 90vw;
     }
     
     & .imgWrapper img{
@@ -225,7 +226,7 @@
         font-family: 'Pretendart-ExtraBold';
         font-size: 1.25rem;
 
-        white-space: nowrap;
+        /* white-space: nowrap; */
         overflow: hidden;
         text-overflow: ellipsis;
 
@@ -239,7 +240,7 @@
         justify-content: space-between;
 
         position: relative;
-        width:36vw;
+        width:100%;
 
         display: flex;
         flex-direction: column;
@@ -247,8 +248,10 @@
         & .detail {
             & .descicon { margin-right: 1%; }
             font-size: 0.75rem;
-            text-align: left;
             width: 100%;
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
         };
 
         & .tag {
@@ -466,6 +469,7 @@
 .imgSlider {
     /* margin-top: -4%; */
     overflow-x: auto;
+    overflow-y: hidden;
     -ms-overflow-style:none;
     &::-webkit-scrollbar{
         display: none;
@@ -491,7 +495,7 @@
 
 .trouverRecomm .imgSlider {
     /* width: 100vw; */
-    height: 25vh;
+    height: 27vh;
     padding-bottom: 1rem;
 
 }

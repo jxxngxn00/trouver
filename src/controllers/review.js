@@ -3,7 +3,8 @@ import MgetPlaceReview, { MinsertPlaceReview, //여행지 리뷰 모델
     MupdatePlaceReview, MdeletePlaceReview,
     MgetPlanReview, MinsertPlanReview,          // 일정 리뷰 모델
     MupdatePlanReview, MdeletePlanReview,
-    MgetPlaceReviewDetail
+    MgetPlaceReviewDetail,
+    MgetMyReview
 } from "../models/review.js";
 
 /* 여행지 리뷰 컨트롤러 */
@@ -81,4 +82,9 @@ export const CdeletePlanReview = asyncHandler(async (req, res) => {
     MdeletePlanReview();
 });
 
+/* 내가 쓴 리뷰 컨트롤러 */
+export const CgetMyReview = asyncHandler(async (req, res) => {
+    // console.log(">>> getMyReview controller param :: ",req.params.id);
+    MgetMyReview(req, res);
+})
 export default CgetPlaceReview;

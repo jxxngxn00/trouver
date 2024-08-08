@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faLayerGroup, faBed, faBowlFood, faMugSaucer, 
     faPersonRunning, faPalette, faClover, faChessRook, faGem } from '@fortawesome/free-solid-svg-icons'
 
-function CateMenu({cate, setCate}) {
+function CateMenu({cate, setCate, scrollPosition}) {
     const clicked_div = useRef([]);
     const [isActive, setIsActive] = useState(false);
 
@@ -12,11 +12,10 @@ function CateMenu({cate, setCate}) {
         setIsActive(index);
         setCate(text);
     };
-
     return (
         <div className='cateMenu'>
-            <div className='title'><FontAwesomeIcon className='titleIcon' icon={faLayerGroup} />트루버 추천 코스 카테고리</div>
-            <div className='btnWrapper'>
+            <div className='title'><FontAwesomeIcon className='titleIcon' icon={faLayerGroup} />카테고리</div>
+            <div className={scrollPosition > 150 ? 'btnWrapper top' : 'btnWrapper'}>
                 {[
                     { icon: faBed, text: '숙소', value:'숙박' },
                     { icon: faBowlFood, text: '맛집', value:'음식점' },
@@ -29,7 +28,7 @@ function CateMenu({cate, setCate}) {
                 ].map((item, index) => (
                     <div
                         key={index}
-                        className={`btnSpan ${isActive === index ? 'clicked' : ''}`}
+                        className={`btnSpan ${isActive === index ? 'clicked' : ''} ${scrollPosition > 150 ? 'top' : ''}`}
                         onClick={() => toggleClass(index, item.text)}
                     >
                         <div className='btnDiv'>

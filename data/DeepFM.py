@@ -38,6 +38,7 @@ def parse_args():
                         help='test_size')
     return parser.parse_args()
 
+@tf.keras.utils.register_keras_serializable()
 class deep_FM(keras.Model):
     def __init__(self, V, num_fields, embbeding_lookup_index, layer_list=[400, 400, 400], dropout_rate=0.5,
                  activation="relu", **kwargs):

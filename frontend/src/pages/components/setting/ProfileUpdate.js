@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Dialog, Form, Input, Button, Picker } from 'antd-mobile';
 import { CloseCircleFilled } from '@ant-design/icons';
 
-const ProfileUpdate = () => {
+const ProfileUpdate = ({ user_id }) => {
     const [form] = Form.useForm();
     const onSubmit = () => {
         const values = form.getFieldValue();
@@ -13,16 +13,12 @@ const ProfileUpdate = () => {
     
     return (
     <>
-        <Form form={form} initialValues={{
-                a: '',
+        <Form form={form} style={{ width : "95vw"}} initialValues={{
+                a: '도레미',
                 b: [],
-                userId: '도레미',
             }} footer={<Button block color='primary' onClick={onSubmit} size='large'>
                 변경하기
             </Button>}>
-            <Form.Item name='userId' label='닉네임' >
-            <Input placeholder='닉네임'/>
-            </Form.Item>
             <Form.Item name='a' label='이름'>
             <Input placeholder='이름' disabled/>
             </Form.Item>

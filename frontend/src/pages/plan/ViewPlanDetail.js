@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 
 // components
 import DistantCalc from '../components/viewplan/DistantCalc';
+import { getCarDistance, getWalkDistance } from '../components/viewplan/DistantCalc';
 import Dropdown from '../components/viewplan/Dropdown';
 import Menu from '../components/Menu';
 import TopBtnBar from '../components/TopBtnBar';
@@ -11,22 +12,21 @@ import styled from 'styled-components';
 import { Avatar, Toast, Modal } from 'antd-mobile';
 import { CheckCircleFilled } from '@ant-design/icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faStar, faThumbsUp, faBookmark, faCalendarDay, faSquareShareNodes } from '@fortawesome/free-solid-svg-icons';
+import { faStar, faThumbsUp, faBookmark, 
+    faCalendarDay, faSquareShareNodes } from '@fortawesome/free-solid-svg-icons';
 import plusToX from 'react-useanimations/lib/plusToX';
 
 
 // images
-import mapPicture from '../../images/map.png'
 import dots from '../../images/dots.png'
 import test from '../../images/test.jfif'
-import car from '../../images/icons/car.png'
-import bus from '../../images/icons/bus.png'
 import sun from '../../images/icons/sun.gif'
 
 // hooks
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import UseAnimations from 'react-useanimations';
+import Map from '../components/viewplan/Map';
 
 const getDateToString = (date) => {
     const newDate = new Date(date);
@@ -41,21 +41,22 @@ const formatDate = (date) => {
 };
 
 function ViewPlanDetail() {
-    // const curr_user_id = 'fdb19576-48f1-11ef-bcc9-af0a24947caf'; // mac
-    const curr_user_id = '0eb6e69c-47cc-11ef-b3c9-7085c2d2eea0'; // window
+    const curr_user_id = 'fdb19576-48f1-11ef-bcc9-af0a24947caf'; // mac
+    // const curr_user_id = '0eb6e69c-47cc-11ef-b3c9-7085c2d2eea0'; // window
     const [view, setView] = useState(false);
     const [plan, setPlan] = useState([]);
     const [datePlan, setDatePlan] = useState([]);
     const [route, setRoute] = useState([]);
     const [index, setIndex] = useState(0);
     const [saved, setSaved] = useState(false);
+    const [geometry, setGeometry] = useState([]);
     const go = useNavigate();
     const { planId } = useParams();
 
     useEffect(() => {
         const getPlanDetail = async () => {
             const res = await axios.get(`/api/plan/getPlanDetail/${planId}`);
-            console.log(">> getPlanDetail :: ",res.data.datePlan);
+            // console.log(">> getPlanDetail :: ",res.data.datePlan);
             const resPlan = res.data.plan[0];
             const resDatePlan = res.data.datePlan;
             setPlan(resPlan);
@@ -66,16 +67,22 @@ function ViewPlanDetail() {
             const res = await axios.get(`/api/plan/getPlanDetailRoute/${planId}`);
             console.log(">> getPlanDetailRouter : ", res.data);
             setRoute(res.data);
-        }
+            const updatedGeometry = res.data.map((r)=> ({
+                x: r.pla_addr_y,
+                y: r.pla_addr_x,
+            }));
+            console.log(">> updatedGeometry",updatedGeometry);
+            setGeometry(updatedGeometry);
+        };
 
         const getSavedState = async (id) => {
             try {
                 const res = await axios.get(`/api/bookmark/getSavedPlanState/${id}`, 
                     { params : { 
-                        user_id : '0eb6e69c-47cc-11ef-b3c9-7085c2d2eea0',
+                        user_id : curr_user_id,
                     }}
                 );
-                console.log("res.data :: ", res.data.saved);
+                // console.log("res.data :: ", res.data.saved);
                 if (res.data.saved !== 0) {
                     setSaved(true);
                 }
@@ -178,7 +185,7 @@ function ViewPlanDetail() {
                 </div>
             </PlanInfo>
             <div className='mapWrapper'>
-                <img src={mapPicture} alt='지도 예시' />
+                <Map geometry={geometry}/>
             </div>
             
             {/* N일차 라디오 버튼 */}
@@ -187,6 +194,7 @@ function ViewPlanDetail() {
                 {datePlan.map((dateN, idx) => (
                     <React.Fragment key={idx} >
                         <InfoRadioBoxInput
+                            key={idx}
                             type="radio"
                             id={`day${idx + 1}`}
                             name="day"
@@ -194,7 +202,9 @@ function ViewPlanDetail() {
                             onChange={(e) => {setIndex(e.target.value);}}
                             defaultChecked = {idx === index}
                         />
-                        <InfoCheckBoxLabel htmlFor={`day${idx + 1}`}>
+                        <InfoCheckBoxLabel 
+                            htmlFor={`day${idx + 1}`}
+                        >
                             {idx + 1}일차
                         </InfoCheckBoxLabel>
                     </React.Fragment>
@@ -221,11 +231,12 @@ function ViewPlanDetail() {
                     // console.log(r?.date_plan_uuid === datePlan[index]?.date_plan_uuid);
                     return r.date_plan_uuid === datePlan[index]?.date_plan_uuid ? 
                     (
-                    <><div className='routeDiv' key={idx} onClick={()=>go(`/viewProdDetail/${r.route_pla_id}`)}>
+                    <>
+                        <div className='routeDiv' key={idx} onClick={()=>go(`/viewProdDetail/${r.route_pla_id}`)}>
                             <div className='route'>
                                 <span className='placeName'>{r.pla_name}</span>
                                 <div className='detailsWrapper'>
-                                    <DistantCalc />
+                                    {/* <DistantCalc /> */}
                                     <span className='placeCate'>{r.pla_cate}</span>
                                     { r.pla_rate_avg ? 
                                         (<span className='placeRate'>
@@ -252,9 +263,10 @@ function ViewPlanDetail() {
                         
                         { idx !== route.length - 1 && route[idx+1].date_plan_uuid === datePlan[index]?.date_plan_uuid ? (
                             <div className='moveInfoWrapper'>
-                                <DistantCalc /> 
-                                <span className='moveInfo'><img src={car} alt='car icon' />999km</span>
-                                <span className='moveInfo'><img src={bus} alt='bus icon' />999km</span>
+                                <DistantCalc 
+                                    xStart={r.pla_addr_x} yStart={r.pla_addr_y}
+                                    xEnd={route[idx+1].pla_addr_x} yEnd={route[idx+1].pla_addr_y}
+                                />
                             </div>
                         ) : null
                         }

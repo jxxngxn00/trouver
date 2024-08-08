@@ -78,9 +78,9 @@ export default function TouchDnd({ list, setList, daily, setDaily, dateRange }) 
   }
 
   const swipeItem = (swipeRange) => {
-    console.log(">>> list : ",list);
+    // console.log(">>> list : ",list);
     return swipeRange.map((temp, dateIndex) => {
-      console.log(">>> temp : ", temp);
+      // console.log(">>> temp : ", temp);
       const dailyList = list[dateIndex] || [];
       return (
         <Swiper.Item key={dateIndex}>
@@ -103,7 +103,7 @@ export default function TouchDnd({ list, setList, daily, setDaily, dateRange }) 
                 <div {...provided.droppableProps} ref={provided.innerRef}>
                   {dailyList.map((item, idx) => (
                     <Draggable key={item.id} 
-                      draggableId={`draggable-${dateIndex}-${item.id}`} 
+                      draggableId={`draggable-${dateIndex}-${idx}`} 
                       index={idx} >
                       {(provided) => (
                         <RouteDiv

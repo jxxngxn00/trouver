@@ -7,27 +7,28 @@ import { Divider, Swiper, Tabs } from 'antd-mobile';
 
 import profile from '../../images/default_profile.png';
 
-import ProfileUpdate from '../components/setting/ProfileUpdate';
+// import ProfileUpdate from '../components/setting/ProfileUpdate';
 import { MyReview } from '../components/Review';
 import Plan from '../components/setting/Plan';
 import MySaved from '../components/setting/MySaved';
 
+const user_id = 'fdb19576-48f1-11ef-bcc9-af0a24947caf'; //mac
 const tabs = [
-    { key: 'key0',
+    /*{ key: 'key0',
         title : '프로필 수정',
-        div : (<ProfileUpdate/>),
-    },
+        div : (<ProfileUpdate user_id={user_id}/>),
+    },*/
     { key: 'key1',
         title : '내가 쓴 리뷰',
-        div : (<MyReview/>),
+        div : (<MyReview user_id={user_id}/>),
     },
     { key: 'key2',
         title : '나의 일정',
-        div : (<Plan/>),
+        div : (<Plan user_id={user_id}/>),
     },
     { key: 'key3',
         title : '책갈피',
-        div : (<MySaved/>),
+        div : (<MySaved user_id={user_id}/>),
     },
 ]
 

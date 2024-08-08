@@ -58,19 +58,44 @@
         align-items: end;
         row-gap: 1.5vh;
         column-gap: 3vw;
+        transition: display 0.2s ease-out;
     }
+
+    & .btnWrapper.top {
+        width: 100vw;
+        display: flex;
+        justify-content: flex-start;
+        justify-items: center;
+        align-items: end;
+        overflow-x: auto;
+        gap:0vw;
+        transition: display 0.2s ease-out;
+        -ms-overflow-style: none; /* 인터넷 익스플로러 */
+        scrollbar-width: none; /* 파이어폭스 */
+    }
+
+    /* ( 크롬, 사파리, 오페라, 엣지 ) 동작 */
+    & .btnWrapper.top::-webkit-scrollbar {
+        display: none;
+      }
 
     & .btnSpan {
         display: flex;
         flex-direction: column;
         align-items: center;
         margin: 0 3vw;
+        transition: margin 0.2s ease-out;
 
         & span {
             font-family: 'Pretendart-ExtraBold';
             margin-top: 0.9vh;
             font-size: 0.7rem;
         }
+    }
+
+    & .btnSpan.top {
+        margin: 1.3vh 3vw;
+        transition: margin 0.2s ease-out;
     }
 
     & .clicked {

@@ -5,7 +5,9 @@ import { MinsertPlan, MinsertDatePlan, MinsertRoute,
     MdeletePlan,
     MgetDatePlan,
     MupdateHits,
-    MgetRoute} from '../models/plan.js';
+    MgetRoute,
+    MgetMyPlan,
+    MgetRecentPlan} from '../models/plan.js';
 
 export const CInsertPlan_temp = asyncHandler(async (req, res) => {
     const { date, budget, tags, user_login_id } = req.body;
@@ -90,11 +92,27 @@ export const CupdatePlan = asyncHandler(async (req, res) => {
 
 // 일정 삭제
 export const CdeletePlan = asyncHandler(async (req, res) => {
-    MdeletePlan(req, res);
+    const { user_id, plan_id } = req.body;
+    const data = [plan_id, user_id];
+    console.log(">>> CdeletePlan :: ",data);
+    MdeletePlan(data, res);
 })
 
 // 조회수 증가
 export const CupdateHits = asyncHandler(async (req, res) => {
     MupdateHits(req, res);
 });
+
+// 내 일정
+export const CgetMyPlan = asyncHandler(async (req, res) => {
+    MgetMyPlan(req, res);
+
+})
+
+// 가장 최근에 만든 내 일정
+export const CgetRecentPlan = asyncHandler(async (req, res) => {
+    const user = req.params.id;
+    console.log(">> CgetRecentPlan user id :: ", user);
+    MgetRecentPlan(req, res);
+})
 export default CInsertPlan;

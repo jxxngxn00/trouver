@@ -1,16 +1,17 @@
 import { Modal, Picker, TextArea, Button, Form } from 'antd-mobile';
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import UseAnimations from "react-useanimations";
 import activity from "react-useanimations/lib/activity"
 import TopBtnBar from '../components/TopBtnBar';
+import axios from 'axios';
 
 const QnAInsert = () => {
     // const [visible, setVisible] = useState(false);
     const go = useNavigate();
     const [value, setValue] = useState([]);
-    
+    const { id } = useParams();
     const qnaColumns = [
         [{ label: '상품', value: '0'},
         { label: '일정', value: '1'},
@@ -18,8 +19,16 @@ const QnAInsert = () => {
         { label: '기타', value: '3'},]
     ]
 
+    const [form] = Form.useForm();
     // 저장 완료 모달 팝업
-    const saveConfirm = () => {
+    const saveConfirm = async () => {
+        const values = form.getFieldValue();
+        // console.log(values);
+        const data = {
+            cate : values.cate[0],
+            content : values.content,
+        };
+        insertQna(data);
         Modal.alert({
             header: ( 
             <UseAnimations 
@@ -35,16 +44,21 @@ const QnAInsert = () => {
         });
     }
 
+    const insertQna = async (data) => {
+        await axios.post(`/api/qna/insert/${id}`, data);
+    } 
+
     return (
         <StyleDiv className='homeBgDiv ViewPlanBgDiv'>
             <TopBtnBar />
             <Form
-            className='qnaInsertForm'
-            layout='horizontal'
-            footer={
-                <Button block type='submit' color='primary' size='large' onClick={()=>saveConfirm()}>
-                    보내기
-                </Button>
+                form = {form}
+                className='qnaInsertForm'
+                layout='horizontal'
+                footer={
+                    <Button block type='submit' color='primary' size='large' onClick={()=>saveConfirm()}>
+                        보내기
+                    </Button>
             }>
             <ExplainDiv>
                 궁금한 점이나 불편사항, 개선할 점이 있으면<br/>자유롭게 이야기 해주세요. 👂

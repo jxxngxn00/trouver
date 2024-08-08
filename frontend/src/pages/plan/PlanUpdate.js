@@ -78,8 +78,9 @@ function PlanUpdate() {
         try {
             const res = await axios.get(`/api/place/getPlace/${route}`);
             const result = res.data[0];
+            console.log(">>> addPlaceRoute -- result : ",result);
             const newRoute =   {
-                id: result.pla_id,
+                id: result.pla_id || result.route_pla_id,
                 placeName: result.pla_name,
                 placeCate: result.pla_cate,
                 placeRate: result.pla_rate_avg,
@@ -384,13 +385,13 @@ function PlanUpdate() {
                         setVisibleSearchPlace(true);
                     }}
                     >
-                    <FontAwesomeIcon
-                        className="icon"
-                        size="2xl"
-                        icon={faMapPin}
-                        style={{ color: "#c9c9c9" }}
-                    />
-                    <span>장소 추가</span>
+                        <FontAwesomeIcon
+                            className="icon"
+                            size="2xl"
+                            icon={faMapPin}
+                            style={{ color: "#c9c9c9" }}
+                        />
+                        <span>장소 추가</span>
                     </div>
 
                     <Popup
@@ -400,23 +401,23 @@ function PlanUpdate() {
                         setVisibleSearchPlace(false);
                     }}
                     >
-                    <SearchPlace onValChange={handleValueChange} route={route} setRoute={setRoute}/>
-                    <ConfirmBtn
-                        onClick={() => {
-                            addPlaceRoute(daily);
-                        }}
-                    >
-                        등록하기
-                    </ConfirmBtn>
+                        <SearchPlace onValChange={handleValueChange} route={route} setRoute={setRoute}/>
+                        <ConfirmBtn
+                            onClick={() => {
+                                addPlaceRoute(daily);
+                            }}
+                        >
+                            등록하기
+                        </ConfirmBtn>
                     </Popup>
 
                     <div className="vPlanDetailBtn" onClick={() => savePlan()}>
-                    <FontAwesomeIcon
-                        className="icon"
-                        size="2xl"
-                        icon={faFloppyDisk}
-                        style={{ color: "#c9c9c9" }}
-                    />
+                        <FontAwesomeIcon
+                            className="icon"
+                            size="2xl"
+                            icon={faFloppyDisk}
+                            style={{ color: "#c9c9c9" }}
+                        />
                     <span>일정 저장</span>
                     </div>
                     <div className="vPlanDetailBtn" onClick={() => warning()}>
