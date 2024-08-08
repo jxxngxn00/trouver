@@ -1,3 +1,5 @@
+![logo](https://github.com/user-attachments/assets/a642e74b-4adb-4cb0-a5c6-410ea9acbde2)
+
 # ✈️ trouver
 
 2024 미래내일 일경험 사업에서 인턴으로 근무하며 진행한 프로젝트입니다.
